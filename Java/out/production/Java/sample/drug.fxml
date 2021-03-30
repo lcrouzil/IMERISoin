@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.DrugController">
+   <children>
+      <AnchorPane prefHeight="200.0" prefWidth="533.0">
+         <children>
+            <Button fx:id="drugNewButton" layoutX="20.0" layoutY="88.0" mnemonicParsing="false" onAction="#printHelloWorld" text="new Drug" />
+            <TextField fx:id="drugNameField" layoutX="20.0" layoutY="56.0" />
+            <Label layoutX="20.0" layoutY="39.0" text="Drug name" />
+         </children>
+      </AnchorPane>
+   </children>
+   <columnConstraints>
+      <ColumnConstraints />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+   </rowConstraints>
+</GridPane>
