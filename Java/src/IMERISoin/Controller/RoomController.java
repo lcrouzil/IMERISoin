@@ -1,22 +1,16 @@
-package sample;
+package IMERISoin.Controller;
 
+import IMERISoin.MainApp;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 
-import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import org.apache.http.HttpRequest;
-import org.apache.http.client.HttpClient;
-import sample.HttpServices;
-
 
 public class RoomController implements Initializable {
-    private static final String ROOT_URL = "http://10.3.6.197:8000/";
 
     @FXML
     private Button buttonRoom1;
@@ -34,6 +28,7 @@ public class RoomController implements Initializable {
     private void pushRoom1(ActionEvent event) {
         event.consume();
         sendRoom(1);
+
         System.out.println("send to room 1");
     }
 
@@ -49,6 +44,7 @@ public class RoomController implements Initializable {
     private void pushRoom3(ActionEvent event) {
         event.consume();
         sendRoom(3);
+
         System.out.println("send to room 3");
     }
 
@@ -56,8 +52,11 @@ public class RoomController implements Initializable {
     private void pushRoom4(ActionEvent event) {
         event.consume();
         sendRoom(4);
+
         System.out.println("send to room 4");
     }
+
+    private MainApp mainApp;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -69,10 +68,16 @@ public class RoomController implements Initializable {
 
     }
 
-    private void sendRoom(int room_id){
-//        HttpServices.example1();
-        HttpClient client = HttpClient.newHttpClient();
-//        HttpRequest request = HttpRequest.newBuilder(URI.create("http://example.com"))
-//                .build();
+    /**
+     * @param room_id id of room
+     */
+    private void sendRoom(int room_id) {
+
+    }
+
+    public void setMain(MainApp mainApp) {
+        this.mainApp = mainApp;
+
+//        patientTable.setItems(mainApp.getPatientsData());
     }
 }

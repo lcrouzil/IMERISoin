@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="200.0" prefWidth="533.0" xmlns="http://javafx.com/javafx/8.0.281" xmlns:fx="http://javafx.com/fxml/1" fx:controller="IMERISoin.Controller.DrugController">
+   <children>
+      <Button fx:id="drugNewButton" layoutX="20.0" layoutY="88.0" mnemonicParsing="false" onAction="#printHelloWorld" text="new Drug" />
+      <TextField fx:id="drugNameField" layoutX="20.0" layoutY="56.0" />
+      <Label layoutX="20.0" layoutY="39.0" text="Drug name" />
+   </children>
+</AnchorPane>
