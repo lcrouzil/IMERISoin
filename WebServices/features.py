@@ -5,12 +5,13 @@ from typing import Optional
 import time
 from datetime import datetime 
 
+from database import *
 # Patients et essais cliniques
 
 
 # Définit un nouveau médicament avec un nom
 def newMedicine(medicine: int,name: str):
-    #Ajouter dans la database
+    add_medicine(medicine,name)
     if(True) :
         code = 200
     else :
@@ -60,6 +61,17 @@ def newRoomMedicine(room : int, medicine : int, week : Optional[int]):
 def roomMedicine(room : int, week : Optional[int]):
     #Questionner la database
     return {"room": room,"week": week,"medicine": medicine}
+
+# Retourne tous les médicaments disponibles
+def getMedicines():
+    print("features medicines")
+    tab = {}
+    for id,name in get_medicine() :
+        tab[id] = name
+
+    print(tab)
+    
+    return {"medicines": tab}
 
 
 # Retourne les éléments en fonction des paramètres optionnels
@@ -123,3 +135,6 @@ def robotAddNode(robot:int, node:int):
 def robotHistory(robot: int):
     # Questionner la base de données
     return {"liste des mouvements node/timestamp" : afaire}
+
+
+# Crée une alerte (s'il est perdu)

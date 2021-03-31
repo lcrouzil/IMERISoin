@@ -21,7 +21,7 @@ def read_root():
 
 @app.get("/Patients/addMedicine/{medicine}/{name}")
 # Définit un nouveau médicament avec un numéro ID et nom
-def addMedicine(medicine: str,name : str): #(medicine:nb du medoc/name:nom du medoc)
+def addMedicine(medicine: int,name : str): #(medicine:nb du medoc/name:nom du medoc)
     return newMedicine(medicine,name)
     
     
@@ -51,6 +51,12 @@ def setRoomMedicine(room : int, medicine : int, week : Optional[int]):
 # Retourne le médicament à fournir dans la room
 def getRoomMedicine(room : int, week : Optional[int]):
     return roomMedicine(room,week)
+
+@app.get("/Patients/getMedicine")
+# Retourne le médicament à fournir dans la room
+def getAllMedicines():
+    print("fast api medicines")
+    return getMedicines()
 
 @app.get("/Patients/getStats")
 # Retourne les éléments en fonction des paramètres optionnels

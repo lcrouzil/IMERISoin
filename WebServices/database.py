@@ -116,6 +116,7 @@ def add_room(id, path):
 
 
 def add_medicine(id, name):
+    print("database medicine")
     if not isinstance(id, int): return "id not correct"
     if not isinstance(name, str) or len(name) <= 0: return "name not correct"
 
@@ -172,6 +173,7 @@ def get_medicine():
         rows = c.fetchall()
 
         for id, name in rows:
+            print(id, name)
             yield id, name
 
 
