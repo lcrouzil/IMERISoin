@@ -1,26 +1,35 @@
 package IMERISoin;
 
+import IMERISoin.Controller.MainController;
 import IMERISoin.Model.Drug;
 import IMERISoin.Model.Patient;
 import IMERISoin.Model.Room;
+
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
-public class Main extends Application {
+public class MainApp extends Application {
 
-    private ObservableList<Patient> patientsData = FXCollections.observableArrayList();
+    private Stage primaryStage;
+    private Parent rootLayout;
+
+    private final ObservableList<Patient> patientsData = FXCollections.observableArrayList();
+    private final ObservableList<Drug> drugData = FXCollections.observableArrayList();
 
     /**
      *
      */
-    public Main() {
+    public MainApp() {
         ArrayList<Room> rooms = new ArrayList<>();
 
         for (int i = 0; i < 4; i++) {
@@ -32,6 +41,11 @@ public class Main extends Application {
         for (int i = 0; i < 4; i++) {
             String name = "Drug n" + i;
             drugs.add(new Drug(i + 1, name));
+        }
+
+        for (Drug drug : drugs) {
+            drugData.add(drug);
+            System.out.println(drug.getName());
         }
 
         ArrayList<Patient> patients = new ArrayList<>();
@@ -55,6 +69,10 @@ public class Main extends Application {
         return patientsData;
     }
 
+    public ObservableList<Drug> getDrugData() {
+        return drugData;
+    }
+
 
     /**
      * @param primaryStage Stage
@@ -62,13 +80,47 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("View/main.fxml"));
-        primaryStage.setTitle("IMERISoin");
-        primaryStage.setScene(new Scene(root, 1200, 900));
-        primaryStage.show();
+        this.primaryStage = primaryStage;
+        this.primaryStage.setTitle("IMERISoin");
+
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainApp.class.getResource("View/main.fxml"));
+
+
+            rootLayout = (Parent) loader.load();
+            MainController controller = loader.getController();
+            controller.setMain(this);
+
+
+            primaryStage.setScene(new Scene(rootLayout, 1200, 900));
+            primaryStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+//        FXMLLoader loader = new FXMLLoader();
+//        Parent root = loader.load(getClass().getResource("View/main.fxml"));
+//
+//        MainController controller = loader.getController();
+//        System.out.println("controller is : " + controller);
+//        controller.setMain(this);
+
+
+//        primaryStage.setScene(new Scene(root, 1200, 900));
+//        primaryStage.show();
     }
 
-
+    @Override
+    public String toString() {
+        return "MainApp{" +
+                "primaryStage=" + primaryStage +
+                ", rootLayout=" + rootLayout +
+                ", patientsData=" + patientsData +
+                '}';
+    }
 
     public static void main(String[] args) {
         launch(args);

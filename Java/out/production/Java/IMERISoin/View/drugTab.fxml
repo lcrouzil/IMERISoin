@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="705.0" prefWidth="1005.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="IMERISoin.Controller.DrugController">
+   <SplitPane dividerPositions="0.1864406779661017" prefHeight="694.0" prefWidth="1005.0">
+     <items>
+       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="692.0" prefWidth="266.0">
+            <children>
+                <Button fx:id="drugNewButton" layoutX="16.0" layoutY="541.0" mnemonicParsing="false" text="new Drug" />
+                <TextField fx:id="drugNameField" layoutX="20.0" layoutY="42.0" />
+                <Label layoutX="20.0" layoutY="25.0" text="Drug name" />
+            </children>
+         </AnchorPane>
+       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="279.0" prefWidth="383.0">
+            <children>
+               <TableView fx:id="drugTableView" layoutY="14.0" prefHeight="618.0" prefWidth="670.0">
+                 <columns>
+                     <TableColumn fx:id="nameTableColumn" prefWidth="140.0" text="Name" />
+                 </columns>
+               </TableView>
+            </children>
+         </AnchorPane>
+     </items>
+   </SplitPane>
+</AnchorPane>
