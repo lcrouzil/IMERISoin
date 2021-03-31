@@ -11,4 +11,9 @@ public class Room {
         id = roomNumber;
         patient = null;
     }
+
+    @Override
+    public String toString() {
+        return Integer.toString(id);
+    }
 }

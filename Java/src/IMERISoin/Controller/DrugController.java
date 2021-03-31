@@ -57,7 +57,7 @@ public class DrugController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        nameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getName());
+        nameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
 
         System.out.println("Drug controller init!");
 

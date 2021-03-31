@@ -11,12 +11,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class MainApp extends Application {
 
@@ -25,6 +25,7 @@ public class MainApp extends Application {
 
     private final ObservableList<Patient> patientsData = FXCollections.observableArrayList();
     private final ObservableList<Drug> drugData = FXCollections.observableArrayList();
+    private final ObservableList<Room> roomsData = FXCollections.observableArrayList();
 
     /**
      *
@@ -35,6 +36,8 @@ public class MainApp extends Application {
         for (int i = 0; i < 4; i++) {
             rooms.add(new Room(i + 1));
         }
+
+        roomsData.addAll(rooms);
 
         ArrayList<Drug> drugs = new ArrayList<>();
 
@@ -73,6 +76,10 @@ public class MainApp extends Application {
         return drugData;
     }
 
+    public ObservableList<Room> getRoomsData() {
+        return roomsData;
+    }
+
 
     /**
      * @param primaryStage Stage
@@ -80,6 +87,7 @@ public class MainApp extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
+        urlCo();
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("IMERISoin");
 
@@ -98,6 +106,7 @@ public class MainApp extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
 
 
@@ -122,6 +131,24 @@ public class MainApp extends Application {
                 '}';
     }
 
+
+    public void urlCo() {
+        String url = "http://10.3.7.21:8000";
+        URL aurl = null;
+        String codeHTML = "";
+
+        try {
+            aurl = new URL(url);
+            URLConnection con = aurl.openConnection();
+            con.setConnectTimeout(60000);
+
+            System.out.println(con.getContentType());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
     public static void main(String[] args) {
         launch(args);
     }

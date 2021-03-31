@@ -28,7 +28,7 @@ public class RoomController implements Initializable {
     private void pushRoom1(ActionEvent event) {
         event.consume();
         sendRoom(1);
-
+        mainApp.urlCo();
         System.out.println("send to room 1");
     }
 
@@ -64,8 +64,6 @@ public class RoomController implements Initializable {
         System.out.println(buttonRoom2.getId());
         System.out.println(buttonRoom3.getId());
         System.out.println(buttonRoom4.getId());
-
-
     }
 
     /**

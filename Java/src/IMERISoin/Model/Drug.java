@@ -7,24 +7,34 @@ import javafx.beans.property.StringProperty;
 
 public class Drug {
 
-    private IntegerProperty id;
-    private StringProperty name;
+    private int id;
+    private String name;
 
     public Drug(int id, String name) {
         super();
 
-        this.id = new SimpleIntegerProperty(id);
-        this.name = new SimpleStringProperty(name);
+        this.id = id;
+        this.name = name;
     }
 
-    public StringProperty getName() {
+    public int getId() {
+        return id;
+    }
+
+    public IntegerProperty getIdFx() {
+        return new SimpleIntegerProperty(id);
+    }
+
+    public String getName() {
         return name;
     }
+
+    public StringProperty getNameFx() {
+        return new SimpleStringProperty(name);
+    }
+
     @Override
     public String toString() {
-        return "Drug{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+        return id + " " + name;
     }
 }
