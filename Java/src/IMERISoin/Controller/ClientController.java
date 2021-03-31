@@ -66,7 +66,8 @@ public class ClientController implements Initializable {
         drugColumn.setCellValueFactory(cellData -> cellData.getValue().getDrug().getNameFx());
 //        roomColumn.setCellValueFactory(cellData -> cellData.getValue().getRoom().getName());
 
-        clientStatusBox.setItems(FXCollections.observableArrayList("healed", "no effect", "dead", "sick"));
+        clientStatusBox.setItems(FXCollections.observableArrayList("Not Specified", "Cured", "Dead", "Sick"));
+        clientStatusBox.setValue("Not Specified");
         clientDrugBox.setItems(FXCollections.observableArrayList());
     }
 

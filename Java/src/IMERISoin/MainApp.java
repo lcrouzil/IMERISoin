@@ -133,7 +133,7 @@ public class MainApp extends Application {
 
 
     public void urlCo() {
-        String url = "http://10.3.7.21:8000";
+        String url = "http://10.3.6.197:8000";
         URL aurl = null;
         String codeHTML = "";
 

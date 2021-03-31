@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CsvFileAttributes">
+    <option name="attributeMap">
+      <map>
+        <entry key="C:\Users\alexi\AppData\Roaming\JetBrains\PyCharm2020.3\consoles\db\f1fc8160-3716-4bdd-ba26-5e8802bd6d12\console.sql">
+          <value>
+            <Attribute>
+              <option name="separator" value=";" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="f1fc8160-3716-4bdd-ba26-5e8802bd6d12\schema\main\table\PATIENT.sql">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
