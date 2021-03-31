@@ -20,20 +20,30 @@ def newMedicine(medicine: int,name: str):
 
 
 # Nouveau patient dans une room donnée (selon la semaine donnée ou en cours)
-def newPatient(room : int ,patientID : int,week : int):
-    #Ajouter dans la database
-    week = str(week)
-    week = datetime.strptime(week, "%Y%m%d").strftime("%Y/%m/%d")
-    if(1) :
+def newPatient(room : int ,patientID : int,name: str,week : int):
+    add_patient(patientID,name)
+    #week = str(week)
+    #week = datetime.strptime(week, "%Y%m%d").strftime("%Y/%m/%d")
+    if(True) :
         code = 200
     else :
         code = 404
-    return {"code": code,"room": room,"patientID": patientID,"week": week}
+    return {"code": code,"room": room,"patientID": patientID,"name": name,"week": week}
+
+
+# Crée ou modifie une chambre
+def newRoom(room: int, name : str):
+    # Ajouter dans la database
+    if(True) :
+        code = 200
+    else :
+        code = 404
+    return {"code": code}
 
 
 # Renvoie l'état de santé d'un patient entre "Cured"/"Stable"/"Dead"
 def patientCondition(patientID : int):
-    #Questionner la database
+    # Questionner la database
     return {"condition": condition}
 
 
@@ -62,9 +72,15 @@ def roomMedicine(room : int, week : Optional[int]):
     #Questionner la database
     return {"room": room,"week": week,"medicine": medicine}
 
+
+# Retourne les éléments en fonction des paramètres optionnels
+def patientStats(week : Optional[int], room : Optional[int], medicine : Optional[int], state : Optional[str]):
+    #Questionner la database
+    return {"week":week} #retourner une liste de tout
+
+
 # Retourne tous les médicaments disponibles
 def getMedicines():
-    print("features medicines")
     tab = {}
     for id,name in get_medicine() :
         tab[id] = name
@@ -74,10 +90,39 @@ def getMedicines():
     return {"medicines": tab}
 
 
-# Retourne les éléments en fonction des paramètres optionnels
-def patientStats(week : Optional[int], room : Optional[int], medicine : Optional[int], state : Optional[str]):
-    #Questionner la database
-    return {"week":week} #retourner une liste de tout
+# Retourne la liste de tous les patients
+def getPatients():
+    #Database : pareil que getMedicines?
+    tab = {}
+    for id,name in get_patient() :
+        tab[id] = name
+
+    print(tab)
+    
+    return {"patients": tab}
+
+# Retourne la liste de toutes les rooms
+def getRooms():
+    tab = {}
+    for id,name in get_patient() :
+        tab[id] = name
+
+    print(tab)
+    
+    return {"rooms": tab}
+
+
+# Retourne la liste de tous les robots
+def getRobots():
+    tab = {}
+    for id,name in get_robot() :
+        tab[id] = name
+
+    print(tab)
+    
+    return {"robots": tab}
+
+
 
 
 # Gestion des robots et des consignes
@@ -138,3 +183,10 @@ def robotHistory(robot: int):
 
 
 # Crée une alerte (s'il est perdu)
+def robotLost(robot: int):
+    #Ajouter base de données
+    if(True) :
+        code = 200
+    else :
+        code = 404
+    return{"code": code}

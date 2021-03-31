@@ -116,7 +116,6 @@ def add_room(id, path):
 
 
 def add_medicine(id, name):
-    print("database medicine")
     if not isinstance(id, int): return "id not correct"
     if not isinstance(name, str) or len(name) <= 0: return "name not correct"
 
@@ -180,7 +179,7 @@ def get_medicine():
 def get_patient():
     with connectBase() as conn:
         c = conn.cursor()
-        c.execute('''f
+        c.execute(f'''
             SELECT * FROM patient;
         ''')
 
@@ -189,6 +188,29 @@ def get_patient():
         for id, name, status in rows:
             yield id, name, status
 
+def get_room():
+    with connectBase() as conn:
+        c = conn.cursor()
+        c.execute(f'''
+            SELECT * FROM room;
+        ''')
+
+        rows = c.fetchall()
+
+        for id, name, status in rows:
+            yield id, name, status
+
+def get_robot():
+    with connectBase() as conn:
+        c = conn.cursor()
+        c.execute(f'''
+            SELECT * FROM robot;
+        ''')
+
+        rows = c.fetchall()
+
+        for id, name, status in rows:
+            yield id, name, status
 
 # help(createBase)
 # Example d'appels

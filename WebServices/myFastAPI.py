@@ -19,17 +19,23 @@ def read_root():
 
 # Patients et essais cliniques
 
-@app.get("/Patients/addMedicine/{medicine}/{name}")
+@app.get("/Patients/setMedicine/{medicine}/{name}")
 # Définit un nouveau médicament avec un numéro ID et nom
-def addMedicine(medicine: int,name : str): #(medicine:nb du medoc/name:nom du medoc)
+def setMedicine(medicine: int,name : str): #(medicine:nb du medoc/name:nom du medoc)
     return newMedicine(medicine,name)
     
     
 
-@app.get("/Patients/addPatient/{room}/{patientID}/{week}")
+@app.get("/Patients/addPatient/{room}/{patientID}/{name}/{week}")
 # Nouveau patient dans une room donnée (selon la semaine donnée ou en cours)
-def addPatient(room : int ,patientID : int,week : int):
-    return newPatient(room,patientID,week)
+def addPatient(room : int ,patientID : int,name: str,week : int):
+    return newPatient(room,patientID,name,week)
+
+
+@app.get("/Patients/setRoom/{room}/{name}")
+# Crée ou modifie une chambre
+def setRoom(room: int, name : str):
+    return newRoom(room,name)
 
 
 @app.get("/Patients/getPatientCondition/{patientID}")
@@ -37,32 +43,53 @@ def addPatient(room : int ,patientID : int,week : int):
 def getPatientCondition(patientID : int):
     return patientCondition(patientID)
 
+
 @app.get("/Patients/setPatientCondition")
 # Définit la condition du patient entre cured/stable/dead
 def setPatientCondition(patientID : int, condition : str):
     return newPatientCondition(patientID,condition)
+
 
 @app.get("/Patients/setRoomMedicine")
 # Définit le médicament à donner dans la room pour la semaine indiquée (ou semaine en cours si paramètre pas donné)
 def setRoomMedicine(room : int, medicine : int, week : Optional[int]):
     return newRoomMedicine(room,medicine,week)
 
+
 @app.get("/Patients/getRoomMedicine")
 # Retourne le médicament à fournir dans la room
 def getRoomMedicine(room : int, week : Optional[int]):
     return roomMedicine(room,week)
 
-@app.get("/Patients/getMedicine")
-# Retourne le médicament à fournir dans la room
-def getAllMedicines():
-    print("fast api medicines")
-    return getMedicines()
 
 @app.get("/Patients/getStats")
 # Retourne les éléments en fonction des paramètres optionnels
 def getStats(week : Optional[int], room : Optional[int], medicine : Optional[int], state : Optional[str]):
     return patientStats(week,room,medicine,state)
 
+
+@app.get("/Patients/listMedicines")
+# Retourne la liste de tous les médicaments
+def listMedicines():
+    return getMedicines()
+
+
+@app.get("/Patients/listPatients")
+# Retourne la liste de tous les patients
+def listPatients():
+    return getPatients() # NE FONCTIONNE PAS
+
+
+@app.get("/Patients/listRooms")
+# Retourne la liste de tous les patients
+def listRooms():
+    return getRooms() # NE FONCTIONNE PAS
+
+
+@app.get("/Patients/listRobots")
+# Retourne la liste de tous les robots
+def listRobots():
+    return getRobots() # NE FONCTIONNE PAS
 
 
 # Gestion des robots et des consignes
@@ -114,8 +141,7 @@ def getHistory(robot: int):
 @app.get("/Robots/alertRobot")
 # Crée une alerte (s'il est perdu)
 def alertRobot(robot: int):
-   
-    return code
+    return robotLost(robot)
 
 @app.get("/Robots/alerts")
 def alerts():
