@@ -63,7 +63,7 @@ public class ClientController implements Initializable {
 
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().getName());
         statusColumn.setCellValueFactory(cellData -> cellData.getValue().getStatus());
-        drugColumn.setCellValueFactory(cellData -> cellData.getValue().getDrug().getName());
+        drugColumn.setCellValueFactory(cellData -> cellData.getValue().getDrug().getNameFx());
 //        roomColumn.setCellValueFactory(cellData -> cellData.getValue().getRoom().getName());
 
         clientStatusBox.setItems(FXCollections.observableArrayList("healed", "no effect", "dead", "sick"));
@@ -74,5 +74,8 @@ public class ClientController implements Initializable {
         this.mainApp = mainApp;
 
         patientTable.setItems(mainApp.getPatientsData());
+        clientDrugBox.setItems(mainApp.getDrugData());
+        clientRoomBox.setItems(mainApp.getRoomsData());
+
     }
 }
