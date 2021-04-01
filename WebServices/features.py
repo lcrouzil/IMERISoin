@@ -13,7 +13,7 @@ from database import *
 
 # Définit un nouveau médicament avec un nom
 def newMedicine(medicine: int, name: str):
-    add_medicine(medicine, name)
+    set_medicine(medicine, name)
     if (True):
         code = 200
     else:
@@ -98,9 +98,9 @@ def getMedicines():
 # Retourne la liste de tous les patients
 def getPatients():
     # Database : pareil que getMedicines?
-    tab = {}
-    for id, name in get_patient():
-        tab[id] = name
+    tab = []
+    for id, name, status in get_patient():
+        tab.append({"id": id, "name": name, "status": status})
 
     print(tab)
 
@@ -109,9 +109,9 @@ def getPatients():
 
 # Retourne la liste de toutes les rooms
 def getRooms():
-    tab = {}
-    for id, name in get_patient():
-        tab[id] = name
+    tab = []
+    for id, patient_id, drug_id, path, name in get_room():
+        tab.append({"id": id, "patient_id": patient_id, "drug_id": drug_id, "path": path, "name": name})
 
     print(tab)
 
@@ -149,7 +149,7 @@ def firstOrder():
 
 
 # Retourne le statut d'avancement de la consigne
-def runningOrder(order: str):
+def runningOrder(order: str, status=""):
     # Questionner la database
     return {"order": order, "status": status}
 
@@ -165,7 +165,7 @@ def modifyStateOrder(order: str, status: str):
 
 
 # Renvoie le noeud où le robot est actuellement
-def robotPosition(robot: int, node: int):
+def robotPosition(robot_id: int, node: int):
     # Questionner la database
     return {"robot": robot_id, "node": node, "timestamp": timestamp}
 
