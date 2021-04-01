@@ -104,7 +104,7 @@ def getPatients():
 
     print(tab)
 
-    return {"patients": tab}
+    return {"list": tab}
 
 
 # Retourne la liste de toutes les rooms
@@ -115,7 +115,7 @@ def getRooms():
 
     print(tab)
 
-    return {"rooms": tab}
+    return {"list": tab}
 
 
 # Retourne la liste de tous les robots
