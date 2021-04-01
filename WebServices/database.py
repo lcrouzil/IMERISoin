@@ -114,6 +114,27 @@ def add_room(id, path):
             INSERT INTO room (id, path) VALUES ({id}, '{path}');
         ''')
 
+def set_room_medicine(room : int, medicine : int, week : int):
+    if not isinstance(id, int): return "id not correct"
+    with connectBase() as conn:
+        c = conn.cursor()
+        c.execute(f'''
+            INSERT INTO room (id, drug_id) VALUES ({id}, {medicine});
+        ''')
+
+# Retourne tous les médicaments disponibles
+def get_room_medicine(room : int,week : int):
+    with connectBase() as conn:
+        c = conn.cursor()
+        c.execute(f'''
+            SELECT * FROM room WHERE id = {room};
+        ''')
+
+        rows = c.fetchall()
+
+        for id, name in rows:
+            print(id, name)
+            yield id, name
 
 def add_medicine(id, name):
     if not isinstance(id, int): return "id not correct"
@@ -162,6 +183,7 @@ def add_patient(id, name):
             ''')
 
 
+# Retourne tous les médicaments disponibles
 def get_medicine():
     with connectBase() as coon:
         c = coon.cursor()
@@ -176,6 +198,7 @@ def get_medicine():
             yield id, name
 
 
+# Retourne tous les patients
 def get_patient():
     with connectBase() as conn:
         c = conn.cursor()

@@ -29,7 +29,7 @@ def setMedicine(medicine: int, name: str):  # (medicine:nb du medoc/name:nom du 
 
 @app.get("/Patients/addPatient/{room}/{patientID}/{name}/{week}")
 # Nouveau patient dans une room donnée (selon la semaine donnée ou en cours)
-def addPatient(room: int, patientID: int, name: str, week: int):
+def addPatient(room: int, patientID: int, name: str, week: int = 0):
     return newPatient(room, patientID, name, week)
 
 
@@ -51,15 +51,15 @@ def setPatientCondition(patientID: int, condition: str):
     return newPatientCondition(patientID, condition)
 
 
-@app.get("/Patients/setRoomMedicine")
+@app.get("/Patients/setRoomMedicine/{room}/{medicine}/{week}")
 # Définit le médicament à donner dans la room pour la semaine indiquée (ou semaine en cours si paramètre pas donné)
-def setRoomMedicine(room: int, medicine: int, week: Optional[int]):
+def setRoomMedicine(room: int, medicine: int, week: Optional[int] = 0):
     return newRoomMedicine(room, medicine, week)
 
 
-@app.get("/Patients/getRoomMedicine")
+@app.get("/Patients/getRoomMedicine/{room}/{week}")
 # Retourne le médicament à fournir dans la room
-def getRoomMedicine(room: int, week: Optional[int]):
+def getRoomMedicine(room: int, week: Optional[int]=0):
     return roomMedicine(room, week)
 
 
