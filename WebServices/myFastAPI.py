@@ -104,8 +104,11 @@ def addOrder(room: int, medicine: int):
 
 @app.get("/Robots/getOrder")
 # Lit la première consigne disponible
-def getOrder(void):
-    return firstOrder()
+def getOrder():
+    order = 1
+    room = 3
+    medicine = 1
+    return {"order": order,"room": room,"medicine": medicine}
 
     # ou code error si plus de consigne disponible
 
@@ -172,7 +175,7 @@ def getPath(room: int):
     elif (room == 4):
         path = "0F5F6R4R5L"
     else:
-        path = "This room don't exist"
+        path = "This room doesn't exist"
 
     # donne le chemin sous forme d'une chaîne de caractère
     return {"room": room, "path": path}
