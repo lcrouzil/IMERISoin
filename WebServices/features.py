@@ -85,7 +85,7 @@ def patientStats(week: Optional[int], room: Optional[int], medicine: Optional[in
 def getMedicines():
     tab = []
     for id, name in get_medicine():
-        tab.append({"patientId": id, "SS": id, "week": "no week", "name": name})
+        tab.append({"medicine": id, "name": name})
         # tab[id] = name
 
     print(tab)
