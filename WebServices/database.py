@@ -133,13 +133,13 @@ def findSQL(s_SQL):
 
 
 def insert_base():
-    add_room(1, "0F5F6F7L2L1F5R")
-    add_room(2, "0F5F6L1L5R")
-    add_room(3, "0F5F6F7R3R4F5L")
-    add_room(4, "0F5F6R4R5L")
+    add_room(1, "0F5F6F7L2L1F5R", "B1")
+    add_room(2, "0F5F6L1L5R", "B2")
+    add_room(3, "0F5F6F7R3R4F5L", "B3")
+    add_room(4, "0F5F6R4R5L", "B4")
 
 
-def add_room(id, path):
+def add_room(id, path, name=""):
     if not isinstance(id, int): return "id not correct"
 
     is_exist = findSQL(f'''
@@ -155,14 +155,17 @@ def add_room(id, path):
     print(is_exist)
 
     if is_exist:
-        executeSQL(f"UPDATE room SET path = {path} WHERE id = {id};")
+        executeSQL(f"UPDATE room SET path = {path}, name = {name} WHERE id = {id};")
     else:
-        executeSQL(f"INSERT INTO room (id, path) VALUES ({id}, '{path}');")
+        executeSQL(f"INSERT INTO room (id, path, name) VALUES ({id}, '{path}', '{name}');")
 
 
 # todo add getter room
 def get_room():
-    return findSQL("SELECT * FROM room").fetchall()
+    rows = findSQL("SELECT * FROM room;").fetchall()
+
+    for id, patient_id, drug_id, path, name in rows:
+        yield id, patient_id, drug_id, path, name
 
 
 def set_room_medicine(room: int, medicine: int, week: int):
