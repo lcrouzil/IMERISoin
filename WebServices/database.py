@@ -74,14 +74,15 @@ def createBase():
     c.execute('''
         create table room
         (
-            id         INTEGER not null
+            id INTEGER not null
                 constraint room_pk
                     primary key,
             patient_id INTEGER
                 references patient,
-            path       text,
             drug_id    INTEGER
-                references drug
+                references drug,
+            path       TEXT,
+            name       TEXT
         );
     ''')
 
@@ -95,8 +96,40 @@ def createBase():
             on room (patient_id);
     ''')
 
+    c.execute('''
+        create table orders
+        (
+            id      INTEGER
+                constraint order_pk
+                    primary key autoincrement,
+            room_id INTEGER not null
+                references room,
+            status  TEXT,
+            date    DATETIME default CURRENT_TIMESTAMP
+        );''')
+
+    c.execute('''
+        create unique index order_id_uindex
+            on orders (id);
+    ''')
+
     conn.commit()
     conn.close()
+
+
+def executeSQL(s_SQL):
+    with connectBase() as conn:
+        c = conn.cursor()
+
+        c.execute(s_SQL)
+
+
+def findSQL(s_SQL):
+    with connectBase() as conn:
+        c = conn.cursor()
+        c.execute(s_SQL)
+
+        return c
 
 
 def insert_base():
@@ -108,34 +141,64 @@ def insert_base():
 
 def add_room(id, path):
     if not isinstance(id, int): return "id not correct"
-    with connectBase() as conn:
-        c = conn.cursor()
-        c.execute(f'''
-            INSERT INTO room (id, path) VALUES ({id}, '{path}');
-        ''')
+
+    is_exist = findSQL(f'''
+        SELECT CASE WHEN EXISTS (
+            SELECT * 
+            FROM drug
+            WHERE id = {id}
+        )
+        THEN CAST(1 AS BIT)
+        ELSE CAST(0 AS BIT) END;
+    ''').fetchone()[0]
+
+    print(is_exist)
+
+    if is_exist:
+        executeSQL(f"UPDATE room SET path = {path} WHERE id = {id};")
+    else:
+        executeSQL(f"INSERT INTO room (id, path) VALUES ({id}, '{path}');")
 
 
-def add_medicine(id, name):
+# todo add getter room
+def get_room():
+    pass
+
+
+def get_medicine():
+    rows = findSQL("SELECT * FROM drug;")
+
+    for id, name in rows:
+        yield id, name
+
+
+def set_medicine(id, name):
     if not isinstance(id, int): return "id not correct"
     if not isinstance(name, str) or len(name) <= 0: return "name not correct"
 
-    with connectBase() as conn:
-        c = conn.cursor()
-        c.execute(f'''
-            SELECT * FROM drug WHERE id = {id};
-        ''')
+    is_exist = findSQL(f'''
+        SELECT CASE WHEN EXISTS (
+            SELECT * 
+            FROM drug
+            WHERE id = {id}
+        )
+        THEN CAST(1 AS BIT)
+        ELSE CAST(0 AS BIT) END;
+    ''').fetchone()[0]
 
-        rows = c.fetchall()
-        print(rows)
+    print(is_exist)
 
-        if rows:
-            c.execute(f'''
-                UPDATE drug SET name = '{name}' WHERE id = {id};
-            ''')
-        else:
-            c.execute(f'''
-                INSERT INTO drug (id, name) VALUES ({id}, '{name}');
-            ''')
+    if is_exist:
+        executeSQL(f"UPDATE drug SET name = '{name}' WHERE id = {id};")
+    else:
+        executeSQL(f"INSERT INTO drug (id, name) VALUES ({id}, '{name}');")
+
+
+def get_patient():
+    rows = findSQL("SELECT * FROM patient;")
+
+    for id, name, status in rows:
+        yield id, name, status
 
 
 def add_patient(id, name):
@@ -143,74 +206,62 @@ def add_patient(id, name):
     if not isinstance(name, str) or len(name) <= 0: return "name not correct"
     # if not isinstance(status, str) or len(status) <= 0: return "name not correct"
 
-    with connectBase() as conn:
-        c = conn.cursor()
-        c.execute(f'''
-            SELECT * FROM patient WHERE id = {id};
+    is_exist = findSQL(f'''
+            SELECT CASE WHEN EXISTS (
+                SELECT *
+                FROM patient
+                WHERE id = {id}
+            )
+            THEN CAST(1 AS BIT)
+            ELSE CAST(0 AS BIT) END;
+        ''').fetchone()[0]
+
+    print("rows :", is_exist)
+
+    if is_exist:
+        executeSQL(f'''
+            UPDATE patient SET name = '{name}' WHERE id = {id};
+        ''')
+    else:
+        executeSQL(f'''
+            INSERT INTO patient (id, name) VALUES ({id}, '{name}');
         ''')
 
-        rows = c.fetchall()
-        print(rows)
-
-        if rows:
-            c.execute(f'''
-                UPDATE patient SET name = '{name}' WHERE id = {id};
-            ''')
-        else:
-            c.execute(f'''
-                INSERT INTO patient (id, name) VALUES ({id}, '{name}');
-            ''')
-
-
-def get_medicine():
-    with connectBase() as coon:
-        c = coon.cursor()
-        c.execute(f'''
-            SELECT * FROM drug;
-        ''')
-
-        rows = c.fetchall()
-
-        for id, name in rows:
-            print(id, name)
-            yield id, name
-
-
-def get_patient():
-    with connectBase() as conn:
-        c = conn.cursor()
-        c.execute(f'''
-            SELECT * FROM patient;
-        ''')
-
-        rows = c.fetchall()
-
-        for id, name, status in rows:
-            yield id, name, status
-
-def get_room():
-    with connectBase() as conn:
-        c = conn.cursor()
-        c.execute(f'''
-            SELECT * FROM room;
-        ''')
-
-        rows = c.fetchall()
-
-        for id, name, status in rows:
-            yield id, name, status
 
 def get_robot():
-    with connectBase() as conn:
-        c = conn.cursor()
-        c.execute(f'''
-            SELECT * FROM robot;
-        ''')
+    rows = findSQL("SELECT * FROM robot;")
 
-        rows = c.fetchall()
+    for id, name, status in rows:
+        yield id, name, status
 
-        for id, name, status in rows:
-            yield id, name, status
+
+# todo add setter robot
+def set_robot():
+    pass
+
+
+def get_order():
+    return findSQL(f'''SELECT o.id, o.room_id, r.drug_id
+        FROM orders o
+                 LEFT JOIN room r on r.id = o.room_id
+        ORDER BY date
+        LIMIT 1
+    ''').fetchone()
+
+
+def add_order(room, medicine_id):
+    executeSQL(f'''
+        INSERT INTO orders 
+            (room_id, drug_id, status) 
+            VALUES ({room}, {medicine_id}, 'to do')
+    ''')
+
+
+def set_order(order, status):
+    executeSQL(f'''
+        UPDATE orders SET status = {status} WHERE order_id = {order},
+    ''')
+
 
 # help(createBase)
 # Example d'appels
@@ -220,10 +271,12 @@ def get_robot():
 
 
 def __test__():
-    print("..", add_medicine(1, "medicament 1"))
-    print("..", add_medicine(2, "medicament 2"))
-    print("..", add_medicine(1, "medicament 3"))
-    print("..", add_medicine(2, "medicament 4"))
+    print("..", set_medicine(1, "medicament 1"))
+    print("..", set_medicine(2, "medicament 2"))
+    print("..", set_medicine(1, "medicament 3"))
+    print("..", set_medicine(2, "medicament 4"))
+
+    print("..", add_patient(1, "Patient 4"))
 
     for id, name in get_medicine():
         print(id, name)
@@ -235,3 +288,5 @@ if __name__ == '__main__':
         createBase()
         insert_base()
         __test__()
+
+    print(get_order())
