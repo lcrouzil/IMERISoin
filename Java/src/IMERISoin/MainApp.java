@@ -27,41 +27,44 @@ public class MainApp extends Application {
     private final ObservableList<Drug> drugData = FXCollections.observableArrayList();
     private final ObservableList<Room> roomsData = FXCollections.observableArrayList();
 
+    private ArrayList<Drug> drugsData = new ArrayList<>();
+
     /**
      *
      */
     public MainApp() {
-        ArrayList<Room> rooms = new ArrayList<>();
+//        ArrayList<Room> rooms = new ArrayList<>();
+//
+//        for (int i = 0; i < 4; i++) {
+//            rooms.add(new Room(i + 1));
+//        }
+//
+//        roomsData.addAll(rooms);
+//
+//        ArrayList<Drug> drugs = new ArrayList<>();
+//
+//        for (int i = 0; i < 4; i++) {
+//            String name = "Drug n" + i;
+//            drugs.add(new Drug(i + 1, name));
+//        }
+//
+//        for (Drug drug : drugs) {
+//            drugData.add(drug);
+//            System.out.println(drug.getName());
+//        }
+//
+//        ArrayList<Patient> patients = new ArrayList<>();
+//
+//        for (int i = 0; i < 4; i++) {
+//            String name = "Patient n" + (i + 1);
+//            patients.add(new Patient(i + 1, name, "sick", drugs.get(0), rooms.get(0)));
+//        }
+//
+//        for (Patient patient : patients) {
+//            patientsData.add(patient);
+//            System.out.println(patient.getName());
+//        }
 
-        for (int i = 0; i < 4; i++) {
-            rooms.add(new Room(i + 1));
-        }
-
-        roomsData.addAll(rooms);
-
-        ArrayList<Drug> drugs = new ArrayList<>();
-
-        for (int i = 0; i < 4; i++) {
-            String name = "Drug n" + i;
-            drugs.add(new Drug(i + 1, name));
-        }
-
-        for (Drug drug : drugs) {
-            drugData.add(drug);
-            System.out.println(drug.getName());
-        }
-
-        ArrayList<Patient> patients = new ArrayList<>();
-
-        for (int i = 0; i < 4; i++) {
-            String name = "Patient n" + (i + 1);
-            patients.add(new Patient(i + 1, name, "sick", drugs.get(0), rooms.get(0)));
-        }
-
-        for (Patient patient : patients) {
-            patientsData.add(patient);
-            System.out.println(patient.getName());
-        }
     }
 
     /**
@@ -86,8 +89,7 @@ public class MainApp extends Application {
      * @throws Exception an Exception
      */
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        urlCo();
+    public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("IMERISoin");
 
@@ -131,25 +133,19 @@ public class MainApp extends Application {
                 '}';
     }
 
-
-    public void urlCo() {
-        String url = "http://10.3.6.197:8000";
-        URL aurl = null;
-        String codeHTML = "";
-
-        try {
-            aurl = new URL(url);
-            URLConnection con = aurl.openConnection();
-            con.setConnectTimeout(60000);
-
-            System.out.println(con.getContentType());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+    public void refreshAll() {
+        System.out.println("refresh all");
     }
     public static void main(String[] args) {
         launch(args);
+    }
+
+
+    public ArrayList<Drug> getDrugsData() {
+        return drugsData;
+    }
+
+    public void setDrugsData(ArrayList<Drug> drugsData) {
+        this.drugsData = drugsData;
     }
 }

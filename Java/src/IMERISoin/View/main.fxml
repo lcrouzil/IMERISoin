@@ -3,9 +3,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox prefHeight="481.0" prefWidth="693.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="IMERISoin.Controller.MainController">
+<VBox prefHeight="481.0" prefWidth="693.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="IMERISoin.Controller.MainController">
     <MenuBar prefWidth="666.0">
         <Menu mnemonicParsing="false" text="File">
+         <MenuItem fx:id="refreshMenuItem" mnemonicParsing="false" onAction="#refreshAction" text="Refresh" />
+         <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Close" />
         </Menu>
         <Menu mnemonicParsing="false" text="Edit">
