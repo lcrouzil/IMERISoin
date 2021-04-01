@@ -165,8 +165,34 @@ def get_room():
     pass
 
 
+def set_room_medicine(room: int, medicine: int, week: int):
+    if not isinstance(id, int): return "id not correct"
+    with connectBase() as conn:
+        c = conn.cursor()
+        c.execute(f'''
+            INSERT INTO room (id, drug_id) VALUES ({id}, {medicine});
+        ''')
+
+
+# Retourne tous les médicaments disponibles
+def get_room_medicine(room: int, week: int):
+    with connectBase() as conn:
+        c = conn.cursor()
+        c.execute(f'''
+            SELECT * FROM room WHERE id = {room};
+        ''')
+
+        rows = c.fetchall()
+
+        for id, name in rows:
+            print(id, name)
+            yield id, name
+
+
 def get_medicine():
-    rows = findSQL("SELECT * FROM drug;")
+    rows = findSQL("SELECT * FROM drug;").fetchall()
+
+    print("rows : ", rows)
 
     for id, name in rows:
         yield id, name
@@ -278,6 +304,8 @@ def __test__():
 
     print("..", add_patient(1, "Patient 4"))
 
+    get_medicine()
+
     for id, name in get_medicine():
         print(id, name)
 
@@ -290,3 +318,5 @@ if __name__ == '__main__':
         __test__()
 
     print(get_order())
+
+    get_medicine()

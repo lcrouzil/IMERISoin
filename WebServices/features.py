@@ -35,7 +35,7 @@ def newPatient(room: int, patientID: int, name: str, week: int):
 
 # Crée ou modifie une chambre
 def newRoom(room: int, name: str):
-    # Ajouter dans la database
+    add_room(room,name)
     if (True):
         code = 200
     else:
@@ -60,9 +60,9 @@ def newPatientCondition(patientID: int, condition: str):
 
 
 # Définit le médicament à donner dans la room pour la semaine indiquée (ou semaine en cours si paramètre pas donné)
-def newRoomMedicine(room: int, medicine: int, week: Optional[int]):
-    # Ajouter dans la database la medicine à donner dans la room
-    if (1):
+def newRoomMedicine(room: int, medicine: int, week: Optional[int]=0):
+    set_room_medicine(room,medicine,week)
+    if (True):
         code = 200
     else:
         code = 404
@@ -70,10 +70,12 @@ def newRoomMedicine(room: int, medicine: int, week: Optional[int]):
 
 
 # Retourne le médicament à fournir dans la room
-def roomMedicine(room: int, week: Optional[int]):
-    # Questionner la database
-    return {"room": room, "week": week, "medicine": medicine}
+def roomMedicine(room: int, week: Optional[int] = 0):
+    tab = []
+    tab = get_room_medicine(room,week)
 
+    return {"list": tab}
+    
 
 # Retourne les éléments en fonction des paramètres optionnels
 def patientStats(week: Optional[int], room: Optional[int], medicine: Optional[int], state: Optional[str]):
