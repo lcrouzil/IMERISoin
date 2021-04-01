@@ -23,11 +23,13 @@ public class MainApp extends Application {
     private Stage primaryStage;
     private Parent rootLayout;
 
-    private final ObservableList<Patient> patientsData = FXCollections.observableArrayList();
-    private final ObservableList<Drug> drugData = FXCollections.observableArrayList();
-    private final ObservableList<Room> roomsData = FXCollections.observableArrayList();
+//    private final ObservableList<Patient> patientsData = FXCollections.observableArrayList();
+//    private final ObservableList<Drug> drugData = FXCollections.observableArrayList();
+//    private final ObservableList<Room> roomsData = FXCollections.observableArrayList();
 
     private ArrayList<Drug> drugsData = new ArrayList<>();
+    private ArrayList<Room> roomsData = new ArrayList<>();
+    private ArrayList<Patient> patientsData = new ArrayList<>();
 
     /**
      *
@@ -65,22 +67,6 @@ public class MainApp extends Application {
 //            System.out.println(patient.getName());
 //        }
 
-    }
-
-    /**
-     * Returns the data as an observable list of Patient.
-     * @return ObservableList
-     */
-    public ObservableList<Patient> getPatientsData() {
-        return patientsData;
-    }
-
-    public ObservableList<Drug> getDrugData() {
-        return drugData;
-    }
-
-    public ObservableList<Room> getRoomsData() {
-        return roomsData;
     }
 
 
@@ -136,6 +122,7 @@ public class MainApp extends Application {
     public void refreshAll() {
         System.out.println("refresh all");
     }
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -147,5 +134,19 @@ public class MainApp extends Application {
 
     public void setDrugsData(ArrayList<Drug> drugsData) {
         this.drugsData = drugsData;
+    }
+
+    public ArrayList<Room> getRoomsData() {
+        return roomsData;
+    }
+
+    public void setRoomsData(ArrayList<Room> roomsData) { this.roomsData = roomsData; }
+
+    public ArrayList<Patient> getPatientsData() {
+        return patientsData;
+    }
+
+    public void setPatientsData(ArrayList<Patient> drugsData) {
+        this.patientsData = drugsData;
     }
 }

@@ -5,6 +5,7 @@ import IMERISoin.MainApp;
 import IMERISoin.Model.Drug;
 import IMERISoin.Model.Patient;
 import IMERISoin.Model.Room;
+import IMERISoin.services.HttpServices;
 import com.sun.security.ntlm.Client;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,10 +14,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.ResourceBundle;
 
-public class ClientController implements Initializable {
+public class PatientController implements Initializable, Refresh {
 
     @FXML
     private Button clientNewButton;
@@ -28,12 +30,6 @@ public class ClientController implements Initializable {
     private ChoiceBox<String> clientStatusBox;
 
     @FXML
-    private ChoiceBox<Drug> clientDrugBox;
-
-    @FXML
-    private ChoiceBox<Room> clientRoomBox;
-
-    @FXML
     private TableView<Patient> patientTable;
 
     @FXML
@@ -42,11 +38,6 @@ public class ClientController implements Initializable {
     @FXML
     private TableColumn<Patient, String> statusColumn;
 
-    @FXML
-    private TableColumn<Patient, String> drugColumn;
-
-    @FXML
-    private TableColumn<Patient, String> roomColumn;
 
     private MainApp mainApp;
 
@@ -60,23 +51,38 @@ public class ClientController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
-        nameColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
-        statusColumn.setCellValueFactory(cellData -> cellData.getValue().getStatusFx());
-//        drugColumn.setCellValueFactory(cellData -> cellData.getValue().getDrug().getNameFx());
-//        roomColumn.setCellValueFactory(cellData -> cellData.getValue().getRoom().getName());
-
         clientStatusBox.setItems(FXCollections.observableArrayList("Not Specified", "Cured", "Dead", "Sick"));
         clientStatusBox.setValue("Not Specified");
-        clientDrugBox.setItems(FXCollections.observableArrayList());
+
+        System.out.println("Patient controller init!");
+    }
+
+    @Override
+    public void refreshData() {
+        mainApp.setPatientsData(new ArrayList<>());
+        HttpServices.getPatientList(mainApp.getPatientsData());
+
+        ObservableList<Patient> roomData = FXCollections.observableArrayList();
+        roomData.addAll(mainApp.getPatientsData());
+
+        patientTable.setItems(roomData);
+
+        nameColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
+//        patientTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
+//        pathTableColumn.setCellValueFactory(cellData -> cellData.getValue().getPathFx());
+//        drugTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
+//        nameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
+
     }
 
     public void setMain(MainApp mainApp) {
         this.mainApp = mainApp;
 
-        patientTable.setItems(mainApp.getPatientsData());
-        clientDrugBox.setItems(mainApp.getDrugData());
-        clientRoomBox.setItems(mainApp.getRoomsData());
+//        patientTable.setItems(mainApp.getPatientsData());
+//        clientDrugBox.setItems(mainApp.getDrugData());
+//        clientRoomBox.setItems(mainApp.getRoomsData());
+
+        refreshData();
 
     }
 }

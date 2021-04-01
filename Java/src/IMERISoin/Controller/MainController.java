@@ -1,18 +1,21 @@
 package IMERISoin.Controller;
 
 import IMERISoin.MainApp;
+import IMERISoin.Model.Drug;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Control;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class MainController implements Initializable {
+public class MainController implements Initializable, Refresh {
 
     @FXML
     private Tab clientTab;
@@ -30,17 +33,10 @@ public class MainController implements Initializable {
 
     @FXML
     private void refreshAction() {
-        mainApp.refreshAll();
+        refreshData();
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-//        System.out.println(clientTab.getText());
-//        FXMLLoader loader = new FXMLLoader();
-
-
-    }
+    private final ArrayList<Refresh> controllerList = new ArrayList<>();
 
     public void setMain(MainApp mainApp) {
         this.mainApp = mainApp;
@@ -52,7 +48,8 @@ public class MainController implements Initializable {
             AnchorPane anchorClient = loader.load();
             clientTab.setContent(anchorClient);
 
-            ClientController controller = loader.getController();
+            PatientController controller = loader.getController();
+            controllerList.add(controller);
             controller.setMain(mainApp);
 
         } catch (IOException iex) {
@@ -71,7 +68,7 @@ public class MainController implements Initializable {
 
 //            System.out.println(loader.getController().toString());
             DrugController controller = loader.getController();
-            System.out.println(controller);
+            controllerList.add(controller);
             controller.setMain(mainApp);
 
         } catch (IOException iex) {
@@ -89,11 +86,28 @@ public class MainController implements Initializable {
             roomTab.setContent(anchorTab);
 
             RoomController controller = loader.getController();
+            controllerList.add(controller);
             controller.setMain(mainApp);
 
 
         } catch (IOException iex) {
             iex.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+        refreshData();
+
+        System.out.println("Main controller init!");
+    }
+
+    @Override
+    public void refreshData() {
+        for (Refresh controller : controllerList) {
+            controller.refreshData();
         }
 
     }

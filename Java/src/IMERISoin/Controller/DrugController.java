@@ -2,7 +2,8 @@ package IMERISoin.Controller;
 
 import IMERISoin.MainApp;
 import IMERISoin.Model.Drug;
-import IMERISoin.Model.deserializers.DrugDeserializer;
+import IMERISoin.Model.Patient;
+import IMERISoin.services.HttpServices;
 import com.google.gson.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,7 +23,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class DrugController implements Initializable {
+public class DrugController extends MainController implements Initializable, Refresh{
 
     @FXML
     private TextField drugNameField;
@@ -43,66 +44,11 @@ public class DrugController implements Initializable {
         event.consume();
         String drugName = drugNameField.getText();
 
-        apiPush("addMedicine/", drugName);
+//        apiPush("addMedicine/", drugName);
 
         if (!drugName.equals("")) {
             System.out.println(drugName);
         }
-    }
-
-    private void apiPush(String uri, String data) {
-        String url = "http://10.3.6.197:8000/" + uri + data;
-        System.out.println(url);
-        URL aurl = null;
-        String codeHTML = "";
-
-        try {
-            aurl = new URL(url);
-            URLConnection con = aurl.openConnection();
-            con.setConnectTimeout(60000);
-
-            System.out.println(con.getContentType());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private ArrayList<Drug> apiGetDrugsList() {
-        String sURL = "http://10.3.6.197:8000/Patients/listMedicines";
-
-//        URL aurl = null;
-        String codeHTML = "";
-        ArrayList<Drug> drugs = new ArrayList<>();
-
-        try {
-            URL url = new URL(sURL);
-//            URLConnection con = aurl.openConnection();
-            HttpURLConnection request = (HttpURLConnection) url.openConnection();
-            request.connect();
-
-            System.out.println(request.getResponseCode());
-            if (request.getResponseCode() == 200) {
-                JsonParser jp = new JsonParser(); //from gson
-                JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
-                JsonObject rootObj = root.getAsJsonObject(); //May be an array, may be an object.
-                JsonArray medicines = rootObj.getAsJsonArray("list"); //just grab the zipcode
-
-                System.out.println(medicines.toString());
-                System.out.println(rootObj.toString());
-
-                for (JsonElement jsonElement : medicines) {
-                    drugs.add(new Gson().fromJson(jsonElement, Drug.class));
-                }
-
-                return drugs;
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return drugs;
     }
 
     /**
@@ -115,14 +61,13 @@ public class DrugController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//        nameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
 
         System.out.println("Drug controller init!");
-
     }
 
     public void refreshData() {
-        mainApp.setDrugsData(apiGetDrugsList());
+        mainApp.setDrugsData(new ArrayList<>());
+        HttpServices.getDrugList(mainApp.getDrugsData());
 
         ObservableList<Drug> drugData = FXCollections.observableArrayList();
         drugData.addAll(mainApp.getDrugsData());

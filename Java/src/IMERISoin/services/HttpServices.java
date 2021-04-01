@@ -7,6 +7,8 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import IMERISoin.Model.Drug;
+import IMERISoin.Model.Patient;
+import IMERISoin.Model.Room;
 import com.google.gson.*;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -41,14 +43,14 @@ import sun.net.www.protocol.http.HttpURLConnection;
  */
 public class HttpServices {
 
-    private static final String ROOT_URL = "http://10.3.6.197:8000/";
+//    private static final String ROOT_URL = "http://10.3.6.197:8000/";
+    private static final String ROOT_URL = "http://127.0.0.1:8000/";
 
 
 
     /**
      * Ask to webservice the robot location/intersect
      * and return Robot object with location/intersect
-     * @param bot
      */
 //    public static void getLocation(Robot bot) {
 
@@ -63,91 +65,90 @@ public class HttpServices {
 
     public static void getDrugList(ArrayList<Drug> drugs) {
 
+        try {
+            URL url = new URL(ROOT_URL + "Patients/listMedicines/");
+            HttpURLConnection request = (HttpURLConnection) url.openConnection();
+            request.connect();
+
+//            System.out.println(request.getResponseCode());
+            if (request.getResponseCode() == 200) {
+
+                System.out.println("Drug get !");
+
+                JsonParser jp = new JsonParser(); //from gson
+                JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
+                JsonObject rootObj = root.getAsJsonObject(); //May be an array, may be an object.
+                JsonArray medicines = rootObj.getAsJsonArray("list"); //just grab the zipcode
+
+//                System.out.println(medicines.toString());
+//                System.out.println(rootObj.toString());
+
+                for (JsonElement jsonElement : medicines) {
+                    drugs.add(new Gson().fromJson(jsonElement, Drug.class));
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    /**
-     * Query location/intersect of the bot in Json format
-     *
-     * GSON translate Java POJO to Json string.
-     * @param bot
-     * @return Robot with location updated
-     * @throws IOException
-     */
-//    private static Robot queryLocation(Robot bot) throws IOException {
-//
-//        Robot result = null;
-//        HttpPost post = new HttpPost(ROOT_URL + "post");
-//
-//        Gson gson = new Gson();
-//
-//        // transform java Robot object to JSON
-//        post.setEntity(new StringEntity(gson.toJson(bot)));
-//
-//        try (CloseableHttpClient httpClient = HttpClients.createDefault();
-//             CloseableHttpResponse response = httpClient.execute(post)) {
-//
-//            HttpEntity entity = response.getEntity();
-//            if(entity != null) {
-//
-//                String json = EntityUtils.toString(entity);
-//                GsonBuilder gsonBldr = new GsonBuilder();
-//                gsonBldr.registerTypeAdapter(Robot.class, new RobotDeserializer());
-//
-//                result = gsonBldr.create().fromJson(json, Robot.class);
-//
-//            }
-//
-//        }
-//
-//        return result;
-//    }
+    public static void getRoomList(ArrayList<Room> rooms) {
 
-    /**
-     * Example 1 : Send an Http POST in Json format
-     *
-     * @param bot
-     */
-//    public static void example1(Robot bot) {
-//
-//        // cette forme de try ferme les ressources ouvertes en fin de block
-//        try (CloseableHttpClient httpClient = HttpClientBuilder.create().build();) {
-//
-//            String json = "{'id':1,'name':'John'}";
-//            HttpPost request = new HttpPost(ROOT_URL + "post");
-//            StringEntity params = new StringEntity(json);
-//            request.addHeader("content-type", "application/json");
-//            request.setEntity(params);
-//
-//            HttpResponse response = httpClient.execute(request);
-//            // handle response here...
-//
-//        } catch (Exception ex) {
-//            // handle exception here
-//        }
-//
-//    }
+        try {
+            URL url = new URL(ROOT_URL + "Patients/listRooms/");
+            HttpURLConnection request = (HttpURLConnection) url.openConnection();
+            request.connect();
 
-    /**
-     * Example 2 : Simple Http POST with parameters
-     *
-     * @throws ClientProtocolException
-     * @throws IOException
-     */
-//    public static void example2() throws ClientProtocolException, IOException {
-//
-//        CloseableHttpClient client = HttpClients.createDefault();
-//        HttpPost httpPost = new HttpPost(ROOT_URL + "post");
-//
-//        String json = "{'id':1,'name':'John'}";
-//        StringEntity entity = new StringEntity(json);
-//        httpPost.setEntity(entity);
-//        httpPost.setHeader("Accept", "application/json");
-//        httpPost.setHeader("Content-type", "application/json");
-//
-//        CloseableHttpResponse response = client.execute(httpPost);
-//        System.out.println(response.getStatusLine().getStatusCode() == 200);
-//        client.close();
-//    }
+            if (request.getResponseCode() == 200) {
+
+                System.out.println("Room get !");
+
+                JsonParser jp = new JsonParser(); //from gson
+                JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
+                JsonObject rootObj = root.getAsJsonObject(); //May be an array, may be an object.
+                JsonArray list = rootObj.getAsJsonArray("list"); //just grab the zipcode
+
+//                System.out.println(rootObj.toString());
+//                System.out.println(list.toString());
+                for (JsonElement jsonElement : list) {
+//                    System.out.println(jsonElement.toString());
+                    rooms.add(new Gson().fromJson(jsonElement, Room.class));
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void getPatientList(ArrayList<Patient> patients) {
+
+        try {
+            URL url = new URL(ROOT_URL + "Patients/listPatients/");
+            HttpURLConnection request = (HttpURLConnection) url.openConnection();
+            request.connect();
+
+//            System.out.println(request.getResponseCode());
+            if (request.getResponseCode() == 200) {
+                System.out.println("Patient get !");
+
+                JsonParser jp = new JsonParser(); //from gson
+                JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
+                JsonObject rootObj = root.getAsJsonObject(); //May be an array, may be an object.
+                JsonArray list = rootObj.getAsJsonArray("list"); //just grab the zipcode
+
+//                System.out.println(rootObj.toString());
+//                System.out.println(list.toString());
+                for (JsonElement jsonElement : list) {
+                    patients.add(new Gson().fromJson(jsonElement, Patient.class));
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void addOrder(int room_id, int drug_id) {
         try {
