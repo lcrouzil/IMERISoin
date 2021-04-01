@@ -96,7 +96,7 @@ def listRobots():
 # Gestion des robots et des consignes
 
 
-@app.get("/Robots/addOrder")
+@app.get("/Robots/addOrder/{room}/{medicine}")
 # Ajouter la consigne medicament pour telle room (status "to do")
 def addOrder(room: int, medicine: int):
     return newOrder(room, medicine)
@@ -105,10 +105,7 @@ def addOrder(room: int, medicine: int):
 @app.get("/Robots/getOrder")
 # Lit la première consigne disponible
 def getOrder():
-    order = 1
-    room = 3
-    medicine = 1
-    return {"order": order,"room": room,"medicine": medicine}
+    return firstOrder()
 
     # ou code error si plus de consigne disponible
 

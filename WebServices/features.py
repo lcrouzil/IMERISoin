@@ -134,18 +134,18 @@ def getRobots():
 
 # Ajouter la consigne medicament pour telle room (status "to do")
 def newOrder(room: int, medicine: int):
-    # Ajouter dans la database la consigne à faire (Aller dans telle room avec tel médicament)
-    if (1):
-        code = 200
-    else:
-        code = 404
-    return {"code": code}
+    b = add_order(room, medicine)
+    print(b)
+    return 1
 
 
 # Lit la première consigne disponible
-def firstOrder(void):
-    # Questionner la database
-    return {"order": order, "room": room, "medicine": medicine}
+def firstOrder():
+
+    order = get_order()
+    tab = {"order" : order[0], "room": order[1], "medicine": order[2]}
+
+    return tab
 
 
 # Retourne le statut d'avancement de la consigne
