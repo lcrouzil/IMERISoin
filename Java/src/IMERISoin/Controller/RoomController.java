@@ -1,6 +1,7 @@
 package IMERISoin.Controller;
 
 import IMERISoin.MainApp;
+import IMERISoin.services.HttpServices;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,15 +28,14 @@ public class RoomController implements Initializable {
     @FXML
     private void pushRoom1(ActionEvent event) {
         event.consume();
-        sendRoom(1);
-        mainApp.urlCo();
+        HttpServices.addOrder(1, 1);
         System.out.println("send to room 1");
     }
 
     @FXML
     private void pushRoom2(ActionEvent event) {
         event.consume();
-        sendRoom(2);
+        HttpServices.addOrder(2, 1);
 
         System.out.println("send to room 2");
     }
@@ -43,16 +43,16 @@ public class RoomController implements Initializable {
     @FXML
     private void pushRoom3(ActionEvent event) {
         event.consume();
-        sendRoom(3);
-
+//        sendRoom(3);
+        HttpServices.addOrder(3, 1);
         System.out.println("send to room 3");
     }
 
     @FXML
     private void pushRoom4(ActionEvent event) {
         event.consume();
-        sendRoom(4);
-
+//        sendRoom(4);
+        HttpServices.addOrder(4, 1);
         System.out.println("send to room 4");
     }
 
@@ -60,10 +60,7 @@ public class RoomController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println(buttonRoom1.getId());
-        System.out.println(buttonRoom2.getId());
-        System.out.println(buttonRoom3.getId());
-        System.out.println(buttonRoom4.getId());
+
     }
 
     /**

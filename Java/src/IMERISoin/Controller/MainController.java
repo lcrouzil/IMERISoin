@@ -4,6 +4,7 @@ import IMERISoin.MainApp;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
 
@@ -22,7 +23,15 @@ public class MainController implements Initializable {
     @FXML
     private Tab roomTab;
 
+    @FXML
+    private MenuItem refreshMenuItem;
+
     private MainApp mainApp;
+
+    @FXML
+    private void refreshAction() {
+        mainApp.refreshAll();
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

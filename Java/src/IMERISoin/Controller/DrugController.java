@@ -2,10 +2,8 @@ package IMERISoin.Controller;
 
 import IMERISoin.MainApp;
 import IMERISoin.Model.Drug;
-import IMERISoin.Model.Patient;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import IMERISoin.Model.deserializers.DrugDeserializer;
+import com.google.gson.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -21,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class DrugController implements Initializable {
@@ -69,11 +68,12 @@ public class DrugController implements Initializable {
         }
     }
 
-    private void apiGetDrug() {
+    private ArrayList<Drug> apiGetDrugsList() {
         String sURL = "http://10.3.6.197:8000/Patients/listMedicines";
 
 //        URL aurl = null;
         String codeHTML = "";
+        ArrayList<Drug> drugs = new ArrayList<>();
 
         try {
             URL url = new URL(sURL);
@@ -86,21 +86,23 @@ public class DrugController implements Initializable {
                 JsonParser jp = new JsonParser(); //from gson
                 JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
                 JsonObject rootObj = root.getAsJsonObject(); //May be an array, may be an object.
-                JsonObject medicines = rootObj.get("medicines").getAsJsonObject(); //just grab the zipcode
-
-
-
+                JsonArray medicines = rootObj.getAsJsonArray("list"); //just grab the zipcode
 
                 System.out.println(medicines.toString());
+                System.out.println(rootObj.toString());
+
+                for (JsonElement jsonElement : medicines) {
+                    drugs.add(new Gson().fromJson(jsonElement, Drug.class));
+                }
+
+                return drugs;
             }
-
-//            con.setConnectTimeout(60000);
-
-//            System.out.println(con.getContent());
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return drugs;
     }
 
     /**
@@ -120,8 +122,12 @@ public class DrugController implements Initializable {
     }
 
     public void refreshData() {
-        drugTableView.setItems(mainApp.getDrugData());
-        apiGetDrug();
+        mainApp.setDrugsData(apiGetDrugsList());
+
+        ObservableList<Drug> drugData = FXCollections.observableArrayList();
+        drugData.addAll(mainApp.getDrugsData());
+
+        drugTableView.setItems(drugData);
 
         nameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
     }

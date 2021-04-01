@@ -7,13 +7,17 @@ public class Patient {
 
     private int id;
 
-    private StringProperty name;
+    private String name;
 
-    private StringProperty status;
+    private String status;
 
-    private Drug drug;
-
-    private Room room;
+    /**
+     * @param id     id
+     * @param name   Name of Patient
+     */
+    public Patient(int id, String name) {
+        this(id, name, null);
+    }
 
     /**
      * @param id     id
@@ -21,35 +25,11 @@ public class Patient {
      * @param status Status
      */
     public Patient(int id, String name, String status) {
-        this(id, name, status, null);
-    }
-
-    /**
-     * @param id     id
-     * @param name   Name of Patient
-     * @param status Status
-     * @param drug   Object drug
-     */
-    public Patient(int id, String name, String status, Drug drug) {
-        this(id, name, status, drug, null);
-    }
-
-    /**
-     * @param id     id
-     * @param name   Name of Patient
-     * @param status Status
-     * @param drug   Object drug
-     * @param room   Object Room
-     */
-    public Patient(int id, String name, String status, Drug drug, Room room) {
         super();
         this.id = id;
-        this.name = new SimpleStringProperty(name);
-        this.status = new SimpleStringProperty(status);
-        this.drug = drug;
-        this.room = room;
+        this.name = name;
+        this.status = status;
     }
-
 
     /**
      * @return id of Patient
@@ -61,56 +41,36 @@ public class Patient {
     /**
      * @return name of Patient
      */
-    public StringProperty getName() {
+    public String getName() {
         return name;
+    }
+
+    public StringProperty getNameFx() {
+        return new SimpleStringProperty(name);
     }
 
     /**
      * @param name set Name of Patient
      */
     public void setName(String name) {
-        this.name = new SimpleStringProperty(name);
+        this.name = name;
     }
 
     /**
      * @return status of Patient
      */
-    public StringProperty getStatus() {
+    public String getStatus() {
         return status;
+    }
+
+    public StringProperty getStatusFx() {
+        return new SimpleStringProperty(status);
     }
 
     /**
      * @param status set Status of Patient
      */
     public void setStatus(String status) {
-        this.status = new SimpleStringProperty(status);
-    }
-
-    /**
-     * @return drug Object of Patient
-     */
-    public Drug getDrug() {
-        return drug;
-    }
-
-    /**
-     * @param drug set Object Drug og Patient
-     */
-    public void setDrug(Drug drug) {
-        this.drug = drug;
-    }
-
-    /**
-     * @return room Object of Room
-     */
-    public Room getRoom() {
-        return room;
-    }
-
-    /**
-     * @param room set Object of Room
-     */
-    public void setRoom(Room room) {
-        this.room = room;
+        this.status = status;
     }
 }

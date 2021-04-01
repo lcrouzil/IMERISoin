@@ -61,9 +61,9 @@ public class ClientController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        nameColumn.setCellValueFactory(cellData -> cellData.getValue().getName());
-        statusColumn.setCellValueFactory(cellData -> cellData.getValue().getStatus());
-        drugColumn.setCellValueFactory(cellData -> cellData.getValue().getDrug().getNameFx());
+        nameColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
+        statusColumn.setCellValueFactory(cellData -> cellData.getValue().getStatusFx());
+//        drugColumn.setCellValueFactory(cellData -> cellData.getValue().getDrug().getNameFx());
 //        roomColumn.setCellValueFactory(cellData -> cellData.getValue().getRoom().getName());
 
         clientStatusBox.setItems(FXCollections.observableArrayList("Not Specified", "Cured", "Dead", "Sick"));
