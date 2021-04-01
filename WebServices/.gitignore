@@ -110,3 +110,5 @@ fabric.properties
 ImeriSoin.db
 .idea
 __pycache__/
+
+venv/
