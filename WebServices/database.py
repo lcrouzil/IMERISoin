@@ -278,8 +278,12 @@ def get_order():
 def add_order(room, medicine_id):
     executeSQL(f'''
         INSERT INTO orders 
-            (room_id, drug_id, status) 
-            VALUES ({room}, {medicine_id}, 'to do')
+            (room_id, status) 
+            VALUES ({room}, 'to do')
+    ''')
+
+    executeSQL(f'''
+        UPDATE room SET drug_id = {medicine_id} WHERE id = {room}
     ''')
 
 
@@ -294,8 +298,6 @@ def set_order(order, status):
 ##if not baseExists(): createBase()
 ##conn = connectBase()
 ### et on peut utiliser ici le connecteur de la base
-
-
 def __test__():
     print("..", set_medicine(1, "medicament 1"))
     print("..", set_medicine(2, "medicament 2"))
@@ -304,10 +306,11 @@ def __test__():
 
     print("..", add_patient(1, "Patient 4"))
 
-    get_medicine()
-
     for id, name in get_medicine():
         print(id, name)
+
+    add_order(1, 1)
+    get_order()
 
 
 if __name__ == '__main__':
