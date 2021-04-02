@@ -139,7 +139,7 @@ def insert_base():
     add_room(4, "0F5F6R4R5L", "B4")
 
 
-def add_room(id, path, name=""):
+def add_room(id, path="", name=""):
     if not isinstance(id, int): return "id not correct"
 
     is_exist = findSQL(f'''
@@ -276,13 +276,15 @@ def get_order():
     return order
 
 
-def add_order(room, medicine_id):
+def add_order(room):
     # medicine_id not use because causes inconstancy in the database
     executeSQL(f'''
         INSERT INTO orders 
             (room_id, status) 
             VALUES ({room}, 'to do')
     ''')
+
+    return "ok"
 
 
 def set_order(order, status):
@@ -307,7 +309,7 @@ def __test__():
     for id, name in get_medicine():
         print(id, name)
 
-    add_order(1, 1)
+    add_order(1)
     print("..get Order", get_order())
     print("..get Room", get_room())
 
