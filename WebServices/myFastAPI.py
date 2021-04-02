@@ -33,10 +33,10 @@ def addPatient(room: int, patientID: int, name: str, week: int = 0):
     return newPatient(room, patientID, name, week)
 
 
-@app.get("/Patients/setRoom/{room}/{name}")
+@app.get("/Patients/setRoom/{room}/{name}/{path}")
 # Crée ou modifie une chambre
-def setRoom(room: int, name: str):
-    return newRoom(room, name)
+def setRoom(room: int, path: Optional[str] = "", name: str = ""):
+    return newRoom(room, path,name)
 
 
 @app.get("/Patients/getPatientCondition/{patientID}")
@@ -78,13 +78,13 @@ def listMedicines():
 @app.get("/Patients/listPatients")
 # Retourne la liste de tous les patients
 def listPatients():
-    return getPatients()  # NE FONCTIONNE PAS
+    return getPatients()  
 
 
 @app.get("/Patients/listRooms")
 # Retourne la liste de tous les patients
 def listRooms():
-    return getRooms()  # NE FONCTIONNE PAS
+    return getRooms()  
 
 
 @app.get("/Patients/listRobots")
@@ -96,10 +96,10 @@ def listRobots():
 # Gestion des robots et des consignes
 
 
-@app.get("/Robots/addOrder/{room}/{medicine}")
+@app.get("/Robots/addOrder/{room}")
 # Ajouter la consigne medicament pour telle room (status "to do")
-def addOrder(room: int, medicine: int):
-    return newOrder(room, medicine)
+def addOrder(room: int):
+    return newOrder(room)
 
 
 @app.get("/Robots/getOrder")
@@ -108,7 +108,6 @@ def getOrder():
     return firstOrder()
 
     # ou code error si plus de consigne disponible
-
 
 @app.get("/Robots/checkOrder")
 # Retourne le statut d'avancement de la consigne
@@ -122,16 +121,18 @@ def SetOrder(order: str, status: str):
     return modifyStateOrder(order, status)
 
 
-@app.get("/Robots/getPosition")
+@app.get("/Robots/getPosition/{robot}")
 # Renvoie le noeud où le robot est actuellement
 def getPosition(robot: int):
     return robotPosition(robot)
 
 
-@app.get("/Robots/setPosition")
+@app.get("/Robots/setPosition/{robot}/{node}")
 # Enregistre le noeud où est arrivé le robot + timestamp
-def setPosition(robot: int, node: int):
-    return robotAddNode(robot, node)
+def setPosition(robot:int, node: int):
+    print(node)
+    return {"code": 200}
+    #return robotAddNode(robot, node)
 
 
 @app.get("/Robots/getHistory")
@@ -148,13 +149,13 @@ def alertRobot(robot: int):
 
 @app.get("/Robots/alerts")
 def alerts():
-    # renvoie la liste des alertes en cours (non réglées)
+    # Renvoie la liste des alertes en cours (non réglées)
     return {"liste des alertes)": afaire}
 
 
 @app.get("/Robots/fixAlert")
 def fixAlert(alert: str):  # quel type l'alerte?
-    # alerte résolue (passe en statut réglé)
+    # Alerte résolue (passe en statut réglé)
     return code
 
 

@@ -34,13 +34,9 @@ def newPatient(room: int, patientID: int, name: str, week: int):
 
 
 # Crée ou modifie une chambre
-def newRoom(room: int, name: str):
-    add_room(room,name)
-    if (True):
-        code = 200
-    else:
-        code = 404
-    return {"code": code}
+def newRoom(room: int, name: str, path: str):
+    add_room(room,path,name)
+    return 1
 
 
 # Renvoie l'état de santé d'un patient entre "Cured"/"Stable"/"Dead"
@@ -133,20 +129,32 @@ def getRobots():
 
 
 # Ajouter la consigne medicament pour telle room (status "to do")
-def newOrder(room: int, medicine: int):
-    b = add_order(room, medicine)
-    print(b)
-    return 1
+def newOrder(room: int):
+    code = 200
+    if isinstance(room,(int,float)) == False :
+        code = 404
+        error = "La room doit être un int"
+    else :
+        add_order(room)
+    return {"code": code}
+
 
 
 # Lit la première consigne disponible
 def firstOrder():
-
+    order = {}
     order = get_order()
-    tab = {"order" : order[0], "room": order[1], "medicine": order[2]}
+    return {"order" : order[0], "room": order[1], "medicine": order[2]}
 
-    return tab
+# TEST ORDER
+def OrderTest():
+    tab = {}
+    for id, name in get_robot():
+        tab[id] = name
 
+    print(tab)
+
+    return {"robots": tab}
 
 # Retourne le statut d'avancement de la consigne
 def runningOrder(order: str, status=""):
@@ -165,7 +173,7 @@ def modifyStateOrder(order: str, status: str):
 
 
 # Renvoie le noeud où le robot est actuellement
-def robotPosition(robot_id: int, node: int):
+def robotPosition(robot_id: int):
     # Questionner la database
     return {"robot": robot_id, "node": node, "timestamp": timestamp}
 
