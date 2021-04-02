@@ -11,7 +11,7 @@
             <Button fx:id="buttonRoom3" layoutX="134.0" layoutY="33.0" mnemonicParsing="false" onAction="#pushRoom3" prefHeight="80.0" prefWidth="80.0" text="Room 3" />
             <Button fx:id="buttonRoom4" layoutX="37.0" layoutY="128.0" mnemonicParsing="false" onAction="#pushRoom4" prefHeight="80.0" prefWidth="80.0" text="Room 4" />
          <ChoiceBox fx:id="drugChoice" layoutX="53.0" layoutY="395.0" prefWidth="150.0" />
-         <Separator layoutY="236.0" prefHeight="25.0" prefWidth="284.0" />
+         <Separator layoutY="267.0" prefHeight="17.0" prefWidth="284.0" />
          <ChoiceBox fx:id="roomChoice" layoutX="53.0" layoutY="346.0" prefWidth="150.0" />
          <Button layoutX="96.0" layoutY="444.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="65.0" text="SET" />
          <Label layoutX="39.0" layoutY="14.0" text="Add Order" />

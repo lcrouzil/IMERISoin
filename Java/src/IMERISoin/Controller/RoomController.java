@@ -37,8 +37,8 @@ public class RoomController implements Initializable, Refresh {
     @FXML
     private ChoiceBox<Drug> drugChoice;
 
-//    @FXML
-//    private ChoiceBox<Room> roomChoice;
+    @FXML
+    private ChoiceBox<Room> roomChoice;
 
     @FXML
     private TableView<Room> roomTableView;
@@ -113,7 +113,7 @@ public class RoomController implements Initializable, Refresh {
         roomData.addAll(mainApp.getRoomsData());
 
 
-//        roomChoice.setItems(roomData);
+        roomChoice.setItems(roomData);
 
         roomTableView.setItems(roomData);
 
