@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.util.converter.IntegerStringConverter;
@@ -34,6 +35,12 @@ public class RoomController implements Initializable, Refresh {
     private Button buttonRoom4;
 
     @FXML
+    private ChoiceBox<Drug> drugChoice;
+
+//    @FXML
+//    private ChoiceBox<Room> roomChoice;
+
+    @FXML
     private TableView<Room> roomTableView;
 
     @FXML
@@ -54,14 +61,14 @@ public class RoomController implements Initializable, Refresh {
     @FXML
     private void pushRoom1(ActionEvent event) {
         event.consume();
-        HttpServices.addOrder(1, 1);
+        HttpServices.addOrder(1);
         System.out.println("send to room 1");
     }
 
     @FXML
     private void pushRoom2(ActionEvent event) {
         event.consume();
-        HttpServices.addOrder(2, 1);
+        HttpServices.addOrder(2);
 
         System.out.println("send to room 2");
     }
@@ -70,7 +77,7 @@ public class RoomController implements Initializable, Refresh {
     private void pushRoom3(ActionEvent event) {
         event.consume();
 //        sendRoom(3);
-        HttpServices.addOrder(3, 1);
+        HttpServices.addOrder(3);
         System.out.println("send to room 3");
     }
 
@@ -78,7 +85,7 @@ public class RoomController implements Initializable, Refresh {
     private void pushRoom4(ActionEvent event) {
         event.consume();
 //        sendRoom(4);
-        HttpServices.addOrder(4, 1);
+        HttpServices.addOrder(4);
         System.out.println("send to room 4");
     }
 
@@ -86,14 +93,9 @@ public class RoomController implements Initializable, Refresh {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+//        roomChoice.setItems(FXCollections.observableArrayList("Not Specified", "Cured", "Dead", "Sick"));
+
         System.out.println("Room controller init!");
-    }
-
-    /**
-     * @param room_id id of room
-     */
-    private void sendRoom(int room_id) {
-
     }
 
     @Override
@@ -110,6 +112,9 @@ public class RoomController implements Initializable, Refresh {
         ObservableList<Room> roomData = FXCollections.observableArrayList();
         roomData.addAll(mainApp.getRoomsData());
 
+
+//        roomChoice.setItems(roomData);
+
         roomTableView.setItems(roomData);
 
         idTableColumn.setCellValueFactory(cellData -> cellData.getValue().getIdFx());
@@ -118,6 +123,8 @@ public class RoomController implements Initializable, Refresh {
         pathTableColumn.setCellValueFactory(cellData -> cellData.getValue().getPathFx());
 //        drugTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
         nameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
+
+        drugChoice.setItems(FXCollections.observableArrayList(mainApp.getDrugsData()));
     }
 
     public void setMain(MainApp mainApp) {

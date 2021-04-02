@@ -42,13 +42,7 @@ public class Room {
 
     @Override
     public String toString() {
-        return "Room{" +
-                "id=" + id +
-                ", patient=" + patient +
-                ", drug=" + drug +
-                ", path='" + path + '\'' +
-                ", name='" + name + '\'' +
-                '}';
+        return id + " " + name;
     }
 
     public Integer getPatient_id() {
@@ -106,4 +100,6 @@ public class Room {
 //
         return new SimpleStringProperty("test");
     }
+
+
 }

@@ -122,19 +122,19 @@ public class MainController implements Initializable, Refresh {
         ArrayList<Patient> patients = mainApp.getPatientsData();
 
         for (Room room : rooms) {
-            for (Drug drug : drugs) {
-                if (room.getDrug_id() == drug.getId()) {
-                    room.setDrug(drug);
-                }
-            }
+//            for (Drug drug : drugs) {
+//                if (room.getDrug_id() == drug.getId()) {
+//                    room.setDrug(drug);
+//                }
+//            }
 
-            for (Patient patient : patients) {
-                System.out.println("id : " + room.getPatient_id());
-                Integer patient_id = room.getPatient_id();
-                if (patient_id != null && patient_id == patient.getId()) {
-                    System.out.println(room.getPatient_id() + " == " + patient.getId());
-                }
-            }
+//            for (Patient patient : patients) {
+//                System.out.println("id : " + room.getPatient_id());
+//                Integer patient_id = room.getPatient_id();
+//                if (patient_id != null && patient_id == patient.getId()) {
+//                    System.out.println(room.getPatient_id() + " == " + patient.getId());
+//                }
+//            }
 
         }
 
