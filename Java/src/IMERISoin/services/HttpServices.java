@@ -44,7 +44,8 @@ import sun.net.www.protocol.http.HttpURLConnection;
 public class HttpServices {
 
 //    private static final String ROOT_URL = "http://10.3.6.197:8000/";
-    private static final String ROOT_URL = "http://127.0.0.1:8000/";
+    private static final String ROOT_URL = "http://172.20.10.2:8000/";
+//    private static final String ROOT_URL = "http://127.0.0.1:8000/";
 
 
 
@@ -66,7 +67,7 @@ public class HttpServices {
     public static void getDrugList(ArrayList<Drug> drugs) {
 
         try {
-            URL url = new URL(ROOT_URL + "Patients/listMedicines/");
+            URL url = new URL(ROOT_URL + "Patients/listMedicines");
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
 
@@ -84,7 +85,12 @@ public class HttpServices {
 //                System.out.println(rootObj.toString());
 
                 for (JsonElement jsonElement : medicines) {
-                    drugs.add(new Gson().fromJson(jsonElement, Drug.class));
+                    JsonObject jObject = jsonElement.getAsJsonObject();
+
+                    int id = jObject.get("medicine").getAsInt();
+                    String name = jObject.get("name").getAsString();
+
+                    drugs.add(new Drug(id, name));
                 }
             }
 
@@ -96,7 +102,7 @@ public class HttpServices {
     public static void getRoomList(ArrayList<Room> rooms) {
 
         try {
-            URL url = new URL(ROOT_URL + "Patients/listRooms/");
+            URL url = new URL(ROOT_URL + "Patients/listRooms");
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
 
@@ -125,7 +131,7 @@ public class HttpServices {
     public static void getPatientList(ArrayList<Patient> patients) {
 
         try {
-            URL url = new URL(ROOT_URL + "Patients/listPatients/");
+            URL url = new URL(ROOT_URL + "Patients/listPatients");
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
 

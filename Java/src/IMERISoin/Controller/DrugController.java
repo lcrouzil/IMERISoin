@@ -3,6 +3,7 @@ package IMERISoin.Controller;
 import IMERISoin.MainApp;
 import IMERISoin.Model.Drug;
 import IMERISoin.Model.Patient;
+import IMERISoin.Model.Room;
 import IMERISoin.services.HttpServices;
 import com.google.gson.*;
 import javafx.collections.FXCollections;
@@ -35,7 +36,11 @@ public class DrugController extends MainController implements Initializable, Ref
     private TableView<Drug> drugTableView;
 
     @FXML
+    private TableColumn<Drug, String> idTableColumn;
+
+    @FXML
     private TableColumn<Drug, String> nameTableColumn;
+
 
     private MainApp mainApp;
 
@@ -69,11 +74,18 @@ public class DrugController extends MainController implements Initializable, Ref
         mainApp.setDrugsData(new ArrayList<>());
         HttpServices.getDrugList(mainApp.getDrugsData());
 
+        System.out.println(mainApp.getDrugsData());
+    }
+
+    public void refreshView() {
+//        System.out.println(mainApp.getDrugsData());
+
         ObservableList<Drug> drugData = FXCollections.observableArrayList();
         drugData.addAll(mainApp.getDrugsData());
 
         drugTableView.setItems(drugData);
 
+        idTableColumn.setCellValueFactory(cellData -> cellData.getValue().getIdFx());
         nameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
     }
 
@@ -81,5 +93,6 @@ public class DrugController extends MainController implements Initializable, Ref
         this.mainApp = mainApp;
 
         refreshData();
+        refreshView();
     }
 }

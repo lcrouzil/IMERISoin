@@ -99,17 +99,22 @@ public class RoomController implements Initializable, Refresh {
     @Override
     public void refreshData() {
         mainApp.setRoomsData(new ArrayList<>());
-        ArrayList<Room> rooms = mainApp.getRoomsData();
-        HttpServices.getRoomList(rooms);
+//        ArrayList<Room> rooms = mainApp.getRoomsData();
+        HttpServices.getRoomList(mainApp.getRoomsData());
 
+    }
+
+    @Override
+    public void refreshView() {
 
         ObservableList<Room> roomData = FXCollections.observableArrayList();
-        roomData.addAll(rooms);
+        roomData.addAll(mainApp.getRoomsData());
 
         roomTableView.setItems(roomData);
 
         idTableColumn.setCellValueFactory(cellData -> cellData.getValue().getIdFx());
-//        patientTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
+//        patientTableColumn.setCellValueFactory(cellData -> cellData.getValue().getPatientNameFx());
+        drugTableColumn.setCellValueFactory(cellData -> cellData.getValue().getDrugNameFx());
         pathTableColumn.setCellValueFactory(cellData -> cellData.getValue().getPathFx());
 //        drugTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
         nameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
@@ -119,5 +124,6 @@ public class RoomController implements Initializable, Refresh {
         this.mainApp = mainApp;
 
         refreshData();
+        refreshView();
     }
 }

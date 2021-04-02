@@ -62,6 +62,12 @@ public class PatientController implements Initializable, Refresh {
         mainApp.setPatientsData(new ArrayList<>());
         HttpServices.getPatientList(mainApp.getPatientsData());
 
+
+
+    }
+
+    @Override
+    public void refreshView() {
         ObservableList<Patient> roomData = FXCollections.observableArrayList();
         roomData.addAll(mainApp.getPatientsData());
 
@@ -72,7 +78,6 @@ public class PatientController implements Initializable, Refresh {
 //        pathTableColumn.setCellValueFactory(cellData -> cellData.getValue().getPathFx());
 //        drugTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
 //        nameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
-
     }
 
     public void setMain(MainApp mainApp) {
@@ -83,6 +88,7 @@ public class PatientController implements Initializable, Refresh {
 //        clientRoomBox.setItems(mainApp.getRoomsData());
 
         refreshData();
+        refreshView();
 
     }
 }

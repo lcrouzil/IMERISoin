@@ -17,6 +17,7 @@
             <children>
                <TableView fx:id="drugTableView" layoutY="14.0" prefHeight="618.0" prefWidth="670.0">
                  <columns>
+                     <TableColumn fx:id="idTableColumn" prefWidth="140.0" text="Name" />
                      <TableColumn fx:id="nameTableColumn" prefWidth="140.0" text="Name" />
                  </columns>
                </TableView>

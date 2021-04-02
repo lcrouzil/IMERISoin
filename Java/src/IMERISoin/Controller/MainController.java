@@ -2,6 +2,8 @@ package IMERISoin.Controller;
 
 import IMERISoin.MainApp;
 import IMERISoin.Model.Drug;
+import IMERISoin.Model.Patient;
+import IMERISoin.Model.Room;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -34,6 +36,7 @@ public class MainController implements Initializable, Refresh {
     @FXML
     private void refreshAction() {
         refreshData();
+        refreshView();
     }
 
     private final ArrayList<Refresh> controllerList = new ArrayList<>();
@@ -99,16 +102,59 @@ public class MainController implements Initializable, Refresh {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        refreshData();
+//        refreshData();
+//        refreshView();
 
         System.out.println("Main controller init!");
     }
 
     @Override
     public void refreshData() {
+        System.out.println("\nMain : START Refresh Data\n");
         for (Refresh controller : controllerList) {
             controller.refreshData();
         }
 
+        System.out.println("\n\n");
+
+        ArrayList<Room> rooms = mainApp.getRoomsData();
+        ArrayList<Drug> drugs = mainApp.getDrugsData();
+        ArrayList<Patient> patients = mainApp.getPatientsData();
+
+        for (Room room : rooms) {
+            for (Drug drug : drugs) {
+                if (room.getDrug_id() == drug.getId()) {
+                    room.setDrug(drug);
+                }
+            }
+
+            for (Patient patient : patients) {
+                System.out.println("id : " + room.getPatient_id());
+                Integer patient_id = room.getPatient_id();
+                if (patient_id != null && patient_id == patient.getId()) {
+                    System.out.println(room.getPatient_id() + " == " + patient.getId());
+                }
+            }
+
+        }
+
+        for (Room room : mainApp.getRoomsData()) {
+            System.out.println("room drugName : " + room.getDrug().getName());
+        }
+
+
+
+        System.out.println("\nMain : END Refresh Data\n");
+
+
+    }
+
+    @Override
+    public void refreshView() {
+        System.out.println("Main : Refresh View");
+        for(Refresh controller : controllerList) {
+            System.out.println(controller.getClass());
+            controller.refreshView();
+        }
     }
 }

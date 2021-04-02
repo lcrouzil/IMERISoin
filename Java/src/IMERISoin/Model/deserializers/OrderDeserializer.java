@@ -9,7 +9,6 @@ public class OrderDeserializer implements JsonDeserializer<Room> {
     @Override
     public Room deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject jObject = jsonElement.getAsJsonObject();
-//        System.out.println(jObject.toString());
 
         int id = jObject.get("id").getAsInt();
         int drug_id = jObject.get("drug_id").getAsInt();

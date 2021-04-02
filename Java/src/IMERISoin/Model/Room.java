@@ -1,9 +1,8 @@
 package IMERISoin.Model;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 
 public class Room {
 
@@ -60,11 +59,51 @@ public class Room {
         this.patient_id = patient_id;
     }
 
+    public SimpleStringProperty getDrug_idFx() {
+        return new SimpleStringProperty(String.valueOf(drug_id));
+    }
+
     public Integer getDrug_id() {
         return drug_id;
     }
 
     public void setDrug_id(Integer drug_id) {
         this.drug_id = drug_id;
+    }
+
+    public void setDrug(Drug drug) {
+        this.drug = drug;
+    }
+
+    public Drug getDrug(){
+        if (drug != null) {
+            return drug;
+        }
+
+        return new Drug(0, "");
+    }
+
+    public StringProperty getDrugNameFx(){
+        if (drug != null) {
+            System.out.println("drug not null " + drug.getNameFx());
+            return drug.getNameFx();
+        }
+        System.out.println("drug is null !");
+
+        return new SimpleStringProperty("test");
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+    public StringProperty getPatientNameFx() {
+//        if (patient != null) {
+//            System.out.println("drug not null " + patient.getNameFx());
+//            return patient.getNameFx();
+//        }
+//        System.out.println("patient is null !");
+//
+        return new SimpleStringProperty("test");
     }
 }

@@ -23,8 +23,8 @@ public class Drug {
         return id;
     }
 
-    public IntegerProperty getIdFx() {
-        return new SimpleIntegerProperty(id);
+    public StringProperty getIdFx() {
+        return new SimpleStringProperty(String.valueOf(id));
     }
 
     public String getName() {
