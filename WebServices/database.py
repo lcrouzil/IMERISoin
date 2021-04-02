@@ -293,6 +293,25 @@ def set_order(order, status):
     ''')
 
 
+def get_room_join():
+    rows = findSQL(f'''
+    SELECT r.id,
+       r.path,
+       r.name,
+       p.id,
+       p.name,
+       p.status,
+       d.id,
+       d.name
+    FROM room r
+         LEFT JOIN patient p on r.patient_id = p.id
+         LEFT JOIN drug d on r.drug_id = d.id;
+    ''').fetchall()
+
+    for room_id, room_path, room_name, patient_id, patient_name, patient_status, drug_id, drug_name in rows:
+        yield room_id, room_path, room_name, patient_id, patient_name, patient_status, drug_id, drug_name
+
+
 # help(createBase)
 # Example d'appels
 ##if not baseExists(): createBase()
@@ -321,5 +340,5 @@ if __name__ == '__main__':
         insert_base()
         __test__()
 
-
+    get_room_join()
     get_medicine()

@@ -36,7 +36,7 @@ def addPatient(room: int, patientID: int, name: str, week: int = 0):
 @app.get("/Patients/setRoom/{room}/{name}/{path}")
 # Crée ou modifie une chambre
 def setRoom(room: int, path: Optional[str] = "", name: str = ""):
-    return newRoom(room, path,name)
+    return newRoom(room, path, name)
 
 
 @app.get("/Patients/getPatientCondition/{patientID}")
@@ -59,7 +59,7 @@ def setRoomMedicine(room: int, medicine: int, week: Optional[int] = 0):
 
 @app.get("/Patients/getRoomMedicine/{room}/{week}")
 # Retourne le médicament à fournir dans la room
-def getRoomMedicine(room: int, week: Optional[int]=0):
+def getRoomMedicine(room: int, week: Optional[int] = 0):
     return roomMedicine(room, week)
 
 
@@ -78,13 +78,13 @@ def listMedicines():
 @app.get("/Patients/listPatients")
 # Retourne la liste de tous les patients
 def listPatients():
-    return getPatients()  
+    return getPatients()
 
 
 @app.get("/Patients/listRooms")
 # Retourne la liste de tous les patients
 def listRooms():
-    return getRooms()  
+    return getRooms()
 
 
 @app.get("/Patients/listRobots")
@@ -109,6 +109,7 @@ def getOrder():
 
     # ou code error si plus de consigne disponible
 
+
 @app.get("/Robots/checkOrder")
 # Retourne le statut d'avancement de la consigne
 def CheckOrder(order: str):
@@ -129,10 +130,10 @@ def getPosition(robot: int):
 
 @app.get("/Robots/setPosition/{robot}/{node}")
 # Enregistre le noeud où est arrivé le robot + timestamp
-def setPosition(robot:int, node: int):
+def setPosition(robot: int, node: int):
     print(node)
     return {"code": 200}
-    #return robotAddNode(robot, node)
+    # return robotAddNode(robot, node)
 
 
 @app.get("/Robots/getHistory")
@@ -195,3 +196,8 @@ def getNode(node: int):
 def setNode(node: int):
     # réserve un noeud
     return {"node": node, "booked": booked}
+
+
+@app.get("/Patients/getObjectRoom")
+def getObjectRoom():
+    return getJsonObjectRoom()

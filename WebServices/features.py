@@ -35,7 +35,7 @@ def newPatient(room: int, patientID: int, name: str, week: int):
 
 # Crée ou modifie une chambre
 def newRoom(room: int, name: str, path: str):
-    add_room(room,path,name)
+    add_room(room, path, name)
     return 1
 
 
@@ -56,8 +56,8 @@ def newPatientCondition(patientID: int, condition: str):
 
 
 # Définit le médicament à donner dans la room pour la semaine indiquée (ou semaine en cours si paramètre pas donné)
-def newRoomMedicine(room: int, medicine: int, week: Optional[int]=0):
-    set_room_medicine(room,medicine,week)
+def newRoomMedicine(room: int, medicine: int, week: Optional[int] = 0):
+    set_room_medicine(room, medicine, week)
     if (True):
         code = 200
     else:
@@ -68,10 +68,10 @@ def newRoomMedicine(room: int, medicine: int, week: Optional[int]=0):
 # Retourne le médicament à fournir dans la room
 def roomMedicine(room: int, week: Optional[int] = 0):
     tab = []
-    tab = get_room_medicine(room,week)
+    tab = get_room_medicine(room, week)
 
     return {"list": tab}
-    
+
 
 # Retourne les éléments en fonction des paramètres optionnels
 def patientStats(week: Optional[int], room: Optional[int], medicine: Optional[int], state: Optional[str]):
@@ -83,7 +83,7 @@ def patientStats(week: Optional[int], room: Optional[int], medicine: Optional[in
 def getMedicines():
     tab = []
     for id, name in get_medicine():
-        tab.append({"medicine": id, "name": name})
+        tab.append({"id": id, "name": name})
         # tab[id] = name
 
     print(tab)
@@ -131,20 +131,20 @@ def getRobots():
 # Ajouter la consigne medicament pour telle room (status "to do")
 def newOrder(room: int):
     code = 200
-    if isinstance(room,(int,float)) == False :
+    if isinstance(room, (int, float)) == False:
         code = 404
         error = "La room doit être un int"
-    else :
+    else:
         add_order(room)
     return {"code": code}
-
 
 
 # Lit la première consigne disponible
 def firstOrder():
     order = {}
     order = get_order()
-    return {"order" : order[0], "room": order[1], "medicine": order[2]}
+    return {"order": order[0], "room": order[1], "medicine": order[2]}
+
 
 # TEST ORDER
 def OrderTest():
@@ -155,6 +155,7 @@ def OrderTest():
     print(tab)
 
     return {"robots": tab}
+
 
 # Retourne le statut d'avancement de la consigne
 def runningOrder(order: str, status=""):
@@ -202,3 +203,23 @@ def robotLost(robot: int):
     else:
         code = 404
     return {"code": code}
+
+
+def getJsonObjectRoom():
+    tab = []
+    for room_id, room_path, room_name, patient_id, patient_name, patient_status, drug_id, drug_name in get_room_join():
+        tab.append({"id": room_id,
+                    "patient": {
+                        "id": patient_id,
+                        "name": patient_name,
+                        "status": patient_status
+                    },
+                    "medicine": {
+                        "id": drug_id,
+                        "name": drug_name
+                    },
+                    "path": room_path,
+                    "name": room_name
+                    })
+
+    return {"list": tab}
