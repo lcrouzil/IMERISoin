@@ -5,7 +5,7 @@ import javafx.beans.property.StringProperty;
 
 public class Patient {
 
-    private int id;
+    private final int id;
 
     private String name;
 
@@ -72,5 +72,18 @@ public class Patient {
      */
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return id + " " + name;
+    }
+
+    public String debugString() {
+        return "Patient{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", status='" + status + '\'' +
+                '}';
     }
 }

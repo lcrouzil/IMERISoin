@@ -12,21 +12,41 @@ public class Room {
     private String path;
     private String name;
 
-    private Integer patient_id;
-    private Integer drug_id;
-
     public Room(int id, String path, String name) {
         this(id, null, null, path, name);
     }
 
-    public Room(int id, Integer patient, Integer drug, String path, String name){
+    public Room(int id, Patient patient, Drug drug, String path, String name){
         super();
         this.id = id;
-        this.patient_id = patient;
-        this.drug_id = drug;
+        this.patient = patient;
+        this.drug = drug;
         this.path = path;
         this.name = name;
     }
+
+    public Drug getDrug(){
+        if (drug != null) {
+            return drug;
+        }
+
+        return new Drug(0, "");
+    }
+
+    public void setDrug(Drug drug) {
+        this.drug = drug;
+    }
+
+    public Patient getPatient(){
+
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
+
 
     public StringProperty getIdFx() {
         return new SimpleStringProperty(String.valueOf(id));
@@ -40,43 +60,6 @@ public class Room {
         return new SimpleStringProperty(path);
     }
 
-    @Override
-    public String toString() {
-        return id + " " + name;
-    }
-
-    public Integer getPatient_id() {
-        return patient_id;
-    }
-
-    public void setPatient_id(Integer patient_id) {
-        this.patient_id = patient_id;
-    }
-
-    public SimpleStringProperty getDrug_idFx() {
-        return new SimpleStringProperty(String.valueOf(drug_id));
-    }
-
-    public Integer getDrug_id() {
-        return drug_id;
-    }
-
-    public void setDrug_id(Integer drug_id) {
-        this.drug_id = drug_id;
-    }
-
-    public void setDrug(Drug drug) {
-        this.drug = drug;
-    }
-
-    public Drug getDrug(){
-        if (drug != null) {
-            return drug;
-        }
-
-        return new Drug(0, "");
-    }
-
     public StringProperty getDrugNameFx(){
         if (drug != null) {
             System.out.println("drug not null " + drug.getNameFx());
@@ -87,19 +70,27 @@ public class Room {
         return new SimpleStringProperty("test");
     }
 
-    public void setPatient(Patient patient) {
-        this.patient = patient;
-    }
+
 
     public StringProperty getPatientNameFx() {
-//        if (patient != null) {
-//            System.out.println("drug not null " + patient.getNameFx());
-//            return patient.getNameFx();
-//        }
-//        System.out.println("patient is null !");
-//
         return new SimpleStringProperty("test");
     }
+
+    @Override
+    public String toString() {
+        return id + " " + name;
+    }
+
+    public String debugString() {
+        return "Room{" +
+                "id=" + id +
+                ", patient=" + patient +
+                ", drug=" + drug +
+                ", path='" + path + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
 
 
 }

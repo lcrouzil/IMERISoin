@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="481.0" prefWidth="693.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="IMERISoin.Controller.MainController">
-    <MenuBar prefWidth="666.0">
+<VBox minHeight="600.0" minWidth="800.0" xmlns="http://javafx.com/javafx/8.0.281" xmlns:fx="http://javafx.com/fxml/1" fx:controller="IMERISoin.Controller.MainController">
+    <MenuBar minHeight="25.0" minWidth="666.0">
         <Menu mnemonicParsing="false" text="File">
          <MenuItem fx:id="refreshMenuItem" mnemonicParsing="false" onAction="#refreshAction" text="Refresh" />
          <SeparatorMenuItem mnemonicParsing="false" />
@@ -17,7 +26,7 @@
             <MenuItem mnemonicParsing="false" text="About" />
         </Menu>
     </MenuBar>
-    <TabPane VBox.vgrow="ALWAYS">
+    <TabPane tabMinWidth="50.0" VBox.vgrow="ALWAYS">
         <Tab fx:id="clientTab" closable="false" text="Patient">
 <!--            <fx:include source="clientTab.fxml" />-->
         </Tab>
@@ -28,12 +37,12 @@
 <!--            <fx:include source="roomTab.fxml" />-->
         </Tab>
     </TabPane>
-    <HBox prefHeight="20.0" prefWidth="382.0">
-        <Label text="IMERISoin" />
+    <HBox>
+        <Label text="IMERISoin" textFill="#a4a4a4" />
         <Pane maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" HBox.hgrow="ALWAYS">
          <children>
             <AnchorPane layoutX="114.0" layoutY="-98.0" prefHeight="200.0" />
          </children></Pane>
-        <Label layoutX="10.0" layoutY="10.0" text="by IMERIR" />
+        <Label layoutX="10.0" layoutY="10.0" text="by IMERIR" textFill="#a4a4a4" />
     </HBox>
 </VBox>

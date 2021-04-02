@@ -1,28 +1,15 @@
 package IMERISoin.services;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.ArrayList;
-
 import IMERISoin.Model.Drug;
 import IMERISoin.Model.Patient;
 import IMERISoin.Model.Room;
 import com.google.gson.*;
-import javafx.application.Platform;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-
 import sun.net.www.protocol.http.HttpURLConnection;
+
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.ArrayList;
 
 /**
  *
@@ -44,53 +31,37 @@ import sun.net.www.protocol.http.HttpURLConnection;
  */
 public class HttpServices {
 
-    private static final String ROOT_URL = "http://10.3.6.197:8000/";
+//    private static final String ROOT_URL = "http://10.3.6.197:8000/";
 //    private static final String ROOT_URL = "http://172.20.10.2:8000/";
-//    private static final String ROOT_URL = "http://127.0.0.1:8000/";
+    private static final String ROOT_URL = "http://127.0.0.1:8000/";
 
 
 
-    /**
-     * Ask to webservice the robot location/intersect
-     * and return Robot object with location/intersect
-     */
-//    public static void getLocation(Robot bot) {
-
-//        try {
-//            Robot result = queryLocation(bot);
-//            System.out.println(result);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-//    }
-
-    public static void getDrugList(ArrayList<Drug> drugs) {
+    public static void getObjectRoom(ArrayList<Room> rooms) throws JsonParseException{
 
         try {
-            URL url = new URL(ROOT_URL + "Patients/listMedicines");
+            URL url = new URL(ROOT_URL + "Patients/getObjectRoom");
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
 
-//            System.out.println(request.getResponseCode());
+//            Platform.runLater
+
+            System.out.println(request.getResponseCode() + " from : " + url);
+
             if (request.getResponseCode() == 200) {
-                System.out.println("Drugs get : with code 200");
 
                 JsonParser jp = new JsonParser(); //from gson
                 JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
                 JsonObject rootObj = root.getAsJsonObject(); //May be an array, may be an object.
-                JsonArray medicines = rootObj.getAsJsonArray("list"); //just grab the zipcode
+                JsonArray list = rootObj.getAsJsonArray("list"); //just grab the zipcode
 
-                System.out.println(rootObj.toString());
-//                System.out.println(rootObj.toString());
+                for (JsonElement jsonElement : list) {
+                    JsonObject medicineJ = jsonElement.getAsJsonObject().get("medicine").getAsJsonObject();
+                    Drug drug = new Drug(medicineJ.get("id").getAsInt(), medicineJ.get("name").getAsString());
 
-                for (JsonElement jsonElement : medicines) {
-                    JsonObject jObject = jsonElement.getAsJsonObject();
-
-                    int id = jObject.get("medicine").getAsInt();
-                    String name = jObject.get("name").getAsString();
-
-                    drugs.add(new Drug(id, name));
+                    Room room = new Gson().fromJson(jsonElement, Room.class);
+                    room.setDrug(drug);
+                    rooms.add(room);
                 }
             }
 
@@ -99,26 +70,25 @@ public class HttpServices {
         }
     }
 
-    public static void getRoomList(ArrayList<Room> rooms) {
+    public static void getDrugList(ArrayList<Drug> drugs) {
 
         try {
-            URL url = new URL(ROOT_URL + "Patients/listRooms");
+            URL url = new URL(ROOT_URL + "Patients/listMedicines");
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
 
+            System.out.println(request.getResponseCode() + " from : " + url);
+
             if (request.getResponseCode() == 200) {
-                System.out.println("Rooms get : with code 200");
 
                 JsonParser jp = new JsonParser(); //from gson
                 JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
                 JsonObject rootObj = root.getAsJsonObject(); //May be an array, may be an object.
-                JsonArray list = rootObj.getAsJsonArray("list"); //just grab the zipcode
+                JsonArray medicines = rootObj.getAsJsonArray("list"); //just grab the zipcode
 
-                System.out.println(rootObj.toString());
+                for (JsonElement jsonElement : medicines) {
 
-                for (JsonElement jsonElement : list) {
-
-                    rooms.add(new Gson().fromJson(jsonElement, Room.class));
+                    drugs.add(new Gson().fromJson(jsonElement, Drug.class));
                 }
             }
 
@@ -134,20 +104,17 @@ public class HttpServices {
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
 
-//            Platform.runLater
+            System.out.println(request.getResponseCode() + " from : " + url);
 
-//            System.out.println(request.getResponseCode());
             if (request.getResponseCode() == 200) {
-                System.out.println("Patients get : with code 200");
 
                 JsonParser jp = new JsonParser(); //from gson
                 JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
                 JsonObject rootObj = root.getAsJsonObject(); //May be an array, may be an object.
                 JsonArray list = rootObj.getAsJsonArray("list"); //just grab the zipcode
 
-                System.out.println(rootObj.toString());
-
                 for (JsonElement jsonElement : list) {
+
                     patients.add(new Gson().fromJson(jsonElement, Patient.class));
                 }
             }
@@ -160,26 +127,12 @@ public class HttpServices {
     public static void addOrder(int room_id) {
         try {
             URL url = new URL(ROOT_URL + "Robots/addOrder/" + room_id);
-//            URLConnection con = aurl.openConnection();
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
 
-            System.out.println(request.getResponseCode());
-            if (request.getResponseCode() == 200) {
+            System.out.println(request.getResponseCode() + " from : " + url);
 
-//                JsonParser jp = new JsonParser(); //from gson
-//                JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
-//                JsonObject rootObj = root.getAsJsonObject(); //May be an array, may be an object.
-//                JsonArray medicines = rootObj.getAsJsonArray("list"); //just grab the zipcode
-//
-//                System.out.println(medicines.toString());
-//                System.out.println(rootObj.toString());
-//
-//                for (JsonElement jsonElement : medicines) {
-//                    drugs.add(new Gson().fromJson(jsonElement, Drug.class));
-//                }
-//
-//                return drugs;
+            if (request.getResponseCode() == 200) {
 
                 System.out.println("Order added");
             }

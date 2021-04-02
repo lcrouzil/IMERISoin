@@ -2,6 +2,7 @@ package IMERISoin.Controller;
 
 import IMERISoin.MainApp;
 import IMERISoin.Model.Drug;
+import IMERISoin.Model.Patient;
 import IMERISoin.Model.Room;
 import IMERISoin.services.HttpServices;
 import javafx.collections.FXCollections;
@@ -35,10 +36,13 @@ public class RoomController implements Initializable, Refresh {
     private Button buttonRoom4;
 
     @FXML
-    private ChoiceBox<Drug> drugChoice;
+    private ChoiceBox<Room> roomChoice;
 
     @FXML
-    private ChoiceBox<Room> roomChoice;
+    private ChoiceBox<Patient> patientChoice;
+
+    @FXML
+    private ChoiceBox<Drug> drugChoice;
 
     @FXML
     private TableView<Room> roomTableView;
@@ -93,7 +97,6 @@ public class RoomController implements Initializable, Refresh {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-//        roomChoice.setItems(FXCollections.observableArrayList("Not Specified", "Cured", "Dead", "Sick"));
 
         System.out.println("Room controller init!");
     }
@@ -101,8 +104,7 @@ public class RoomController implements Initializable, Refresh {
     @Override
     public void refreshData() {
         mainApp.setRoomsData(new ArrayList<>());
-//        ArrayList<Room> rooms = mainApp.getRoomsData();
-        HttpServices.getRoomList(mainApp.getRoomsData());
+        HttpServices.getObjectRoom(mainApp.getRoomsData());
 
     }
 
@@ -112,19 +114,17 @@ public class RoomController implements Initializable, Refresh {
         ObservableList<Room> roomData = FXCollections.observableArrayList();
         roomData.addAll(mainApp.getRoomsData());
 
-
         roomChoice.setItems(roomData);
-
         roomTableView.setItems(roomData);
 
         idTableColumn.setCellValueFactory(cellData -> cellData.getValue().getIdFx());
-//        patientTableColumn.setCellValueFactory(cellData -> cellData.getValue().getPatientNameFx());
-        drugTableColumn.setCellValueFactory(cellData -> cellData.getValue().getDrugNameFx());
+        patientTableColumn.setCellValueFactory(cellData -> cellData.getValue().getPatient().getNameFx());
+        drugTableColumn.setCellValueFactory(cellData -> cellData.getValue().getDrug().getNameFx());
         pathTableColumn.setCellValueFactory(cellData -> cellData.getValue().getPathFx());
-//        drugTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
         nameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
 
         drugChoice.setItems(FXCollections.observableArrayList(mainApp.getDrugsData()));
+        patientChoice.setItems(FXCollections.observableArrayList(mainApp.getPatientsData()));
     }
 
     public void setMain(MainApp mainApp) {

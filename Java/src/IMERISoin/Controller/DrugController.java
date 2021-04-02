@@ -2,10 +2,7 @@ package IMERISoin.Controller;
 
 import IMERISoin.MainApp;
 import IMERISoin.Model.Drug;
-import IMERISoin.Model.Patient;
-import IMERISoin.Model.Room;
 import IMERISoin.services.HttpServices;
-import com.google.gson.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,12 +12,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import sun.net.www.protocol.http.HttpURLConnection;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -74,7 +67,6 @@ public class DrugController extends MainController implements Initializable, Ref
         mainApp.setDrugsData(new ArrayList<>());
         HttpServices.getDrugList(mainApp.getDrugsData());
 
-        System.out.println(mainApp.getDrugsData());
     }
 
     public void refreshView() {

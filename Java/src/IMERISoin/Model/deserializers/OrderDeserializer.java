@@ -12,8 +12,8 @@ public class OrderDeserializer implements JsonDeserializer<Room> {
 
         int id = jObject.get("id").getAsInt();
         int drug_id = jObject.get("drug_id").getAsInt();
-        String path = jObject.get("path").getAsString();
-        String name = jObject.get("name").getAsString();
+        String path = jObject.get("path").toString();
+        String name = jObject.get("name").toString();
 
         return new Room(id, path, name);
     }

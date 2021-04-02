@@ -5,17 +5,17 @@ import IMERISoin.Model.Drug;
 import IMERISoin.Model.Patient;
 import IMERISoin.Model.Room;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 
 public class MainApp extends Application {
@@ -35,37 +35,14 @@ public class MainApp extends Application {
      *
      */
     public MainApp() {
-//        ArrayList<Room> rooms = new ArrayList<>();
-//
-//        for (int i = 0; i < 4; i++) {
-//            rooms.add(new Room(i + 1));
-//        }
-//
-//        roomsData.addAll(rooms);
-//
-//        ArrayList<Drug> drugs = new ArrayList<>();
-//
-//        for (int i = 0; i < 4; i++) {
-//            String name = "Drug n" + i;
-//            drugs.add(new Drug(i + 1, name));
-//        }
-//
-//        for (Drug drug : drugs) {
-//            drugData.add(drug);
-//            System.out.println(drug.getName());
-//        }
-//
-//        ArrayList<Patient> patients = new ArrayList<>();
-//
-//        for (int i = 0; i < 4; i++) {
-//            String name = "Patient n" + (i + 1);
-//            patients.add(new Patient(i + 1, name, "sick", drugs.get(0), rooms.get(0)));
-//        }
-//
-//        for (Patient patient : patients) {
-//            patientsData.add(patient);
-//            System.out.println(patient.getName());
-//        }
+        System.out.println("\n\nMain\n\n");
+        JsonElement jsonElement = new JsonParser().parse("{\"id\":1,\"name\":\"medicament 3\"}");
+
+        System.out.println(jsonElement.toString());
+
+        Drug drug = new Gson().fromJson(jsonElement, Drug.class);
+
+        System.out.println(drug);
 
     }
 
@@ -89,13 +66,11 @@ public class MainApp extends Application {
             controller.setMain(this);
 
 
-            primaryStage.setScene(new Scene(rootLayout, 1200, 900));
+            primaryStage.setScene(new Scene(rootLayout, 1400, 900));
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
 
 
 //        FXMLLoader loader = new FXMLLoader();
@@ -140,7 +115,9 @@ public class MainApp extends Application {
         return roomsData;
     }
 
-    public void setRoomsData(ArrayList<Room> roomsData) { this.roomsData = roomsData; }
+    public void setRoomsData(ArrayList<Room> roomsData) {
+        this.roomsData = roomsData;
+    }
 
     public ArrayList<Patient> getPatientsData() {
         return patientsData;
