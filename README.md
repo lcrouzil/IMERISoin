@@ -1,13 +1,13 @@
 # IMERISoin
+
 ###### team3
-
-
 
 Afin d'aider les hôpitaux aujourd'hui chargés, nous avons été tâchés de créer des robots distributeur de médicaments qui
 iront à une chambre apporter des médicaments et qui repartiront à la pharmacie d'où ils sont partis. Ils seront
 contrôlés grâce à un site qui connaîtra leur position et qui les empêchera de se rentrer dedans. De plus, les robots
 auront des chemins prédéfinis pour chaque chambre et suivront des lignes sur le sol. Une base de donnée sera mise en
-place afin de stocker des informations sur les robots, les patients et les médicaments. Tous les échanges entre **l'interface**, **le superviseur**, **les robots** et **la base de données** sera fait grâce au **serveur**.
+place afin de stocker des informations sur les robots, les patients et les médicaments. Tous les échanges entre **
+l'interface**, **le superviseur**, **les robots** et **la base de données** sera fait grâce au **serveur**.
 
 ---
 
@@ -28,17 +28,26 @@ Finalisation robot, communication robot / Web. Vendredi 02/04 --> Premier protot
 
 Le projet consistera à créer:
 
-Un superviseur
-> L'interface Homme-Machine codée en java qui permettra de connaitre les infos des robots, de récupérer les demandes des utilisateurs, et de renvoyer à l'utilisateur toutes les infos.
+### Un superviseur
 
-Un ou plusieurs robots
-> Leur rôle sera de se déplacer selon un chemin prédéfini pour atteindre la chambre que l'utilisateur veut qu'ils atteignent afin qu'ils puissent délivrer les médicaments et ensuite de retourner à la pharmacie ( 4 chambres, 3 fois par jour par chambre).
+L'interface Homme-Machine codée en java qui permettra de connaitre les infos des robots, de récupérer les demandes des
+utilisateurs, et de renvoyer à l'utilisateur toutes les infos.
 
-Une base de donnée
-> Permettra de stocker les données des patients, des robots et des médicaments.
+### Un ou plusieurs robots
 
-Un serveur web
-> Servira d'intermédiaire entre toutes les parties du projet. Il récupéra les demandes des utilisateurs du superviseur afin d'envoyer la requête aux robots, d'envoyer les données à stocker à la base de donnée et de renvoyer les infos de déplacement des robots au superviseur.
+Leur rôle sera de se déplacer selon un chemin prédéfini pour atteindre la chambre que l'utilisateur veut qu'ils
+atteignent afin qu'ils puissent délivrer les médicaments et ensuite de retourner à la pharmacie ( 4 chambres, 3 fois par
+jour par chambre).
+
+### Une base de donnée
+
+Permettra de stocker les données des patients, des robots et des médicaments.
+
+### Un serveur web
+
+Servira d'intermédiaire entre toutes les parties du projet. Il récupéra les demandes des utilisateurs du superviseur
+afin d'envoyer la requête aux robots, d'envoyer les données à stocker à la base de donnée et de renvoyer les infos de
+déplacement des robots au superviseur.
 
 ```mermaid
 graph LR
