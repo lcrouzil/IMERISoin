@@ -23,6 +23,9 @@ public class DrugController extends MainController implements Initializable, Ref
     private TextField drugNameField;
 
     @FXML
+    private TextField idNameField;
+
+    @FXML
     private Button drugNewButton;
 
     @FXML
@@ -38,15 +41,32 @@ public class DrugController extends MainController implements Initializable, Ref
     private MainApp mainApp;
 
     @FXML
-    private void pushButtonNewDrug(ActionEvent event) {
+    private void pushButtonNewDrug(ActionEvent event) throws NumberFormatException {
         event.consume();
-        String drugName = drugNameField.getText();
+
+        try {
+            int drugId = Integer.parseInt(idNameField.getText());
+            String drugName = drugNameField.getText();
+
+//            int drugId = Integer.parseInt(idNameField.getText());
+
+            System.out.println(drugId + " " + drugName);
+
+            HttpServices.addDrug(drugId, drugName);
+
+            refreshData();
+            refreshView();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+
 
 //        apiPush("addMedicine/", drugName);
 
-        if (!drugName.equals("")) {
-            System.out.println(drugName);
-        }
+//        if (!drugName.equals("")) {
+//
+//        }
     }
 
     /**

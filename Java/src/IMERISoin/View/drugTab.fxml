@@ -3,14 +3,16 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="705.0" prefWidth="1005.0" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="IMERISoin.Controller.DrugController">
+<AnchorPane prefHeight="705.0" prefWidth="1005.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="IMERISoin.Controller.DrugController">
    <SplitPane dividerPositions="0.1864406779661017" prefHeight="694.0" prefWidth="1005.0">
      <items>
        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="692.0" prefWidth="266.0">
             <children>
                 <Button fx:id="drugNewButton" layoutX="16.0" layoutY="541.0" mnemonicParsing="false" onAction="#pushButtonNewDrug" text="new Drug" />
-                <TextField fx:id="drugNameField" layoutX="20.0" layoutY="42.0" />
-                <Label layoutX="20.0" layoutY="25.0" text="Drug name" />
+                <TextField fx:id="drugNameField" layoutX="18.0" layoutY="171.0" />
+                <Label layoutX="20.0" layoutY="154.0" text="Drug name" />
+               <TextField fx:id="idNameField" layoutX="18.0" layoutY="120.0" />
+               <Label layoutX="20.0" layoutY="103.0" text="ID" />
             </children>
          </AnchorPane>
        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="279.0" prefWidth="383.0">

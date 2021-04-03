@@ -25,6 +25,10 @@ public class Room {
         this.name = name;
     }
 
+    public int getId() {
+        return id;
+    }
+
     public Drug getDrug(){
         if (drug != null) {
             return drug;
@@ -38,8 +42,12 @@ public class Room {
     }
 
     public Patient getPatient(){
+        if (patient != null) {
+            return patient;
+        }
 
-        return patient;
+        return new Patient(0, "");
+
     }
 
     public void setPatient(Patient patient) {

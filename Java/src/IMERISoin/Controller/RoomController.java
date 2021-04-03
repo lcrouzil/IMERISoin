@@ -62,6 +62,8 @@ public class RoomController implements Initializable, Refresh {
     @FXML
     private TableColumn<Room, String> nameTableColumn;
 
+    private MainApp mainApp;
+
     @FXML
     private void pushRoom1(ActionEvent event) {
         event.consume();
@@ -93,7 +95,21 @@ public class RoomController implements Initializable, Refresh {
         System.out.println("send to room 4");
     }
 
-    private MainApp mainApp;
+    @FXML
+    private void setPatientAction(ActionEvent event) {
+        event.consume();
+
+        System.out.println(roomChoice.getValue().getId());
+        System.out.println(patientChoice.getValue().getId());
+    }
+
+    @FXML
+    private void setMedicineAction(ActionEvent event) {
+        event.consume();
+
+        System.out.println(roomChoice.getValue().getId());
+        System.out.println(drugChoice.getValue().getId());
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -118,7 +134,7 @@ public class RoomController implements Initializable, Refresh {
         roomTableView.setItems(roomData);
 
         idTableColumn.setCellValueFactory(cellData -> cellData.getValue().getIdFx());
-        patientTableColumn.setCellValueFactory(cellData -> cellData.getValue().getPatient().getNameFx());
+        patientTableColumn.setCellValueFactory(cellData -> cellData.getValue().getPatient().getIdFx());
         drugTableColumn.setCellValueFactory(cellData -> cellData.getValue().getDrug().getNameFx());
         pathTableColumn.setCellValueFactory(cellData -> cellData.getValue().getPathFx());
         nameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());

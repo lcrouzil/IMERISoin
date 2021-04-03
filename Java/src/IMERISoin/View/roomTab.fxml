@@ -22,12 +22,12 @@
                   <children>
                      <ChoiceBox fx:id="drugChoice" layoutX="21.0" layoutY="164.0" prefWidth="150.0" />
                      <ChoiceBox fx:id="roomChoice" layoutX="21.0" layoutY="44.0" prefWidth="150.0" />
-                     <Button layoutX="183.0" layoutY="164.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="92.0" text="Set Medicine" />
+                     <Button fx:id="setMedicineButton" layoutX="183.0" layoutY="164.0" mnemonicParsing="false" onAction="#setMedicineAction" prefHeight="25.0" prefWidth="92.0" text="Set Medicine" />
                      <Label layoutX="21.0" layoutY="147.0" text="Medicine" />
                      <Label layoutX="21.0" layoutY="27.0" text="Room" />
                      <ChoiceBox fx:id="patientChoice" layoutX="21.0" layoutY="100.0" prefWidth="150.0" />
                      <Label layoutX="21.0" layoutY="83.0" text="Patient" />
-                     <Button layoutX="183.0" layoutY="100.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="92.0" text="Set Patient" />
+                     <Button fx:id="setPatientButton" layoutX="183.0" layoutY="100.0" mnemonicParsing="false" onAction="#setPatientAction" prefHeight="25.0" prefWidth="92.0" text="Set Patient" />
                   </children>
                </AnchorPane>
             </children>

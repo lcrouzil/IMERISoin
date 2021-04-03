@@ -56,10 +56,30 @@ public class HttpServices {
                 JsonArray list = rootObj.getAsJsonArray("list"); //just grab the zipcode
 
                 for (JsonElement jsonElement : list) {
-                    JsonObject medicineJ = jsonElement.getAsJsonObject().get("medicine").getAsJsonObject();
-                    Drug drug = new Drug(medicineJ.get("id").getAsInt(), medicineJ.get("name").getAsString());
+
+                    System.out.println(jsonElement);
+
+                    Drug drug = null;
+                    JsonElement medicineJElement = jsonElement.getAsJsonObject().get("medicine");
+
+                    if (!medicineJElement.isJsonNull()) {
+                        System.out.println("not null ");
+                        JsonObject medicineJObject = medicineJElement.getAsJsonObject();
+                        drug = new Drug(medicineJObject.get("id").getAsInt(), medicineJObject.get("name").getAsString());
+                    }
+
+//                    Patient patient = null;
+//                    JsonElement patientJElement = jsonElement.getAsJsonObject().get("patient");
+//
+//                    if (patientJElement != null) {
+//                        JsonObject patientJObject = patientJElement.getAsJsonObject();
+//                        patient = new Patient(patientJObject.get("id").getAsInt());
+//                    }
 
                     Room room = new Gson().fromJson(jsonElement, Room.class);
+
+                    System.out.println(room);
+
                     room.setDrug(drug);
                     rooms.add(room);
                 }
@@ -148,6 +168,8 @@ public class HttpServices {
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
 
+            System.out.println(request.getResponseCode() + " from : " + url);
+
             if (request.getResponseCode() == 200) {
 
                 System.out.println("Medicine : " + medicine + " in room : " + Room);
@@ -158,4 +180,41 @@ public class HttpServices {
 
     }
 
+    public static void addDrug(int drugId, String drugName) {
+        try {
+            URL url = new URL(ROOT_URL + "Patients/setMedicine/" + drugId + "/" + drugName);
+            HttpURLConnection request = (HttpURLConnection) url.openConnection();
+            request.connect();
+
+            System.out.println(request.getResponseCode() + " from : " + url);
+
+            if (request.getResponseCode() == 200) {
+                System.out.println("id : " + drugId + " drugName : " + drugName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void addPatient(int patientID) {
+
+    }
+
+    public static void setPatientCondition(int patientID, String status) {
+
+        try {
+            URL url = new URL(ROOT_URL + "Patients/setPatientCondition/" + patientID + "/" + status);
+            HttpURLConnection request = (HttpURLConnection) url.openConnection();
+            request.connect();
+
+            System.out.println(request.getResponseCode() + " from : " + url);
+
+            if (request.getResponseCode() == 200) {
+                System.out.println("nSeSo : " + patientID + " Status : " + status);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
