@@ -22,7 +22,7 @@ def newMedicine(medicine: int, name: str):
 
 
 # Nouveau patient dans une room donnée (selon la semaine donnée ou en cours)
-def newPatient(room: int, patientID: int, name: str, week: int):
+def newPatient(room: int, patientID: int, name: str, week: int = 0):
     add_patient(patientID, name)
     # week = str(week)
     # week = datetime.strptime(week, "%Y%m%d").strftime("%Y/%m/%d")
@@ -35,19 +35,22 @@ def newPatient(room: int, patientID: int, name: str, week: int):
 
 # Crée ou modifie une chambre
 def newRoom(room: int, name: str, path: str):
-    add_room(room,path,name)
+    add_room(room, name, path)
     return 1
 
 
 # Renvoie l'état de santé d'un patient entre "Cured"/"Stable"/"Dead"
-def patientCondition(patientID: int):
+def patientCondition(patientID: int, condition: str):
     # Questionner la database
     return {"condition": condition}
 
 
 # Définit la condition du patient entre cured/stable/dead
-def newPatientCondition(patientID: int, condition: str):
+def newPatientCondition(patient_id: int, condition: str):
     # Ajouter dans la database entre "cured"/"stable"/"dead"
+
+    set_patient_status(patient_id, condition)
+
     if (1):
         code = 200
     else:
@@ -56,8 +59,8 @@ def newPatientCondition(patientID: int, condition: str):
 
 
 # Définit le médicament à donner dans la room pour la semaine indiquée (ou semaine en cours si paramètre pas donné)
-def newRoomMedicine(room: int, medicine: int, week: Optional[int]=0):
-    set_room_medicine(room,medicine,week)
+def newRoomMedicine(room: int, medicine: int, week: Optional[int] = 0):
+    set_room_medicine(room, medicine, week)
     if (True):
         code = 200
     else:
@@ -68,10 +71,10 @@ def newRoomMedicine(room: int, medicine: int, week: Optional[int]=0):
 # Retourne le médicament à fournir dans la room
 def roomMedicine(room: int, week: Optional[int] = 0):
     tab = []
-    tab = get_room_medicine(room,week)
+    tab = get_room_medicine(room, week)
 
     return {"list": tab}
-    
+
 
 # Retourne les éléments en fonction des paramètres optionnels
 def patientStats(week: Optional[int], room: Optional[int], medicine: Optional[int], state: Optional[str]):
@@ -83,7 +86,7 @@ def patientStats(week: Optional[int], room: Optional[int], medicine: Optional[in
 def getMedicines():
     tab = []
     for id, name in get_medicine():
-        tab.append({"medicine": id, "name": name})
+        tab.append({"id": id, "name": name})
         # tab[id] = name
 
     print(tab)
@@ -95,8 +98,8 @@ def getMedicines():
 def getPatients():
     # Database : pareil que getMedicines?
     tab = []
-    for id, name, status in get_patient():
-        tab.append({"id": id, "name": name, "status": status})
+    for id, status in get_patient():
+        tab.append({"id": id, "status": status})
 
     print(tab)
 
@@ -131,20 +134,20 @@ def getRobots():
 # Ajouter la consigne medicament pour telle room (status "to do")
 def newOrder(room: int):
     code = 200
-    if isinstance(room,(int,float)) == False :
+    if isinstance(room, (int, float)) == False:
         code = 404
         error = "La room doit être un int"
-    else :
+    else:
         add_order(room)
     return {"code": code}
-
 
 
 # Lit la première consigne disponible
 def firstOrder():
     order = {}
     order = get_order()
-    return {"order" : order[0], "room": order[1], "medicine": order[2]}
+    return {"order": order[0], "room": order[1], "medicine": order[2]}
+
 
 # TEST ORDER
 def OrderTest():
@@ -155,6 +158,7 @@ def OrderTest():
     print(tab)
 
     return {"robots": tab}
+
 
 # Retourne le statut d'avancement de la consigne
 def runningOrder(order: str, status=""):
@@ -202,3 +206,45 @@ def robotLost(robot: int):
     else:
         code = 404
     return {"code": code}
+
+
+def getJsonObjectRoom():
+    tab = []
+    for room_id, room_path, room_name, patient_id, patient_status, drug_id, drug_name in get_room_join():
+
+        patient = None
+
+        if patient_id is not None:
+            patient = {
+                "id": patient_id,
+                "status": patient_status
+            }
+
+        drug = None
+        if drug_id is not None:
+            drug = {
+                "id": drug_id,
+                "name": drug_name
+            }
+
+        tab.append({"id": room_id,
+                    "patient": patient,
+                    "medicine": drug,
+                    "path": room_path,
+                    "name": room_name
+                    })
+
+        # tab.append({"id": room_id,
+        #             "patient": {
+        #                 "id": patient_id,
+        #                 "status": patient_status
+        #             },
+        #             "medicine": {
+        #                 "id": drug_id,
+        #                 "name": drug_name
+        #             },
+        #             "path": room_path,
+        #             "name": room_name
+        #             })
+
+    return {"list": tab}
