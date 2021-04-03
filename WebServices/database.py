@@ -9,8 +9,9 @@ databaseName = "ImeriSoin.db"
 
 
 def connectBase():
-    ''' return a connector to the database
-    '''
+    """ return a connector to the database
+    """
+
     try:
         conn = sqlite3.connect(databaseName)
         return conn
@@ -19,10 +20,10 @@ def connectBase():
 
 
 def baseExists():
-    ''' check if a database exists with the appropriate name
+    """ check if a database exists with the appropriate name
             . we check if the file exists
             . AND we check if we can open it as a sqlite3 database
-    '''
+    """
     file = Path(databaseName)
     if file.exists() and connectBase():
         return True
@@ -30,14 +31,14 @@ def baseExists():
 
 
 def createBase():
-    ''' create the database with the tables room,patient
-        '''
+    """ create the database with the tables room,patient
+    """
 
-    # création de la base
+    # create database
     try:
         conn = sqlite3.connect(databaseName)
     except Error as e:
-        quit
+        quit()
 
     c = conn.cursor()
 
@@ -61,7 +62,6 @@ def createBase():
             id     INTEGER not null
                 constraint patient_pk
                     primary key,
-            name   text    not null,
             status text
         );
     ''')
@@ -139,7 +139,7 @@ def insert_base():
     add_room(4, "0F5F6R4R5L", "B4")
 
 
-def add_room(id, path="", name=""):
+def add_room(id, name="", path=""):
     if not isinstance(id, int): return "id not correct"
 
     is_exist = findSQL(f'''
@@ -220,35 +220,42 @@ def set_medicine(id, name):
 def get_patient():
     rows = findSQL("SELECT * FROM patient;")
 
-    for id, name, status in rows:
-        yield id, name, status
+    for id, status in rows:
+        yield id, status
 
 
-def add_patient(id, name):
+def set_patient_status(patient_id: int, status: str):
+
+    executeSQL(f'''
+        UPDATE patient SET status = '{status}' WHERE id = {patient_id}
+    ''')
+
+
+def add_patient(id):
     if not isinstance(id, int): return "id not correct"
-    if not isinstance(name, str) or len(name) <= 0: return "name not correct"
     # if not isinstance(status, str) or len(status) <= 0: return "name not correct"
 
-    is_exist = findSQL(f'''
-            SELECT CASE WHEN EXISTS (
-                SELECT *
-                FROM patient
-                WHERE id = {id}
-            )
-            THEN CAST(1 AS BIT)
-            ELSE CAST(0 AS BIT) END;
-        ''').fetchone()[0]
+    # is_exist = findSQL(f'''
+    #         SELECT CASE WHEN EXISTS (
+    #             SELECT *
+    #             FROM patient
+    #             WHERE id = {id}
+    #         )
+    #         THEN CAST(1 AS BIT)
+    #         ELSE CAST(0 AS BIT) END;
+    #     ''').fetchone()[0]
+    #
+    # print("rows :", is_exist)
 
-    print("rows :", is_exist)
+    # if is_exist:
+    #     executeSQL(f'''
+    #         UPDATE patient SET name = '{name}' WHERE id = {id};
+    #     ''')
+    # else:
 
-    if is_exist:
-        executeSQL(f'''
-            UPDATE patient SET name = '{name}' WHERE id = {id};
-        ''')
-    else:
-        executeSQL(f'''
-            INSERT INTO patient (id, name) VALUES ({id}, '{name}');
-        ''')
+    executeSQL(f'''
+        INSERT INTO patient (id) VALUES ({id});
+    ''')
 
 
 def get_robot():
@@ -299,7 +306,6 @@ def get_room_join():
        r.path,
        r.name,
        p.id,
-       p.name,
        p.status,
        d.id,
        d.name
@@ -308,8 +314,8 @@ def get_room_join():
          LEFT JOIN drug d on r.drug_id = d.id;
     ''').fetchall()
 
-    for room_id, room_path, room_name, patient_id, patient_name, patient_status, drug_id, drug_name in rows:
-        yield room_id, room_path, room_name, patient_id, patient_name, patient_status, drug_id, drug_name
+    for room_id, room_path, room_name, patient_id, patient_status, drug_id, drug_name in rows:
+        yield room_id, room_path, room_name, patient_id, patient_status, drug_id, drug_name
 
 
 # help(createBase)
@@ -323,7 +329,7 @@ def __test__():
     print("..", set_medicine(1, "medicament 3"))
     print("..", set_medicine(2, "medicament 4"))
 
-    print("..", add_patient(1, "Patient 4"))
+    print("..", add_patient(1))
 
     for id, name in get_medicine():
         print(id, name)

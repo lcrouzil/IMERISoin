@@ -1,42 +1,37 @@
-from typing import Optional
-
 from fastapi import FastAPI
-
-# call features
-# import features
-
-# for week and timestamp
-import time
-from datetime import datetime
+from features import *
 
 app = FastAPI()
-
-from features import *
 
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"API": "IMERISoin"}
 
 
 # Patients et essais cliniques
-
 @app.get("/Patients/setMedicine/{medicine}/{name}")
 # Définit un nouveau médicament avec un numéro ID et nom
 def setMedicine(medicine: int, name: str):  # (medicine:nb du medoc/name:nom du medoc)
     return newMedicine(medicine, name)
 
 
-@app.get("/Patients/addPatient/{room}/{patientID}/{name}/{week}")
-# Nouveau patient dans une room donnée (selon la semaine donnée ou en cours)
-def addPatient(room: int, patientID: int, name: str, week: int = 0):
-    return newPatient(room, patientID, name, week)
+# Nouveau patient dans une room donnée (selon la semaine donnée)
+@app.get("/Patients/addPatient/{room}/{patient_id}/{name}/{week}")
+def addPatient(room: int, patient_id: int, name: str, week: int):
+    return newPatient(room, patient_id, name, week)
 
 
-@app.get("/Patients/setRoom/{room}/{name}/{path}")
+# Nouveau patient dans une room donnée (selon la semaine en cours)
+@app.get("/Patients/addPatient/{room}/{patient_id}/{name}")
+def addPatient(room: int, patient_id: int, name: str):
+    return newPatient(room, patient_id, name)
+
+
 # Crée ou modifie une chambre
-def setRoom(room: int, path: Optional[str] = "", name: str = ""):
-    return newRoom(room, path, name)
+@app.get("/Patients/setRoom/{room}/{name}/{path}")
+def setRoom(room: int, name: str = "", path: str = ""):
+    return newRoom(room, name, path)
 
 
 @app.get("/Patients/getPatientCondition/{patientID}")
@@ -45,10 +40,10 @@ def getPatientCondition(patientID: int):
     return patientCondition(patientID)
 
 
-@app.get("/Patients/setPatientCondition")
 # Définit la condition du patient entre cured/stable/dead
-def setPatientCondition(patientID: int, condition: str):
-    return newPatientCondition(patientID, condition)
+@app.get("/Patients/setPatientCondition/{patient_id}/{condition}")
+def setPatientCondition(patient_id: int, condition: str):
+    return newPatientCondition(patient_id, condition)
 
 
 @app.get("/Patients/setRoomMedicine/{room}/{medicine}/{week}")

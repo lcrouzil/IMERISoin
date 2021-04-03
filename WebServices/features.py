@@ -22,7 +22,7 @@ def newMedicine(medicine: int, name: str):
 
 
 # Nouveau patient dans une room donnée (selon la semaine donnée ou en cours)
-def newPatient(room: int, patientID: int, name: str, week: int):
+def newPatient(room: int, patientID: int, name: str, week: int = 0):
     add_patient(patientID, name)
     # week = str(week)
     # week = datetime.strptime(week, "%Y%m%d").strftime("%Y/%m/%d")
@@ -35,19 +35,22 @@ def newPatient(room: int, patientID: int, name: str, week: int):
 
 # Crée ou modifie une chambre
 def newRoom(room: int, name: str, path: str):
-    add_room(room, path, name)
+    add_room(room, name, path)
     return 1
 
 
 # Renvoie l'état de santé d'un patient entre "Cured"/"Stable"/"Dead"
-def patientCondition(patientID: int):
+def patientCondition(patientID: int, condition: str):
     # Questionner la database
     return {"condition": condition}
 
 
 # Définit la condition du patient entre cured/stable/dead
-def newPatientCondition(patientID: int, condition: str):
+def newPatientCondition(patient_id: int, condition: str):
     # Ajouter dans la database entre "cured"/"stable"/"dead"
+
+    set_patient_status(patient_id, condition)
+
     if (1):
         code = 200
     else:
@@ -95,8 +98,8 @@ def getMedicines():
 def getPatients():
     # Database : pareil que getMedicines?
     tab = []
-    for id, name, status in get_patient():
-        tab.append({"id": id, "name": name, "status": status})
+    for id, status in get_patient():
+        tab.append({"id": id, "status": status})
 
     print(tab)
 
@@ -207,19 +210,41 @@ def robotLost(robot: int):
 
 def getJsonObjectRoom():
     tab = []
-    for room_id, room_path, room_name, patient_id, patient_name, patient_status, drug_id, drug_name in get_room_join():
+    for room_id, room_path, room_name, patient_id, patient_status, drug_id, drug_name in get_room_join():
+
+        patient = None
+
+        if patient_id is not None:
+            patient = {
+                "id": patient_id,
+                "status": patient_status
+            }
+
+        drug = None
+        if drug_id is not None:
+            drug = {
+                "id": drug_id,
+                "name": drug_name
+            }
+
         tab.append({"id": room_id,
-                    "patient": {
-                        "id": patient_id,
-                        "name": patient_name,
-                        "status": patient_status
-                    },
-                    "medicine": {
-                        "id": drug_id,
-                        "name": drug_name
-                    },
+                    "patient": patient,
+                    "medicine": drug,
                     "path": room_path,
                     "name": room_name
                     })
+
+        # tab.append({"id": room_id,
+        #             "patient": {
+        #                 "id": patient_id,
+        #                 "status": patient_status
+        #             },
+        #             "medicine": {
+        #                 "id": drug_id,
+        #                 "name": drug_name
+        #             },
+        #             "path": room_path,
+        #             "name": room_name
+        #             })
 
     return {"list": tab}
