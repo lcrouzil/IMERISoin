@@ -1,16 +1,13 @@
 package IMERISoin.Model;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import java.util.ArrayList;
-
 public class Drug {
 
-    private int id;
-    private String name;
+    private final int id;
+
+    private final String name;
 
     public Drug(int id, String name) {
         super();
@@ -38,5 +35,12 @@ public class Drug {
     @Override
     public String toString() {
         return id + " " + name;
+    }
+
+    public String debugString() {
+        return "Drug{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

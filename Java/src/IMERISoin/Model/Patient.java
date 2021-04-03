@@ -5,29 +5,24 @@ import javafx.beans.property.StringProperty;
 
 public class Patient {
 
-    private int id;
-
-    private String name;
+    private final int id;
 
     private String status;
 
     /**
      * @param id     id
-     * @param name   Name of Patient
      */
-    public Patient(int id, String name) {
-        this(id, name, null);
+    public Patient(int id) {
+        this(id, null);
     }
 
     /**
      * @param id     id
-     * @param name   Name of Patient
      * @param status Status
      */
-    public Patient(int id, String name, String status) {
+    public Patient(int id, String status) {
         super();
         this.id = id;
-        this.name = name;
         this.status = status;
     }
 
@@ -38,22 +33,16 @@ public class Patient {
         return id;
     }
 
-    /**
-     * @return name of Patient
-     */
-    public String getName() {
-        return name;
+
+    public StringProperty getIdFx() {
+        if (id == 0) {
+            return new SimpleStringProperty("Vide");
+        }
+        return new SimpleStringProperty(String.valueOf(id));
     }
 
-    public StringProperty getNameFx() {
-        return new SimpleStringProperty(name);
-    }
-
-    /**
-     * @param name set Name of Patient
-     */
-    public void setName(String name) {
-        this.name = name;
+    public StringProperty getStatusFx() {
+        return new SimpleStringProperty(status);
     }
 
     /**
@@ -63,14 +52,22 @@ public class Patient {
         return status;
     }
 
-    public StringProperty getStatusFx() {
-        return new SimpleStringProperty(status);
-    }
-
     /**
      * @param status set Status of Patient
      */
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(id);
+    }
+
+    public String debugString() {
+        return "Patient{" +
+                "id=" + id +
+                ", status='" + status + '\'' +
+                '}';
     }
 }

@@ -1,6 +1,5 @@
 package IMERISoin.Model.deserializers;
 
-import IMERISoin.Model.Drug;
 import IMERISoin.Model.Patient;
 import com.google.gson.*;
 
@@ -12,9 +11,8 @@ public class PatientDeserializer implements JsonDeserializer<Patient> {
         JsonObject jObject = jsonElement.getAsJsonObject();
 
         int id = jObject.get("id").getAsInt();
-        String name = jObject.get("name").getAsString();
-        String Status = jObject.get("status").getAsString();
+        String Status = jObject.get("status").toString();
 
-        return new Patient(id, name, Status);
+        return new Patient(id, Status);
     }
 }

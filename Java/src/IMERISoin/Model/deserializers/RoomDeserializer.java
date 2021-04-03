@@ -1,6 +1,7 @@
 package IMERISoin.Model.deserializers;
 
 import IMERISoin.Model.Drug;
+import IMERISoin.Model.Patient;
 import IMERISoin.Model.Room;
 import IMERISoin.services.HttpServices;
 import com.google.gson.*;
@@ -13,11 +14,26 @@ public class RoomDeserializer implements JsonDeserializer<Room> {
         JsonObject jObject = jsonElement.getAsJsonObject();
 
         int id = jObject.get("id").getAsInt();
-        int drug_id = jObject.get("drug_id").getAsInt();
-        int patient_id = jObject.get("patient_id").getAsInt();
+
+        Patient patient = new Gson().fromJson(jObject.get("patient").getAsJsonObject(), Patient.class);
+
+//        JsonObject medicineJ = jObject.get("medicine").getAsJsonObject();
+//        Drug drug = new Drug(medicineJ.get("id").getAsInt(), medicineJ.get("name").toString());
+
+        Drug drug = null;
+        JsonElement medicineJElement = jsonElement.getAsJsonObject().get("medicine");
+
+        if (!medicineJElement.isJsonNull()) {
+            JsonObject medicineJObject = medicineJElement.getAsJsonObject();
+            drug = new Drug(medicineJObject.get("id").getAsInt(), medicineJObject.get("name").getAsString());
+        }
+
+
+        //        Drug drug = new Gson().fromJson(jObject.get("medicine").getAsJsonObject(), Drug.class);
+
         String path = jObject.get("path").getAsString();
         String name = jObject.get("name").getAsString();
 
-        return new Room(id, patient_id, drug_id, path, name);
+        return new Room(id, patient, drug, path, name);
     }
 }

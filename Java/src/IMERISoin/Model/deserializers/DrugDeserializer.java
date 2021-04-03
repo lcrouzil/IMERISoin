@@ -10,8 +10,8 @@ public class DrugDeserializer implements JsonDeserializer<Drug> {
     public Drug deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject jObject = jsonElement.getAsJsonObject();
 
-        int id = jObject.get("medicine").getAsInt();
-        String name = jObject.get("name").getAsString();
+        int id = jObject.get("id").getAsInt();
+        String name = jObject.get("name").toString();
 
         return new Drug(id, name);
     }
