@@ -6,8 +6,7 @@ Afin d'aider les hôpitaux aujourd'hui chargés, nous avons été tâchés de cr
 iront à une chambre apporter des médicaments et qui repartiront à la pharmacie d'où ils sont partis. Ils seront
 contrôlés grâce à un site qui connaîtra leur position et qui les empêchera de se rentrer dedans. De plus, les robots
 auront des chemins prédéfinis pour chaque chambre et suivront des lignes sur le sol. Une base de donnée sera mise en
-place afin de stocker des informations sur les robots, les patients et les médicaments. Tous les échanges entre **
-l'interface**, **le superviseur**, **les robots** et **la base de données** sera fait grâce au **serveur**.
+place afin de stocker des informations sur les robots, les patients et les médicaments. Tous les échanges entre **l'interface**, **le superviseur**, **les robots** et **la base de données** sera fait grâce au **serveur**.
 
 ---
 
