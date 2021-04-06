@@ -32,7 +32,6 @@
 
 //char web[30];
 int numChambre;
-const char* cheminChambre;
 int etat=0;
 int pasloop = 0;
 
@@ -45,6 +44,7 @@ int pos = 0;
 char noeud;
 char dir;
 String direct;
+bool statOrdre= false;
 
 //######################################
 //##                                  ##
@@ -182,6 +182,8 @@ void getOrder()
     return;
   }
   int ordreChambre = order["room"];
+  int orderId=order["order"];
+  int medoc=order["medicine"];
 
 //verif 
   
@@ -192,6 +194,8 @@ void getOrder()
   // Attente :
   delay(2000);  //GET Data at every 2 seconds
 }
+
+
 //######################################
 //##                                  ##
 //##         réseaux demande chemin   ##
@@ -397,11 +401,20 @@ void setup()
 
 void loop()
 {
+  Serial.println(pasloop);
   if(pasloop == 0)
   {
     getOrder();
-    getPath();
-    pasloop++;
+    if(numChambre!=0)
+    {
+      getPath();
+      pasloop++;
+    }
+    else
+    {
+      Serial.println("pas d'ordre");
+    }
+    
   }
     
     //######################################
@@ -420,10 +433,14 @@ void loop()
     
     case 0:
     goAhead();
+    delay(300);
+    /*
     if (!captD && !captG)
     {
       etat=1;
     }
+    */
+    etat = 1;
     break;
     
     //###################################################################################################
@@ -461,6 +478,14 @@ void loop()
     delay(2000);
     dir = direct[iteration];  
     noeud = direct[pos]-'0';
+    if (noeud==numChambre)
+    {
+      Serial.println("chambre");
+      stopRobot();
+      delay(3000);
+      Serial.println("départ de la chambre");
+      
+    }
     
     if ( dir== 'F')
     {
