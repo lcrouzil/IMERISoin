@@ -2,6 +2,7 @@ package IMERISoin.Controller;
 
 import IMERISoin.MainApp;
 import IMERISoin.Model.Drug;
+import IMERISoin.Model.Order;
 import IMERISoin.Model.Patient;
 import IMERISoin.Model.Room;
 import IMERISoin.services.HttpServices;
@@ -18,6 +19,7 @@ import javafx.util.converter.IntegerStringConverter;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 
@@ -61,6 +63,8 @@ public class RoomController implements Initializable, Refresh {
 
     @FXML
     private TableColumn<Room, String> nameTableColumn;
+
+    private ArrayList<Order> orderList = new ArrayList<>();
 
     private MainApp mainApp;
 
@@ -122,6 +126,7 @@ public class RoomController implements Initializable, Refresh {
         mainApp.setRoomsData(new ArrayList<>());
         HttpServices.getRoomList(mainApp.getRoomsData());
 
+        HttpServices.getOrderList(orderList);
     }
 
     @Override
