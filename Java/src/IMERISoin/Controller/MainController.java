@@ -4,6 +4,7 @@ import IMERISoin.MainApp;
 import IMERISoin.Model.Drug;
 import IMERISoin.Model.Patient;
 import IMERISoin.Model.Room;
+import IMERISoin.services.HttpServices;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -97,6 +98,9 @@ public class MainController implements Initializable, Refresh {
             iex.printStackTrace();
         }
 
+        refreshData();
+        refreshView();
+
     }
 
     @Override
@@ -111,6 +115,7 @@ public class MainController implements Initializable, Refresh {
     @Override
     public void refreshData() {
         System.out.println("\nMain : START Refresh Data\n");
+
         for (Refresh controller : controllerList) {
             controller.refreshData();
         }
@@ -121,27 +126,9 @@ public class MainController implements Initializable, Refresh {
         ArrayList<Drug> drugs = mainApp.getDrugsData();
         ArrayList<Patient> patients = mainApp.getPatientsData();
 
-        for (Room room : rooms) {
-//            for (Drug drug : drugs) {
-//                if (room.getDrug_id() == drug.getId()) {
-//                    room.setDrug(drug);
-//                }
-//            }
-
-//            for (Patient patient : patients) {
-//                System.out.println("id : " + room.getPatient_id());
-//                Integer patient_id = room.getPatient_id();
-//                if (patient_id != null && patient_id == patient.getId()) {
-//                    System.out.println(room.getPatient_id() + " == " + patient.getId());
-//                }
-//            }
-
-        }
-
-        for (Room room : mainApp.getRoomsData()) {
-            System.out.println("room drugName : " + room.getDrug().getName());
-        }
-
+        System.out.println(rooms);
+        System.out.println(drugs);
+        System.out.println(patients);
 
 
         System.out.println("\nMain : END Refresh Data\n");

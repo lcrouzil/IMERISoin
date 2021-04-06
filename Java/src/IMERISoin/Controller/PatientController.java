@@ -1,12 +1,9 @@
 package IMERISoin.Controller;
 
 import IMERISoin.MainApp;
-import IMERISoin.MainApp;
-import IMERISoin.Model.Drug;
 import IMERISoin.Model.Patient;
 import IMERISoin.Model.Room;
 import IMERISoin.services.HttpServices;
-import com.sun.security.ntlm.Client;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,7 +13,6 @@ import javafx.scene.control.*;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Observable;
 import java.util.ResourceBundle;
 
 public class PatientController implements Initializable, Refresh {
@@ -29,6 +25,9 @@ public class PatientController implements Initializable, Refresh {
 
     @FXML
     private ChoiceBox<String> clientStatusBox;
+
+    @FXML
+    private ChoiceBox<Room> roomStatusBox;
 
     @FXML
     private TableView<Patient> patientTable;
@@ -45,10 +44,25 @@ public class PatientController implements Initializable, Refresh {
     private MainApp mainApp;
 
     @FXML
-    private void newPatientAction(ActionEvent event) {
+    private void newPatientAction(ActionEvent event) throws NumberFormatException {
         event.consume();
 
-//        HttpServices.addPatient();
+        try {
+            Integer patientID = Integer.parseInt(clientNameField.getText());
+            Integer room = roomStatusBox.getValue().getId();
+
+            System.out.println("PatientID : " + patientID + " room : " + room);
+
+            HttpServices.addPatient(patientID, room);
+
+            refreshData();
+            refreshView();
+        } catch (NumberFormatException e) {
+            System.out.println(e.getMessage() + " not number");
+        }
+
+        System.out.println();
+
     }
 
     @FXML
@@ -83,10 +97,13 @@ public class PatientController implements Initializable, Refresh {
 
     @Override
     public void refreshView() {
-        ObservableList<Patient> roomData = FXCollections.observableArrayList();
-        roomData.addAll(mainApp.getPatientsData());
+        ObservableList<Room> roomData = FXCollections.observableArrayList();
+        roomData.addAll(mainApp.getRoomsData());
+        roomStatusBox.setItems(roomData);
 
-        patientTable.setItems(roomData);
+        ObservableList<Patient> patientData = FXCollections.observableArrayList();
+        patientData.addAll(mainApp.getPatientsData());
+        patientTable.setItems(patientData);
 
         nSSColumn.setCellValueFactory(cellData -> cellData.getValue().getIdFx());
         statusColumn.setCellValueFactory(cellData -> cellData.getValue().getStatusFx());
@@ -101,7 +118,6 @@ public class PatientController implements Initializable, Refresh {
 
         refreshData();
         refreshView();
-
     }
 
     /**

@@ -80,7 +80,7 @@ public class HttpServices {
 
                     System.out.println(room);
 
-                    room.setDrug(drug);
+//                    room.setDrug(drug);
                     rooms.add(room);
                 }
             }
@@ -143,6 +143,32 @@ public class HttpServices {
             e.printStackTrace();
         }
     }
+    public static void getRoomList(ArrayList<Room> rooms) {
+
+        try {
+            URL url = new URL(ROOT_URL + "Patients/listRooms");
+            HttpURLConnection request = (HttpURLConnection) url.openConnection();
+            request.connect();
+
+            System.out.println(request.getResponseCode() + " from : " + url);
+
+            if (request.getResponseCode() == 200) {
+
+                JsonParser jp = new JsonParser(); //from gson
+                JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
+                JsonObject rootObj = root.getAsJsonObject(); //May be an array, may be an object.
+                JsonArray list = rootObj.getAsJsonArray("list"); //just grab the zipcode
+
+                for (JsonElement jsonElement : list) {
+
+                    rooms.add(new Gson().fromJson(jsonElement, Room.class));
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void addOrder(int room_id) {
         try {
@@ -197,8 +223,31 @@ public class HttpServices {
 
     }
 
-    public static void addPatient(int patientID) {
+    public static void addPatient(Integer patient_id, Integer room) {
+        addPatient(patient_id, room, null);
+    }
+    public static void addPatient(Integer patient_id, Integer room, Integer week) {
+        try {
 
+            String sURL = ROOT_URL + "Patients/addPatient/" + room + "/" + patient_id;
+
+            if (week != null) {
+                sURL = sURL + "/" + week;
+            }
+
+            URL url = new URL(sURL);
+
+            HttpURLConnection request = (HttpURLConnection) url.openConnection();
+            request.connect();
+
+            System.out.println(request.getResponseCode() + " from : " + url);
+
+            if (request.getResponseCode() == 200) {
+                System.out.println("id : " + patient_id + " drugName : " + room + " on week " + week);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void setPatientCondition(int patientID, String status) {

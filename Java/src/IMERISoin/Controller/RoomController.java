@@ -120,7 +120,7 @@ public class RoomController implements Initializable, Refresh {
     @Override
     public void refreshData() {
         mainApp.setRoomsData(new ArrayList<>());
-        HttpServices.getObjectRoom(mainApp.getRoomsData());
+        HttpServices.getRoomList(mainApp.getRoomsData());
 
     }
 
@@ -134,8 +134,8 @@ public class RoomController implements Initializable, Refresh {
         roomTableView.setItems(roomData);
 
         idTableColumn.setCellValueFactory(cellData -> cellData.getValue().getIdFx());
-        patientTableColumn.setCellValueFactory(cellData -> cellData.getValue().getPatient().getIdFx());
-        drugTableColumn.setCellValueFactory(cellData -> cellData.getValue().getDrug().getNameFx());
+//        patientTableColumn.setCellValueFactory(cellData -> cellData.getValue().getPatient().getIdFx());
+//        drugTableColumn.setCellValueFactory(cellData -> cellData.getValue().getDrug().getNameFx());
         pathTableColumn.setCellValueFactory(cellData -> cellData.getValue().getPathFx());
         nameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
 

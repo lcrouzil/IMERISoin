@@ -7,20 +7,12 @@ import javafx.beans.value.ObservableValue;
 public class Room {
 
     private int id;
-    private Patient patient;
-    private Drug drug;
     private String path;
     private String name;
 
     public Room(int id, String path, String name) {
-        this(id, null, null, path, name);
-    }
-
-    public Room(int id, Patient patient, Drug drug, String path, String name){
         super();
         this.id = id;
-        this.patient = patient;
-        this.drug = drug;
         this.path = path;
         this.name = name;
     }
@@ -29,30 +21,6 @@ public class Room {
         return id;
     }
 
-    public Drug getDrug(){
-        if (drug != null) {
-            return drug;
-        }
-
-        return new Drug(0, "");
-    }
-
-    public void setDrug(Drug drug) {
-        this.drug = drug;
-    }
-
-    public Patient getPatient(){
-        if (patient != null) {
-            return patient;
-        }
-
-        return new Patient(0, "");
-
-    }
-
-    public void setPatient(Patient patient) {
-        this.patient = patient;
-    }
 
 
 
@@ -68,18 +36,6 @@ public class Room {
         return new SimpleStringProperty(path);
     }
 
-    public StringProperty getDrugNameFx(){
-        if (drug != null) {
-            System.out.println("drug not null " + drug.getNameFx());
-            return drug.getNameFx();
-        }
-        System.out.println("drug is null !");
-
-        return new SimpleStringProperty("test");
-    }
-
-
-
     public StringProperty getPatientNameFx() {
         return new SimpleStringProperty("test");
     }
@@ -92,8 +48,6 @@ public class Room {
     public String debugString() {
         return "Room{" +
                 "id=" + id +
-                ", patient=" + patient +
-                ", drug=" + drug +
                 ", path='" + path + '\'' +
                 ", name='" + name + '\'' +
                 '}';

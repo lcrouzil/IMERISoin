@@ -6,12 +6,13 @@
 <AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="IMERISoin.Controller.PatientController">
     <SplitPane dividerPositions="0.49150622876557193">
         <AnchorPane minWidth="300.0">
-            <Button fx:id="clientNewButton" layoutX="191.0" layoutY="37.0" mnemonicParsing="false" onAction="#newPatientAction" text="new Patient" />
+            <Button fx:id="clientNewButton" layoutX="196.0" layoutY="88.0" mnemonicParsing="false" onAction="#newPatientAction" text="new Patient" />
             <Label layoutX="21.0" layoutY="20.0" text="n° Sécurité Sociale" />
             <TextField fx:id="clientNameField" layoutX="18.0" layoutY="37.0" />
-            <Label layoutX="21.0" layoutY="92.0" text="Status" />
-            <ChoiceBox fx:id="clientStatusBox" layoutX="21.0" layoutY="109.0" prefHeight="25.0" prefWidth="149.0" />
-         <Button fx:id="setPatientStatusAction" layoutX="21.0" layoutY="156.0" mnemonicParsing="false" onAction="#setPatientStatusAction" text="Set Status" />
+            <Label layoutX="18.0" layoutY="130.0" text="Status" />
+            <ChoiceBox fx:id="clientStatusBox" layoutX="18.0" layoutY="147.0" prefHeight="25.0" prefWidth="149.0" />
+         <Button fx:id="setPatientStatusAction" layoutX="196.0" layoutY="147.0" mnemonicParsing="false" onAction="#setPatientStatusAction" prefWidth="78.0" text="Set Status" />
+         <ChoiceBox fx:id="roomStatusBox" layoutX="18.0" layoutY="88.0" prefHeight="25.0" prefWidth="149.0" />
         </AnchorPane>
         <AnchorPane>
             <TableView fx:id="patientTable" layoutX="2.0" prefHeight="591.0" prefWidth="446.0">
