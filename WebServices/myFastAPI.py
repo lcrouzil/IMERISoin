@@ -17,15 +17,15 @@ def setMedicine(medicine: int, name: str):  # (medicine:nb du medoc/name:nom du 
 
 
 # Nouveau patient dans une room donnée (selon la semaine donnée)
-@app.get("/Patients/addPatient/{room}/{patient_id}/{name}/{week}")
-def addPatient(room: int, patient_id: int, name: str, week: int):
-    return newPatient(room, patient_id, name, week)
+@app.get("/Patients/addPatient/{room}/{patient_id}/{week}")
+def addPatient(room: int, patient_id: int, week: int):
+    return newPatient(room, patient_id, week)
 
 
 # Nouveau patient dans une room donnée (selon la semaine en cours)
-@app.get("/Patients/addPatient/{room}/{patient_id}/{name}")
-def addPatient(room: int, patient_id: int, name: str):
-    return newPatient(room, patient_id, name)
+@app.get("/Patients/addPatient/{room}/{patient_id}")
+def addPatient(room: int, patient_id: int):
+    return newPatient(room, patient_id)
 
 
 # Crée ou modifie une chambre
