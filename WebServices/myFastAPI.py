@@ -88,6 +88,10 @@ def listRobots():
     return getRobots()  # NE FONCTIONNE PAS
 
 
+@app.get("/Patients/listOrders")
+# Retourne la liste de tous les robots
+def listOrders():
+    return getOrders()  # NE FONCTIONNE PAS
 # Gestion des robots et des consignes
 
 

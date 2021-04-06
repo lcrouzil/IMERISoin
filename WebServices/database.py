@@ -159,10 +159,10 @@ def findSQL(s_SQL):
 
 
 def insert_base():
-    add_room(1, "0F5F6F7L2L1F5R", "B1")
-    add_room(2, "0F5F6L1L5R", "B2")
-    add_room(3, "0F5F6F7R3R4F5L", "B3")
-    add_room(4, "0F5F6R4R5L", "B4")
+    add_room(1, "B1", "0F5F6F7L2L1F5R")
+    add_room(2, "B2", "0F5F6L1L5R")
+    add_room(3, "B3", "0F5F6F7R3R4F5L")
+    add_room(4, "B4", "0F5F6R4R5L")
 
 
 def add_room(id, name="", path=""):
@@ -189,9 +189,10 @@ def add_room(id, name="", path=""):
 # todo add getter room
 def get_room():
     rows = findSQL("SELECT * FROM room;").fetchall()
+    print(rows)
 
-    for id, patient_id, drug_id, path, name in rows:
-        yield id, patient_id, drug_id, path, name
+    for id, name, path in rows:
+        yield id, name, path
 
 
 def set_room_medicine(room: int, medicine: int, week: int = None):
@@ -278,18 +279,33 @@ def set_patient_status(patient_id: int, status: str):
 
 
 def add_patient(id: int, room: int, week: int = None):
-    executeSQL(f"""
-        INSERT INTO patient (id) VALUES ({id})
-    """)
+    is_exist = findSQL(f'''
+            SELECT CASE WHEN EXISTS (
+                SELECT * 
+                FROM patient
+                WHERE id = {id}
+            )
+            THEN CAST(1 AS BIT)
+            ELSE CAST(0 AS BIT) END;
+        ''').fetchone()[0]
+
+    if not is_exist:
+        executeSQL(f"""
+            INSERT INTO patient (id) VALUES ({id})
+        """)
 
     if week is not None:
         executeSQL(f"""
-            INSERT INTO patient_room (patient_id, room_id, week)VALUES ({id}, {room}, {week})
+            INSERT INTO patient_room (patient_id, room_id, week) VALUES ({id}, {room}, {week})
         """)
     else:
         executeSQL(f"""
-            INSERT INTO patient_room (patient_id, room_id)VALUES ({id}, {room})
+            INSERT INTO patient_room (patient_id, room_id) VALUES ({id}, {room})
         """)
+
+    return True
+
+    return False
 
 
 def get_robot():
@@ -302,6 +318,24 @@ def get_robot():
 # todo add setter robot
 def set_robot():
     pass
+
+
+def get_orders():
+    rows = findSQL(f"""
+        SELECT o.id, o.room_id, r.name, dr.drug_id, d.name, o.status, o.timestamp
+        FROM orders o
+                 JOIN room r on r.id = o.room_id
+                 JOIN drug_room dr ON r.id = dr.room_id
+                 JOIN drug d ON dr.drug_id = d.id
+        WHERE dr.week = (strftime('%W%Y', datetime()))
+    """).fetchall()
+
+    print("rows : ", rows)
+
+    for id, room_id, room_name, drug_id, drug_name, status, timestamp in rows:
+        room = str(room_id) + " " + room_name
+        drug = str(drug_id) + " " + drug_name
+        yield id, room, drug, status, timestamp
 
 
 def get_order():

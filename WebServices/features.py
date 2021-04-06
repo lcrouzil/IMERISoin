@@ -22,15 +22,12 @@ def newMedicine(medicine: int, name: str):
 
 
 # Nouveau patient dans une room donnée (selon la semaine donnée ou en cours)
-def newPatient(room: int, patientID: int, name: str, week: int = 0):
-    add_patient(patientID, name)
-    # week = str(week)
-    # week = datetime.strptime(week, "%Y%m%d").strftime("%Y/%m/%d")
-    if (True):
+def newPatient(room: int, patientID: int, week: int = None):
+    if add_patient(patientID, room, week):
         code = 200
     else:
         code = 404
-    return {"code": code, "room": room, "patientID": patientID, "name": name, "week": week}
+    return {"code": code, "room": room, "patientID": patientID, "week": week}
 
 
 # Crée ou modifie une chambre
@@ -109,8 +106,8 @@ def getPatients():
 # Retourne la liste de toutes les rooms
 def getRooms():
     tab = []
-    for id, patient_id, drug_id, path, name in get_room():
-        tab.append({"id": id, "patient_id": patient_id, "drug_id": drug_id, "path": path, "name": name})
+    for id, name, path in get_room():
+        tab.append({"id": id, "path": path, "name": name})
 
     print(tab)
 
@@ -126,6 +123,17 @@ def getRobots():
     print(tab)
 
     return {"robots": tab}
+
+
+def getOrders():
+    tab = []
+    for id, room, drug, status, timestamp in get_orders():
+        print("get_orders : ", id, room, drug, status, timestamp)
+        tab.append({"id": id, "room": room, "drug": drug, "status": status, "timestamp": timestamp})
+
+    print(tab)
+
+    return {"list": tab}
 
 
 # Gestion des robots et des consignes
