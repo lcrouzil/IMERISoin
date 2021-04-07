@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 
-public class RoomController implements Initializable, Refresh {
+public class RoomController extends MainController implements Initializable, Refresh {
 
     @FXML
     private Button buttonRoom1;
@@ -161,22 +161,17 @@ public class RoomController implements Initializable, Refresh {
     }
 
     @Override
-    public void refreshView() {
-
+    public void refreshTable() {
         ObservableList<Room> roomData = FXCollections.observableArrayList();
         roomData.addAll(mainApp.getRoomsData());
         roomTableView.setItems(roomData);
 
         idTableColumn.setCellValueFactory(cellData -> cellData.getValue().getIdFx());
-//        patientTableColumn.setCellValueFactory(cellData -> cellData.getValue().getPatient().getIdFx());
-//        drugTableColumn.setCellValueFactory(cellData -> cellData.getValue().getDrug().getNameFx());
         pathTableColumn.setCellValueFactory(cellData -> cellData.getValue().getPathFx());
         nameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
 
-
         ObservableList<Order> ordersData = FXCollections.observableArrayList();
         ordersData.addAll(orderList);
-
         orderTableView.setItems(ordersData);
 
         idOrderTableColumn.setCellValueFactory(cellData -> cellData.getValue().getIdFx());
@@ -184,13 +179,15 @@ public class RoomController implements Initializable, Refresh {
         drugOrderTableColumn.setCellValueFactory(cellData -> cellData.getValue().getDrugFx());
         statusOrderTableColumn.setCellValueFactory(cellData -> cellData.getValue().getStatusFx());
         dateOrderTableColumn.setCellValueFactory(cellData -> cellData.getValue().getDateFx());
+    }
+
+    @Override
+    public void refreshView() {
+        refreshTable();
 
     }
 
     public void setMain(MainApp mainApp) {
         this.mainApp = mainApp;
-
-        refreshData();
-        refreshView();
     }
 }

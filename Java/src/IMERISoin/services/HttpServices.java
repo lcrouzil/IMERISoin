@@ -5,6 +5,7 @@ import IMERISoin.Model.Order;
 import IMERISoin.Model.Patient;
 import IMERISoin.Model.Room;
 import com.google.gson.*;
+import com.sun.jmx.snmp.tasks.Task;
 import com.sun.org.apache.xpath.internal.operations.Or;
 import sun.net.www.protocol.http.HttpURLConnection;
 
@@ -39,57 +40,6 @@ public class HttpServices {
 //    private static final String ROOT_URL = "http://172.20.10.2:8000/";
     private static final String ROOT_URL = "http://127.0.0.1:8000/";
 
-
-    public static void getObjectRoom(ArrayList<Room> rooms) throws JsonParseException {
-
-        try {
-            URL url = new URL(ROOT_URL + "Patients/getObjectRoom");
-            HttpURLConnection request = (HttpURLConnection) url.openConnection();
-            request.connect();
-
-            System.out.println(request.getResponseCode() + " from : " + url);
-
-            if (request.getResponseCode() == 200) {
-
-                JsonParser jp = new JsonParser(); //from gson
-                JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
-                JsonObject rootObj = root.getAsJsonObject(); //May be an array, may be an object.
-                JsonArray list = rootObj.getAsJsonArray("list"); //just grab the zipcode
-
-                for (JsonElement jsonElement : list) {
-
-//                    System.out.println(jsonElement);
-
-                    Drug drug = null;
-                    JsonElement medicineJElement = jsonElement.getAsJsonObject().get("medicine");
-
-                    if (!medicineJElement.isJsonNull()) {
-//                        System.out.println("not null ");
-                        JsonObject medicineJObject = medicineJElement.getAsJsonObject();
-                        drug = new Drug(medicineJObject.get("id").getAsInt(), medicineJObject.get("name").getAsString());
-                    }
-
-//                    Patient patient = null;
-//                    JsonElement patientJElement = jsonElement.getAsJsonObject().get("patient");
-//
-//                    if (patientJElement != null) {
-//                        JsonObject patientJObject = patientJElement.getAsJsonObject();
-//                        patient = new Patient(patientJObject.get("id").getAsInt());
-//                    }
-
-                    Room room = new Gson().fromJson(jsonElement, Room.class);
-
-
-//                    room.setDrug(drug);
-                    rooms.add(room);
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void getDrugList(ArrayList<Drug> drugs) {
 
         try {
@@ -113,7 +63,7 @@ public class HttpServices {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getCause() + " : " + e.getMessage());
         }
     }
 
@@ -174,7 +124,7 @@ public class HttpServices {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getCause() + " : " + e.getMessage());
         }
     }
 
@@ -217,77 +167,119 @@ public class HttpServices {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getCause() + " : " + e.getMessage());;
         }
     }
 
     public static void addOrder(int room_id) {
-        try {
-            URL url = new URL(ROOT_URL + "addOrder/" + room_id);
-            HttpURLConnection request = (HttpURLConnection) url.openConnection();
-            request.connect();
 
-            System.out.println(request.getResponseCode() + " from : " + url);
+        Task task = new Task() {
+            @Override
+            public void cancel() {
 
-            if (request.getResponseCode() == 200) {
-
-                JsonParser jp = new JsonParser();
-                JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
-                JsonObject rootObj = root.getAsJsonObject(); //May be an array, may be an object.
-                int code = rootObj.get("code").getAsInt(); //just grab the zipcode
-
-                if (code == 404) {
-                    System.out.println("404");
-                }
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL(ROOT_URL + "addOrder/" + room_id);
+                    HttpURLConnection request = (HttpURLConnection) url.openConnection();
+                    request.connect();
+
+                    System.out.println(request.getResponseCode() + " from : " + url);
+
+                    if (request.getResponseCode() == 200) {
+
+                        JsonParser jp = new JsonParser();
+                        JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
+                        JsonObject rootObj = root.getAsJsonObject(); //May be an array, may be an object.
+                        int code = rootObj.get("code").getAsInt(); //just grab the zipcode
+
+                        if (code == 404) {
+                            System.out.println("404");
+                        }
+                    }
+
+                } catch (Exception e) {
+                    System.out.println(e.getCause() + " : " + e.getMessage());
+                }
+
+            }
+        };
+        new Thread(task).start();
+
     }
 
     public static void setRoomMedicine(Integer Room, Integer medicine) {
         setRoomMedicine(Room, medicine, null);
     }
+
     public static void setRoomMedicine(Integer Room, Integer medicine, Integer week) {
-        try {
-            URL url;
 
-            if (week != null) {
-                url = new URL(ROOT_URL + "setRoomMedicine/" + Room + "/" + medicine + "/" + week);
-            } else {
-                url = new URL(ROOT_URL + "setRoomMedicine/" + Room + "/" + medicine);
+        Task task = new Task() {
+            @Override
+            public void cancel() {
+
             }
 
-            HttpURLConnection request = (HttpURLConnection) url.openConnection();
-            request.connect();
+            @Override
+            public void run() {
 
-            System.out.println(request.getResponseCode() + " from : " + url);
+                try {
+                    URL url;
 
-            if (request.getResponseCode() == 200) {
+                    if (week != null) {
+                        url = new URL(ROOT_URL + "setRoomMedicine/" + Room + "/" + medicine + "/" + week);
+                    } else {
+                        url = new URL(ROOT_URL + "setRoomMedicine/" + Room + "/" + medicine);
+                    }
 
-                System.out.println("Medicine : " + medicine + " in room : " + Room);
+                    HttpURLConnection request = (HttpURLConnection) url.openConnection();
+                    request.connect();
+
+                    System.out.println(request.getResponseCode() + " from : " + url);
+
+                    if (request.getResponseCode() == 200) {
+
+                        System.out.println("Medicine : " + medicine + " in room : " + Room);
+                    }
+                } catch (Exception e) {
+                    System.out.println(e.getCause() + " : " + e.getMessage());
+                }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        };
+        new Thread(task).start();
+
 
     }
 
     public static void addDrug(int drugId, String drugName) {
-        try {
-            URL url = new URL(ROOT_URL + "setMedicine/" + drugId + "/" + drugName);
-            HttpURLConnection request = (HttpURLConnection) url.openConnection();
-            request.connect();
 
-            System.out.println(request.getResponseCode() + " from : " + url);
+        Task task = new Task() {
+            @Override
+            public void cancel() {
 
-            if (request.getResponseCode() == 200) {
-                System.out.println("id : " + drugId + " drugName : " + drugName);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+            @Override
+            public void run() {
+
+                try {
+                    URL url = new URL(ROOT_URL + "setMedicine/" + drugId + "/" + drugName);
+                    HttpURLConnection request = (HttpURLConnection) url.openConnection();
+                    request.connect();
+
+                    System.out.println(request.getResponseCode() + " from : " + url);
+
+                    if (request.getResponseCode() == 200) {
+                        System.out.println("id : " + drugId + " drugName : " + drugName);
+                    }
+                } catch (Exception e) {
+                    System.out.println(e.getCause() + " : " + e.getMessage());
+                }
+            }
+        };
+        new Thread(task).start();
 
     }
 
@@ -328,26 +320,39 @@ public class HttpServices {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getCause() + " : " + e.getMessage());
         }
 
         return null;
     }
 
     public static void setPatientCondition(int patientID, String status) {
+        Task task = new Task() {
+            @Override
+            public void cancel() {
 
-        try {
-            URL url = new URL(ROOT_URL + "setPatientCondition/" + patientID + "/" + status);
-            HttpURLConnection request = (HttpURLConnection) url.openConnection();
-            request.connect();
-
-            System.out.println(request.getResponseCode() + " from : " + url);
-
-            if (request.getResponseCode() == 200) {
-                System.out.println("nSeSo : " + patientID + " Status : " + status);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL(ROOT_URL + "setPatientCondition/" + patientID + "/" + status);
+                    HttpURLConnection request = (HttpURLConnection) url.openConnection();
+                    request.connect();
+
+                    System.out.println(request.getResponseCode() + " from : " + url);
+
+                    if (request.getResponseCode() == 200) {
+                        System.out.println("nSeSo : " + patientID + " Status : " + status);
+                    }
+                } catch (Exception e) {
+                    System.out.println(e.getCause() + " : " + e.getMessage());
+                }
+
+            }
+        };
+
+        new Thread(task).start();
+
     }
 }

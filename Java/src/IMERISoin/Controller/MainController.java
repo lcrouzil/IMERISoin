@@ -2,6 +2,7 @@ package IMERISoin.Controller;
 
 import IMERISoin.MainApp;
 import com.sun.jmx.snmp.tasks.Task;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -9,11 +10,14 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Popup;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainController implements Initializable, Refresh {
 
@@ -32,10 +36,11 @@ public class MainController implements Initializable, Refresh {
     private MainApp mainApp;
 
     @FXML
-    private void refreshAction() {
-
-        refreshData();
-        refreshView();
+    public void refreshAction() {
+        new Thread(() -> {
+            refreshData();
+            refreshView();
+        }).start();
     }
 
     private final ArrayList<Refresh> controllerList = new ArrayList<>();
@@ -68,7 +73,6 @@ public class MainController implements Initializable, Refresh {
             AnchorPane anchorDrug = loader.load();
             drugTab.setContent(anchorDrug);
 
-//            System.out.println(loader.getController().toString());
             DrugController controller = loader.getController();
             controllerList.add(controller);
             controller.setMain(mainApp);
@@ -99,6 +103,8 @@ public class MainController implements Initializable, Refresh {
 
         refreshAction();
 
+        startGettingData();
+
     }
 
     @Override
@@ -110,22 +116,50 @@ public class MainController implements Initializable, Refresh {
     @Override
     public void refreshData() {
 
-        System.out.println("\nMain : START Refresh Data\n");
-
+        System.out.println("Main : START Refresh Data");
 
         for (Refresh controller : controllerList) {
             controller.refreshData();
         }
+    }
 
-        System.out.println("\nMain : END Refresh Data\n");
+    @Override
+    public void refreshTable() {
+        System.out.println("Main : Refresh Table");
+
+        for (Refresh controller : controllerList) {
+            controller.refreshTable();
+        }
+
     }
 
     @Override
     public void refreshView() {
         System.out.println("Main : Refresh View");
+
         for (Refresh controller : controllerList) {
             controller.refreshView();
         }
+    }
+
+    private void startGettingData() {
+
+        MainApp.pullDataTimer = new Timer();
+        MainApp.pullDataTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+
+                new Thread(() -> pullData()).start();
+
+            }
+        }, 500, 500);
+
+    }
+
+    private void pullData() {
+
+        refreshData();
+        refreshTable();
     }
 
 }

@@ -6,26 +6,27 @@ import IMERISoin.Model.Patient;
 import IMERISoin.Model.Room;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Timer;
 
 public class MainApp extends Application {
 
     private Stage primaryStage;
     private Parent rootLayout;
 
-//    private final ObservableList<Patient> patientsData = FXCollections.observableArrayList();
-//    private final ObservableList<Drug> drugData = FXCollections.observableArrayList();
-//    private final ObservableList<Room> roomsData = FXCollections.observableArrayList();
+    public boolean clockEnd = true;
+    public static Timer pullDataTimer = null;
 
     private ArrayList<Drug> drugsData = new ArrayList<>();
     private ArrayList<Room> roomsData = new ArrayList<>();
@@ -68,21 +69,21 @@ public class MainApp extends Application {
 
             primaryStage.setScene(new Scene(rootLayout, 1400, 900));
             primaryStage.show();
+            primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                @Override
+                public void handle(WindowEvent event) {
+
+                    if(pullDataTimer != null) {
+                        pullDataTimer.cancel();
+                        System.out.println("Timer cancel");
+                    }
+                }
+
+            });
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-//        FXMLLoader loader = new FXMLLoader();
-//        Parent root = loader.load(getClass().getResource("View/main.fxml"));
-//
-//        MainController controller = loader.getController();
-//        System.out.println("controller is : " + controller);
-//        controller.setMain(this);
-
-
-//        primaryStage.setScene(new Scene(root, 1200, 900));
-//        primaryStage.show();
     }
 
     @Override
@@ -92,10 +93,6 @@ public class MainApp extends Application {
                 ", rootLayout=" + rootLayout +
                 ", patientsData=" + patientsData +
                 '}';
-    }
-
-    public void refreshAll() {
-        System.out.println("refresh all");
     }
 
     public static void main(String[] args) {

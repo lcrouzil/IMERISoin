@@ -48,25 +48,14 @@ public class DrugController extends MainController implements Initializable, Ref
             int drugId = Integer.parseInt(idNameField.getText());
             String drugName = drugNameField.getText();
 
-//            int drugId = Integer.parseInt(idNameField.getText());
-
             System.out.println(drugId + " " + drugName);
 
             HttpServices.addDrug(drugId, drugName);
 
-            refreshData();
-            refreshView();
+            refreshAction();
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-
-
-
-//        apiPush("addMedicine/", drugName);
-
-//        if (!drugName.equals("")) {
-//
-//        }
     }
 
     /**
@@ -89,9 +78,8 @@ public class DrugController extends MainController implements Initializable, Ref
 
     }
 
-    public void refreshView() {
-//        System.out.println(mainApp.getDrugsData());
-
+    @Override
+    public void refreshTable() {
         ObservableList<Drug> drugData = FXCollections.observableArrayList();
         drugData.addAll(mainApp.getDrugsData());
 
@@ -101,10 +89,11 @@ public class DrugController extends MainController implements Initializable, Ref
         nameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
     }
 
+    public void refreshView() {
+        refreshTable();
+    }
+
     public void setMain(MainApp mainApp) {
         this.mainApp = mainApp;
-
-        refreshData();
-        refreshView();
     }
 }

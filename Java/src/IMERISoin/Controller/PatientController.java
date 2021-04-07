@@ -5,6 +5,7 @@ import IMERISoin.Model.Drug;
 import IMERISoin.Model.Patient;
 import IMERISoin.Model.Room;
 import IMERISoin.services.HttpServices;
+import com.sun.jmx.snmp.tasks.Task;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -16,7 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class PatientController implements Initializable, Refresh {
+public class PatientController extends MainController implements Initializable, Refresh {
 
     @FXML
     private TextField clientNameField;
@@ -120,14 +121,14 @@ public class PatientController implements Initializable, Refresh {
                 returnStatus = HttpServices.addPatient(patientID, room);
             }
 
-            refreshData();
             refreshView();
 
-            if (returnStatus != null){
+            if (returnStatus != null) {
                 consoleUser.setText(returnStatus);
             }
 
-        } catch (NumberFormatException e) {
+        } catch (
+                NumberFormatException e) {
             System.out.println(e.getMessage() + " not valid number");
             consoleUser.setText(e.getMessage() + " not valid number");
         }
@@ -167,20 +168,10 @@ public class PatientController implements Initializable, Refresh {
     }
 
     @Override
-    public void refreshView() {
-        consoleUser.setText("");
-
-        ObservableList<Room> roomData = FXCollections.observableArrayList();
-        roomData.addAll(mainApp.getRoomsData());
-        roomStatusBox.setItems(roomData);
-
+    public void refreshTable() {
         ObservableList<Patient> patientData = FXCollections.observableArrayList();
         patientData.addAll(mainApp.getPatientsData());
         patientTable.setItems(patientData);
-
-        ObservableList<Drug> drugData = FXCollections.observableArrayList();
-        drugData.addAll(mainApp.getDrugsData());
-        drugChoice.setItems(drugData);
 
         nSSColumn.setCellValueFactory(cellData -> cellData.getValue().getIdFx());
         statusColumn.setCellValueFactory(cellData -> cellData.getValue().getStatusFx());
@@ -189,11 +180,23 @@ public class PatientController implements Initializable, Refresh {
         drugColumn.setCellValueFactory(cellData -> cellData.getValue().getDrugFx());
     }
 
+    @Override
+    public void refreshView() {
+        refreshTable();
+        consoleUser.setText("");
+
+        ObservableList<Room> roomData = FXCollections.observableArrayList();
+        roomData.addAll(mainApp.getRoomsData());
+        roomStatusBox.setItems(roomData);
+
+        ObservableList<Drug> drugData = FXCollections.observableArrayList();
+        drugData.addAll(mainApp.getDrugsData());
+        drugChoice.setItems(drugData);
+
+    }
+
     public void setMain(MainApp mainApp) {
         this.mainApp = mainApp;
-
-        refreshData();
-        refreshView();
     }
 
     /**
