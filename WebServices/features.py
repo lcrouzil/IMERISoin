@@ -10,9 +10,12 @@ from database import *
 
 # Patients et essais cliniques
 
-
-# Définit un nouveau médicament avec un nom
-def newMedicine(medicine: int, name: str):
+def setMedicine(medicine: int, name: str):
+    ''' setMedicine
+    Définit un nouveau médicament avec un nom
+    Parameters : medicine/name
+    JSON : {"code":200} si enregistré
+           {"code":404,"error":error} si non enregistré '''
     set_medicine(medicine, name)
     if (True):
         code = 200
@@ -21,8 +24,12 @@ def newMedicine(medicine: int, name: str):
     return {"code": code}
 
 
-# Nouveau patient dans une room donnée (selon la semaine donnée ou en cours)
-def newPatient(room: int, patientID: int, week: int = None):
+def addPatient(room: int, patientID: int, week: int = None):
+    ''' addPatient
+    Nouveau patient dans une room donnée (selon la semaine donnée ou en cours)
+    Parameters : room/patientID/week
+    JSON : {"code":200,"patientID":patientID} si enregistré
+           {"code":404,"error":error} si non enregistré '''
     if add_patient(patientID, room, week):
         code = 200
     else:
@@ -30,20 +37,33 @@ def newPatient(room: int, patientID: int, week: int = None):
     return {"code": code, "room": room, "patientID": patientID, "week": week}
 
 
-# Crée ou modifie une chambre
-def newRoom(room: int, name: str, path: str):
+def setRoom(room: int, name: str, path: str):
+    ''' setRoom
+    Crée ou modifie une chambre
+    Parameters : room/name/(path)
+    JSON : {"code":200} si enregistré
+           {"code":404,"error":error} si non enregistré'''
     add_room(room, name, path)
     return 1
 
-
-# Renvoie l'état de santé d'un patient entre "Cured"/"Stable"/"Dead"
-def patientCondition(patientID: int, condition: str):
+ 
+def getPatientCondition(patientID: int):
+    ''' getPatientCondition
+    Renvoie l'état de santé d'un patient entre "Cured"/"Stable"/"Dead"
+    Parameters : patientID
+    JSON : {"condition" : condition}
+    '''
     # Questionner la database
     return {"condition": condition}
 
 
-# Définit la condition du patient entre cured/stable/dead
-def newPatientCondition(patient_id: int, condition: str):
+
+def setPatientCondition(patient_id: int, condition: str):
+    ''' setPatientCondition
+    Définit la condition du patient entre cured/stable/dead
+    Parameters : patientID,condition
+    JSON : {"code":200} si enregistré
+           {"code":404,"error":error} si non enregistré'''
     # Ajouter dans la database entre "cured"/"stable"/"dead"
 
     set_patient_status(patient_id, condition)
@@ -55,8 +75,12 @@ def newPatientCondition(patient_id: int, condition: str):
     return {"code": code}
 
 
-# Définit le médicament à donner dans la room pour la semaine indiquée (ou semaine en cours si paramètre pas donné)
-def newRoomMedicine(room: int, medicine: int, week: Optional[int] = 0):
+def setRoomMedicine(room: int, medicine: int, week: Optional[int] = 0):
+    ''' setRoomMedicine
+    Définit le médicament à donner dans la room pour la semaine indiquée (ou semaine en cours si paramètre pas donné)
+    Parameters : room/medicine/(week)
+    JSON : {"code":200} si enregistré
+           {"code":404,"error":error} si non enregistré'''
     set_room_medicine(room, medicine, week)
     if (True):
         code = 200
@@ -65,22 +89,33 @@ def newRoomMedicine(room: int, medicine: int, week: Optional[int] = 0):
     return {"code": code}
 
 
-# Retourne le médicament à fournir dans la room
-def roomMedicine(room: int, week: Optional[int] = 0):
+def getRoomMedicine(room: int, week: Optional[int] = 0):
+    ''' getRoomMedicine
+    Retourne le médicament à fournir dans la room
+    Parameters : room/(week)
+    JSON : {"room": room,"week": week,"medecine": medicine}'''
     tab = []
     tab = get_room_medicine(room, week)
 
     return {"list": tab}
 
 
-# Retourne les éléments en fonction des paramètres optionnels
-def patientStats(week: Optional[int], room: Optional[int], medicine: Optional[int], state: Optional[str]):
+def patientStats(week: Optional[int], room: Optional[int], medicine: Optional[int], condition: Optional[str]):
+    ''' getStats
+    Retourne les éléments en fonction des paramètres optionnels
+    Parameters :(week)/(room)/(medicine)/(condition)
+    JSON : {"list":["week":week,"room":room,"medicine":medicine,"condition":condition]}
+    '''
     # Questionner la database
     return {"week": week}  # retourner une liste de tout
 
 
-# Retourne tous les médicaments disponibles
-def getMedicines():
+def listMedicines():
+    ''' listMedicines
+    Retourne tous les médicaments disponibles
+    Parameters : NULL
+    JSON : {‘list’: [{‘medicine’: medicine, ‘name’: name}, …]}
+'''
     tab = []
     for id, name in get_medicine():
         tab.append({"id": id, "name": name})
@@ -91,8 +126,11 @@ def getMedicines():
     return {"list": tab}
 
 
-# Retourne la liste de tous les patients
-def getPatients():
+def listPatients():
+    ''' listPatients
+    Retourne la liste de tous les patients
+    Parameters : NULL
+    JSON : {‘list’: [{‘patientId’: patientId, ‘SS’: ss, ‘week’: week, ‘condition’: condition} , …]}'''
     # Database : pareil que getMedicines?
     tab = []
     for id, status in get_patient():
@@ -103,8 +141,11 @@ def getPatients():
     return {"list": tab}
 
 
-# Retourne la liste de toutes les rooms
-def getRooms():
+def listRooms():
+    ''' listRooms
+    Retourne la liste de toutes les rooms
+    Parameters : NULL
+    JSON : {‘list’: [{‘room’: room, ‘node’: node, ‘path’: node}, ... ]}'''
     tab = []
     for id, name, path in get_room():
         tab.append({"id": id, "path": path, "name": name})
@@ -114,8 +155,11 @@ def getRooms():
     return {"list": tab}
 
 
-# Retourne la liste de tous les robots
-def getRobots():
+def listRobots():
+    ''' listRobots
+    Retourne la liste de tous les robots
+    Parameters : NULL
+    JSON : {‘list’: [{‘robot’: robot, ‘name’: name}, ... ]}'''
     tab = {}
     for id, name in get_robot():
         tab[id] = name
@@ -125,7 +169,8 @@ def getRobots():
     return {"robots": tab}
 
 
-def getOrders():
+def listOrders():
+    ''' Commentaire'''
     tab = []
     for id, room, drug, status, timestamp in get_orders():
         print("get_orders : ", id, room, drug, status, timestamp)
@@ -140,7 +185,8 @@ def getOrders():
 
 
 # Ajouter la consigne medicament pour telle room (status "to do")
-def newOrder(room: int):
+def addOrder(room: int):
+    ''' addOrder'''
     code = 200
     if isinstance(room, (int, float)) == False:
         code = 404
@@ -151,7 +197,8 @@ def newOrder(room: int):
 
 
 # Lit la première consigne disponible
-def firstOrder():
+def getOrder():
+    ''' getOrder'''
     order = {}
     order = get_order()
     return {"order": order[0], "room": order[1], "medicine": order[2]}
@@ -159,6 +206,7 @@ def firstOrder():
 
 # TEST ORDER
 def OrderTest():
+    ''' OrderTest'''
     tab = {}
     for id, name in get_robot():
         tab[id] = name
@@ -169,13 +217,15 @@ def OrderTest():
 
 
 # Retourne le statut d'avancement de la consigne
-def runningOrder(order: str, status=""):
+def checkOrder(order: str, status=""):
+    ''' checkOrder'''
     # Questionner la database
     return {"order": order, "status": status}
 
 
 # Modifie le statut d'une consigne entre 'delivered'(medicament fourni) et 'done' (robot a la base) avec le timestamp
-def modifyStateOrder(order: str, status: str):
+def setOrder(order: str, status: str):
+    ''' setOrdder'''
     set_order(order,status)
     if (True):
         code = 200
@@ -185,13 +235,15 @@ def modifyStateOrder(order: str, status: str):
 
 
 # Renvoie le noeud où le robot est actuellement
-def robotPosition(robot_id: int):
+def getPosition(robot_id: int):
+    ''' getPosition'''
     # Questionner la database
     return {"robot": robot_id, "node": node, "timestamp": timestamp}
 
 
 # Enregistre le noeud où est arrivé le robot + timestamp
-def robotAddNode(robot: int, node: int):
+def setPosition(robot: int, node: int):
+    ''' setPosition'''
     # Ajouter dans la database le nouveau noeud où se situe le robot
     if (True):
         code = 200
@@ -200,14 +252,37 @@ def robotAddNode(robot: int, node: int):
     return {"code": code}
 
 
+def getPath(room:int):
+    ''' getPath
+    Donne le chemin sous forme d'une chaîne de caractère
+    Parameters : room
+    JSON : {"room" : room,"path" : room}
+    '''
+    path = "RIEN"
+    if (room == 1):
+        path = "0F5F6L1L5R"
+    elif (room == 2):
+        path = "0F5F6F7L2L1F5R"
+    elif (room == 3):
+        path = "0F5F6F7R3R4F5L"
+    elif (room == 4):
+        path = "0F5F6R4R5L"
+    else:
+        path = "This room doesn't exist"
+    # Donne le chemin sous forme d'une chaîne de caractère
+    return {"room": room, "path": path}
+
+
 # Historique des mouvements du robot
-def robotHistory(robot: int):
+def getHistory(robot: int):
+    ''' getHistory'''
     # Questionner la base de données
     return {"liste des mouvements node/timestamp": afaire}
 
 
 # Crée une alerte (s'il est perdu)
-def robotLost(robot: int):
+def alertRobot(robot: int):
+    ''' alertRobot'''
     # Ajouter base de données
     if (True):
         code = 200
@@ -216,7 +291,8 @@ def robotLost(robot: int):
     return {"code": code}
 
 
-def getJsonObjectRoom():
+def getObjectRoom():
+    ''' getObjectRoom'''
     tab = []
     for room_id, room_path, room_name, patient_id, patient_status, drug_id, drug_name in get_room_join():
 
