@@ -7,7 +7,7 @@
     <MenuBar minHeight="25.0" minWidth="666.0">
         <Menu mnemonicParsing="false" text="File">
          <MenuItem fx:id="refreshMenuItem" mnemonicParsing="false" onAction="#refreshAction" text="Refresh" />
-         <MenuItem fx:id="refreshMenuItem1" mnemonicParsing="false" onAction="#refreshAction" text="Settings..." />
+         <MenuItem fx:id="refreshMenuItem1" mnemonicParsing="false" onAction="#settingsShowPopup" text="Settings..." />
          <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" text="Close" />
         </Menu>

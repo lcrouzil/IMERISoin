@@ -22,6 +22,7 @@ public class Patient {
      * @param id id
      * @param room room id
      * @param week week format ( weekYear) : 122020
+     * @param drug drug String name
      * @param status status
      */
     public Patient(int id, Integer room, Integer week, String drug, String status) {

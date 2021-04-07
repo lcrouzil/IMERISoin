@@ -50,7 +50,6 @@ public class MainApp extends Application {
 
     /**
      * @param primaryStage Stage
-     * @throws Exception an Exception
      */
     @Override
     public void start(Stage primaryStage) {

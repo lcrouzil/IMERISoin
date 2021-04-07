@@ -17,7 +17,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class PatientController extends MainController implements Initializable, Refresh {
+/**
+ * FXML PatientController Class
+ *
+ * @author Alexis DEVLEESCHAUWER
+ */
+public class PatientController extends MainController implements Refresh {
 
     @FXML
     private TextField clientNameField;
@@ -57,6 +62,10 @@ public class PatientController extends MainController implements Initializable, 
 
     private MainApp mainApp;
 
+    /**
+     * set Drug for room with or without week
+     * @param event javafx event
+     */
     @FXML
     private void setMedicineAction(ActionEvent event) {
         event.consume();
@@ -96,6 +105,10 @@ public class PatientController extends MainController implements Initializable, 
 
     }
 
+    /**
+     * @param event javafx event
+     * @throws NumberFormatException throw if not int
+     */
     @FXML
     private void newPatientAction(ActionEvent event) throws NumberFormatException {
         event.consume();
@@ -137,6 +150,11 @@ public class PatientController extends MainController implements Initializable, 
 
     }
 
+    /**
+     *
+     * @param event javafx event
+     * @throws NumberFormatException throw if not int
+     */
     @FXML
     private void setPatientStatusAction(ActionEvent event) throws NumberFormatException {
         event.consume();
@@ -161,12 +179,18 @@ public class PatientController extends MainController implements Initializable, 
         }
     }
 
+    /**
+     * refresh data in controller
+     */
     @Override
     public void refreshData() {
         mainApp.setPatientsData(new ArrayList<>());
         HttpServices.getPatientList(mainApp.getPatientsData());
     }
 
+    /**
+     * refresh table View in controller
+     */
     @Override
     public void refreshTable() {
         ObservableList<Patient> patientData = FXCollections.observableArrayList();
@@ -180,6 +204,9 @@ public class PatientController extends MainController implements Initializable, 
         drugColumn.setCellValueFactory(cellData -> cellData.getValue().getDrugFx());
     }
 
+    /**
+     * refresh all Views in controller
+     */
     @Override
     public void refreshView() {
         refreshTable();
@@ -195,23 +222,14 @@ public class PatientController extends MainController implements Initializable, 
 
     }
 
+    /**
+     * @param mainApp main Instance
+     */
     public void setMain(MainApp mainApp) {
         this.mainApp = mainApp;
-    }
 
-    /**
-     * Called to initialize a controller after its root element has been
-     * completely processed.
-     *
-     * @param location  The location used to resolve relative paths for the root object, or
-     *                  <tt>null</tt> if the location is not known.
-     * @param resources The resources used to localize the root object, or <tt>null</tt> if
-     */
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
         clientStatusBox.setItems(FXCollections.observableArrayList("Not Specified", "Cured", "Dead", "Sick"));
         clientStatusBox.setValue("Not Specified");
 
-        System.out.println("Patient controller init!");
     }
 }

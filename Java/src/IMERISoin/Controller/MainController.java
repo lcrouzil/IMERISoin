@@ -1,16 +1,15 @@
 package IMERISoin.Controller;
 
 import IMERISoin.MainApp;
-import com.sun.jmx.snmp.tasks.Task;
-import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Popup;
+import javafx.stage.PopupWindow;
 
 import java.io.IOException;
 import java.net.URL;
@@ -19,7 +18,12 @@ import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainController implements Initializable, Refresh {
+/**
+ * FXML MainController Class
+ *
+ * @author Alexis DEVLEESCHAUWER
+ */
+public class MainController implements Refresh {
 
     @FXML
     private Tab clientTab;
@@ -35,6 +39,11 @@ public class MainController implements Initializable, Refresh {
 
     private MainApp mainApp;
 
+    private final ArrayList<Refresh> controllerList = new ArrayList<>();
+
+    /**
+     * create Thread for refresh action
+     */
     @FXML
     public void refreshAction() {
         new Thread(() -> {
@@ -43,8 +52,25 @@ public class MainController implements Initializable, Refresh {
         }).start();
     }
 
-    private final ArrayList<Refresh> controllerList = new ArrayList<>();
+    /**
+     * show popup settings
+     * todo Finish is an good idea
+     * @param event javafx event
+     */
+    @FXML
+    public void settingsShowPopup(ActionEvent event) {
+        event.consume();
 
+        System.out.println("POPUP");
+        Popup popup = new Popup();
+
+    }
+
+
+    /**
+     * setter class main and init all other controller
+     * @param mainApp main Instance
+     */
     public void setMain(MainApp mainApp) {
         this.mainApp = mainApp;
 
@@ -100,19 +126,33 @@ public class MainController implements Initializable, Refresh {
             iex.printStackTrace();
         }
 
-
         refreshAction();
-
         startGettingData();
+    }
+
+    /**
+     * launch timer call thread for get data and refresh
+     */
+    private void startGettingData() {
+
+        MainApp.pullDataTimer = new Timer();
+        MainApp.pullDataTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+
+                new Thread(() -> {
+                    refreshData();
+                    refreshTable();
+                }).start();
+
+            }
+        }, 500, 500);
 
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-        System.out.println("Main controller init!");
-    }
-
+    /**
+     * refresh Data in all controller
+     */
     @Override
     public void refreshData() {
 
@@ -123,6 +163,9 @@ public class MainController implements Initializable, Refresh {
         }
     }
 
+    /**
+     * refresh Table View in all controller
+     */
     @Override
     public void refreshTable() {
         System.out.println("Main : Refresh Table");
@@ -133,6 +176,9 @@ public class MainController implements Initializable, Refresh {
 
     }
 
+    /**
+     * refresh all View in all controller
+     */
     @Override
     public void refreshView() {
         System.out.println("Main : Refresh View");
@@ -140,26 +186,6 @@ public class MainController implements Initializable, Refresh {
         for (Refresh controller : controllerList) {
             controller.refreshView();
         }
-    }
-
-    private void startGettingData() {
-
-        MainApp.pullDataTimer = new Timer();
-        MainApp.pullDataTimer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-
-                new Thread(() -> pullData()).start();
-
-            }
-        }, 500, 500);
-
-    }
-
-    private void pullData() {
-
-        refreshData();
-        refreshTable();
     }
 
 }

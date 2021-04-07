@@ -3,12 +3,22 @@ package IMERISoin.Model;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+/**
+ * Model Drug Class
+ *
+ * @author Alexis DEVLEESCHAUWER
+ */
 public class Drug {
 
     private final int id;
 
     private final String name;
 
+    /**
+     * Constructor
+     * @param id int id of drug
+     * @param name String Name of Drug
+     */
     public Drug(int id, String name) {
         super();
 

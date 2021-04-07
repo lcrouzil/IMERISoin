@@ -20,8 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-
-public class RoomController extends MainController implements Initializable, Refresh {
+/**
+ * FXML RoomController Class
+ *
+ * @author Alexis DEVLEESCHAUWER
+ */
+public class RoomController extends MainController implements Refresh {
 
     @FXML
     private Button buttonRoom1;
@@ -88,6 +92,10 @@ public class RoomController extends MainController implements Initializable, Ref
 
     private MainApp mainApp;
 
+    /**
+     * add order for room 1
+     * @param event javafx event
+     */
     @FXML
     private void pushRoom1(ActionEvent event) {
         event.consume();
@@ -98,6 +106,10 @@ public class RoomController extends MainController implements Initializable, Ref
         refreshView();
     }
 
+    /**
+     * add order for room 2
+     * @param event javafx event
+     */
     @FXML
     private void pushRoom2(ActionEvent event) {
         event.consume();
@@ -108,6 +120,10 @@ public class RoomController extends MainController implements Initializable, Ref
         refreshView();
     }
 
+    /**
+     * add order for room 3
+     * @param event javafx event
+     */
     @FXML
     private void pushRoom3(ActionEvent event) {
         event.consume();
@@ -118,6 +134,10 @@ public class RoomController extends MainController implements Initializable, Ref
         refreshView();
     }
 
+    /**
+     * add order for room 4
+     * @param event javafx event
+     */
     @FXML
     private void pushRoom4(ActionEvent event) {
         event.consume();
@@ -128,29 +148,9 @@ public class RoomController extends MainController implements Initializable, Ref
         refreshView();
     }
 
-    @FXML
-    private void setPatientAction(ActionEvent event) {
-        event.consume();
-
-        System.out.println(roomChoice.getValue().getId());
-        System.out.println(patientChoice.getValue().getId());
-//        System.out.println(weekField.getText());
-    }
-
-    @FXML
-    private void setMedicineAction(ActionEvent event) {
-        event.consume();
-
-        System.out.println(roomChoice.getValue().getId());
-        System.out.println(drugChoice.getValue().getId());
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-        System.out.println("Room controller init!");
-    }
-
+    /**
+     * refresh data in Controller
+     */
     @Override
     public void refreshData() {
         mainApp.setRoomsData(new ArrayList<>());
@@ -160,6 +160,9 @@ public class RoomController extends MainController implements Initializable, Ref
         HttpServices.getOrderList(orderList);
     }
 
+    /**
+     * refresh Table in Controller
+     */
     @Override
     public void refreshTable() {
         ObservableList<Room> roomData = FXCollections.observableArrayList();
@@ -181,12 +184,19 @@ public class RoomController extends MainController implements Initializable, Ref
         dateOrderTableColumn.setCellValueFactory(cellData -> cellData.getValue().getDateFx());
     }
 
+    /**
+     * refresh all View in Controller
+     */
     @Override
     public void refreshView() {
         refreshTable();
 
     }
 
+    /**
+     * set main
+     * @param mainApp main Instance
+     */
     public void setMain(MainApp mainApp) {
         this.mainApp = mainApp;
     }
