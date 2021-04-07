@@ -351,7 +351,7 @@ def add_order(room):
 
 def set_order(order, status):
     executeSQL(f'''
-        UPDATE orders SET status = {status} WHERE order_id = {order},
+        UPDATE orders SET status = '{status}' WHERE id = {order};
     ''')
 
 
