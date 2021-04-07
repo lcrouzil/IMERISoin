@@ -75,22 +75,26 @@ prédéterminé. Elle sera composée de 8 différents états et pourra switcher 
 les différents capteurs.
 
 ////TODO
-
 ```mermaid
+
 graph LR
 
-E(( intersection ))
+I(( Intersection ))
+
 A(( Etat initial ))
-B(( avance))
-C ((droite))
-D ((gauche))
-A -->|d0 g0| B
-B -->|d1 g0|C
-C -->|d1 g1|E
-B -->|d0 g1|D 
-E -->|'R'|C
-E -->|'F'|A
-E -->|'L'|D
+
+B((Avance))
+
+A -->|d0 g0|B
+
+B -->|d1 g0|B
+
+B-->|d1 g1|I
+
+B -->|d0 g1|B
+I -->|F|B
+I -->|R|B
+I -->|L|B
 
 
 
