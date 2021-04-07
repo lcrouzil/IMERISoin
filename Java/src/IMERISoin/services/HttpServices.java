@@ -47,8 +47,6 @@ public class HttpServices {
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
 
-//            Platform.runLater
-
             System.out.println(request.getResponseCode() + " from : " + url);
 
             if (request.getResponseCode() == 200) {
@@ -95,7 +93,7 @@ public class HttpServices {
     public static void getDrugList(ArrayList<Drug> drugs) {
 
         try {
-            URL url = new URL(ROOT_URL + "Patients/listMedicines");
+            URL url = new URL(ROOT_URL + "listMedicines");
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
 
@@ -121,7 +119,7 @@ public class HttpServices {
 
     public static void getPatientList(ArrayList<Patient> patients) {
         try {
-            URL url = new URL(ROOT_URL + "Patients/listPatients");
+            URL url = new URL(ROOT_URL + "listPatients");
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
 
@@ -156,7 +154,7 @@ public class HttpServices {
     public static void getRoomList(ArrayList<Room> rooms) {
 
         try {
-            URL url = new URL(ROOT_URL + "Patients/listRooms");
+            URL url = new URL(ROOT_URL + "listRooms");
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
 
@@ -183,7 +181,7 @@ public class HttpServices {
     public static void getOrderList(ArrayList<Order> orderList) {
 
         try {
-            URL url = new URL(ROOT_URL + "Patients/listOrders");
+            URL url = new URL(ROOT_URL + "listOrders");
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
 
@@ -225,7 +223,7 @@ public class HttpServices {
 
     public static void addOrder(int room_id) {
         try {
-            URL url = new URL(ROOT_URL + "Robots/addOrder/" + room_id);
+            URL url = new URL(ROOT_URL + "addOrder/" + room_id);
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
 
@@ -256,9 +254,9 @@ public class HttpServices {
             URL url;
 
             if (week != null) {
-                url = new URL(ROOT_URL + "Patients/setRoomMedicine/" + Room + "/" + medicine + "/" + week);
+                url = new URL(ROOT_URL + "setRoomMedicine/" + Room + "/" + medicine + "/" + week);
             } else {
-                url = new URL(ROOT_URL + "Patients/setRoomMedicine/" + Room + "/" + medicine);
+                url = new URL(ROOT_URL + "setRoomMedicine/" + Room + "/" + medicine);
             }
 
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
@@ -278,7 +276,7 @@ public class HttpServices {
 
     public static void addDrug(int drugId, String drugName) {
         try {
-            URL url = new URL(ROOT_URL + "Patients/setMedicine/" + drugId + "/" + drugName);
+            URL url = new URL(ROOT_URL + "setMedicine/" + drugId + "/" + drugName);
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
 
@@ -300,7 +298,7 @@ public class HttpServices {
     public static String addPatient(Integer patient_id, Integer room, Integer week) {
         try {
 
-            String sURL = ROOT_URL + "Patients/addPatient/" + room + "/" + patient_id;
+            String sURL = ROOT_URL + "addPatient/" + room + "/" + patient_id;
 
             if (week != null) {
                 sURL = sURL + "/" + week;
@@ -339,7 +337,7 @@ public class HttpServices {
     public static void setPatientCondition(int patientID, String status) {
 
         try {
-            URL url = new URL(ROOT_URL + "Patients/setPatientCondition/" + patientID + "/" + status);
+            URL url = new URL(ROOT_URL + "setPatientCondition/" + patientID + "/" + status);
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
 
