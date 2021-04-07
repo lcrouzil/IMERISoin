@@ -51,21 +51,6 @@ def createBase():
     """)
 
     executeSQL("""
-    create table patient
-    (
-        id     INTEGER not null
-            constraint patient_pk
-                primary key,
-        status text
-    );
-    """)
-
-    executeSQL("""
-        create unique index patient_id_uindex
-        on patient (id);
-    """)
-
-    executeSQL("""
     create table room
     (
         id   INTEGER not null
@@ -96,29 +81,26 @@ def createBase():
     """)
 
     executeSQL("""
-    create table patient_room
+    create table patient
     (
-        week       INTEGER default (strftime('%W%Y',datetime())),
-        room_id    INTEGER not null
-            references room,
-        patient_id INTEGER
-            references patient
+        id      INTEGER not null
+            constraint patient_pk
+                primary key,
+        status  text,
+        week    INTEGER default (strftime('%W%Y', datetime())),
+        room_id INTEGER
+            references room
     );
     """)
 
     executeSQL("""
-        create unique index patient_room_patient_id_week_uindex
-        on patient_room (patient_id, week);
+        create unique index patient_id_uindex
+            on patient (id);
     """)
 
     executeSQL("""
-        create unique index patient_room_week_room_id_patient_id_uindex
-        on patient_room (week, room_id, patient_id);
-    """)
-
-    executeSQL("""
-        create unique index patient_room_week_room_id_uindex
-        on patient_room (week, room_id);
+        create unique index patient_room_id_week_uindex
+    on patient (room_id, week);
     """)
 
     executeSQL("""
@@ -266,10 +248,16 @@ def set_medicine(id, name):
 
 
 def get_patient():
-    rows = findSQL("SELECT * FROM patient;")
+    rows = findSQL(f"""
+        SELECT p.id, p.status, p.week, p.room_id, dr.drug_id || ' ' || d.name
+        FROM patient p
+            LEFT JOIN drug_room dr on dr.room_id = p.room_id and p.week = dr.week
+            LEFT JOIN drug d on d.id = dr.drug_id;
+         """)
 
-    for id, status in rows:
-        yield id, status
+    for id, status, week, room_id, drug in rows:
+        print("patient ", id, status, week, room_id, drug)
+        yield id, status, week, room_id, drug
 
 
 def set_patient_status(patient_id: int, status: str):
@@ -279,6 +267,7 @@ def set_patient_status(patient_id: int, status: str):
 
 
 def add_patient(id: int, room: int, week: int = None):
+    print(room, id, week)
     is_exist = findSQL(f'''
             SELECT CASE WHEN EXISTS (
                 SELECT * 
@@ -290,20 +279,16 @@ def add_patient(id: int, room: int, week: int = None):
         ''').fetchone()[0]
 
     if not is_exist:
-        executeSQL(f"""
-            INSERT INTO patient (id) VALUES ({id})
-        """)
+        if week is not None:
+            executeSQL(f"""
+                INSERT INTO patient (id, room_id, week) VALUES ({id}, {room}, {week})
+            """)
+        else:
+            executeSQL(f"""
+                INSERT INTO patient (id, room_id) VALUES ({id}, {room})
+            """)
 
-    if week is not None:
-        executeSQL(f"""
-            INSERT INTO patient_room (patient_id, room_id, week) VALUES ({id}, {room}, {week})
-        """)
-    else:
-        executeSQL(f"""
-            INSERT INTO patient_room (patient_id, room_id) VALUES ({id}, {room})
-        """)
-
-    return True
+        return True
 
     return False
 

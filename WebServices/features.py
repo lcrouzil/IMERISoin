@@ -23,6 +23,7 @@ def newMedicine(medicine: int, name: str):
 
 # Nouveau patient dans une room donnée (selon la semaine donnée ou en cours)
 def newPatient(room: int, patientID: int, week: int = None):
+    print(room, patientID, week)
     if add_patient(patientID, room, week):
         code = 200
     else:
@@ -95,8 +96,8 @@ def getMedicines():
 def getPatients():
     # Database : pareil que getMedicines?
     tab = []
-    for id, status in get_patient():
-        tab.append({"id": id, "status": status})
+    for id, status, week, room_id, drug in get_patient():
+        tab.append({"id": id, "status": status, "week": week, "room_id": room_id, "drug": drug})
 
     print(tab)
 
