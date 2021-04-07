@@ -82,21 +82,16 @@ graph LR
 E(( intersection ))
 A(( Etat initial ))
 B(( avance))
-C(( droite ))
-D(( gauche ))
-F(( traverse ))
-G(( tourne droite ))
-H(( tourne gauche ))
+C ((droite))
+D ((gauche))
 A -->|d0 g0| B
-B -->|d0 g1|C
+B -->|d1 g0|C
 C -->|d1 g1|E
-B -->|d1 g0|D 
-D -->|d1 g1|E
-C -->|d0 g0|B
-D -->|d0 g0|B
-E -->|'r'|G
-E -->|'f'|F
-E -->|'l'|H
+B -->|d0 g1|D 
+E -->|'R'|C
+E -->|'F'|A
+E -->|'L'|H
+
 
 
 
