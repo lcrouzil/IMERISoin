@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="IMERISoin.Controller.RoomController">
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="IMERISoin.Controller.RoomController">
    <HBox>
       <children>
          <VBox minWidth="350.0" HBox.hgrow="ALWAYS">
@@ -18,21 +18,10 @@
                   </children>
                </AnchorPane>
                <Separator prefWidth="200.0" />
-               <AnchorPane minHeight="250.0">
-                  <children>
-                     <ChoiceBox fx:id="drugChoice" layoutX="21.0" layoutY="164.0" prefWidth="150.0" />
-                     <ChoiceBox fx:id="roomChoice" layoutX="21.0" layoutY="44.0" prefWidth="150.0" />
-                     <Button fx:id="setMedicineButton" layoutX="183.0" layoutY="164.0" mnemonicParsing="false" onAction="#setMedicineAction" prefHeight="25.0" prefWidth="92.0" text="Set Medicine" />
-                     <Label layoutX="21.0" layoutY="147.0" text="Medicine" />
-                     <Label layoutX="21.0" layoutY="27.0" text="Room" />
-                     <ChoiceBox fx:id="patientChoice" layoutX="21.0" layoutY="100.0" prefWidth="150.0" />
-                     <Label layoutX="21.0" layoutY="83.0" text="Patient" />
-                     <Button fx:id="setPatientButton" layoutX="183.0" layoutY="100.0" mnemonicParsing="false" onAction="#setPatientAction" prefHeight="25.0" prefWidth="92.0" text="Set Patient" />
-                  </children>
-               </AnchorPane>
+               <AnchorPane minHeight="250.0" />
             </children>
          </VBox>
-           <SplitPane dividerPositions="0.5296052631578947" HBox.hgrow="ALWAYS">
+           <SplitPane dividerPositions="0.5296052631578947" prefHeight="503.0" prefWidth="1058.0" HBox.hgrow="ALWAYS">
                <TableView fx:id="roomTableView">
                    <columns>
                        <TableColumn fx:id="idTableColumn" maxWidth="32.0" minWidth="32.0" prefWidth="32.0" resizable="false" text="id" />
@@ -42,13 +31,13 @@
                        <TableColumn fx:id="nameTableColumn" maxWidth="100.0" minWidth="100.0" prefWidth="100.0" resizable="false" text="name" />
                    </columns>
                </TableView>
-               <TableView fx:id="orderTableView">
+               <TableView fx:id="orderTableView" prefHeight="501.0" prefWidth="427.0">
                    <columns>
                        <TableColumn fx:id="idOrderTableColumn" prefWidth="37.0" text="id" />
-                       <TableColumn fx:id="roomOrderTableColumn" prefWidth="60.0" text="patient" />
-                       <TableColumn fx:id="statusOrderTableColumn" prefWidth="99.0" text="drug" />
-                       <TableColumn fx:id="dateOrderTableColumn" prefWidth="132.0" text="path" />
-                       <TableColumn fx:id="nameTableColumn1" minWidth="0.0" prefWidth="96.0" text="name" />
+                  <TableColumn fx:id="drugOrderTableColumn" prefWidth="124.0" text="drug" />
+                       <TableColumn fx:id="dateOrderTableColumn" prefWidth="142.0" text="date" />
+                       <TableColumn fx:id="roomOrderTableColumn" prefWidth="104.0" text="room" />
+                       <TableColumn fx:id="statusOrderTableColumn" prefWidth="87.0" text="status" />
                    </columns>
                </TableView>
            </SplitPane>

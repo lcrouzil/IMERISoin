@@ -1,6 +1,7 @@
 package IMERISoin.Controller;
 
 import IMERISoin.MainApp;
+import IMERISoin.Model.Drug;
 import IMERISoin.Model.Patient;
 import IMERISoin.Model.Room;
 import IMERISoin.services.HttpServices;
@@ -18,10 +19,10 @@ import java.util.ResourceBundle;
 public class PatientController implements Initializable, Refresh {
 
     @FXML
-    private Button clientNewButton;
+    private TextField clientNameField;
 
     @FXML
-    private TextField clientNameField;
+    private TextField weekField;
 
     @FXML
     private ChoiceBox<String> clientStatusBox;
@@ -36,29 +37,99 @@ public class PatientController implements Initializable, Refresh {
     private TableColumn<Patient, String> nSSColumn;
 
     @FXML
-    private TableColumn<Patient, String> nameColumn;
-
-    @FXML
     private TableColumn<Patient, String> statusColumn;
 
+    @FXML
+    private TableColumn<Patient, String> weekColumn;
+
+    @FXML
+    private TableColumn<Patient, String> roomColumn;
+
+    @FXML
+    private TableColumn<Patient, String> drugColumn;
+
+    @FXML
+    private TextArea consoleUser;
+
+    @FXML
+    private ChoiceBox<Drug> drugChoice;
+
     private MainApp mainApp;
+
+    @FXML
+    private void setMedicineAction(ActionEvent event) {
+        event.consume();
+
+        System.out.println(roomStatusBox.getValue().getId());
+        System.out.println(drugChoice.getValue().getId());
+
+        try {
+            if (roomStatusBox.getValue() == null) {
+                System.out.println("room not selected, if you dont have room add in");
+                consoleUser.setText("room not selected, if you dont have room add in");
+            }
+
+            Integer room = roomStatusBox.getValue().getId();
+            Integer week = weekField.getText().equals("") ? null : Integer.parseInt(weekField.getText());
+            Integer drug = drugChoice.getValue().getId();
+
+            System.out.println("PatientID : " + drug + " room : " + room + " week : " + week);
+
+            if (week != null) {
+                System.out.println("week is not null");
+                HttpServices.setRoomMedicine(room, drug, week);
+            } else {
+                HttpServices.setRoomMedicine(room, drug);
+            }
+
+            refreshData();
+            refreshView();
+
+
+        } catch (NumberFormatException e) {
+            System.out.println(e.getMessage() + " not valid number");
+            consoleUser.setText(e.getMessage() + " not valid number");
+        }
+
+        System.out.println();
+
+    }
 
     @FXML
     private void newPatientAction(ActionEvent event) throws NumberFormatException {
         event.consume();
 
         try {
+
+            if (roomStatusBox.getValue() == null) {
+                System.out.println("room not selected, if you dont have room add in");
+                consoleUser.setText("room not selected, if you dont have room add in");
+            }
+
             Integer patientID = Integer.parseInt(clientNameField.getText());
             Integer room = roomStatusBox.getValue().getId();
+            Integer week = weekField.getText().equals("") ? null : Integer.parseInt(weekField.getText());
 
-            System.out.println("PatientID : " + patientID + " room : " + room);
+            System.out.println("PatientID : " + patientID + " room : " + room + " week : " + week);
 
-            HttpServices.addPatient(patientID, room);
+            String returnStatus = null;
+            if (week != null) {
+                System.out.println("week is not null");
+                returnStatus = HttpServices.addPatient(patientID, room, week);
+            } else {
+                returnStatus = HttpServices.addPatient(patientID, room);
+            }
 
             refreshData();
             refreshView();
+
+            if (returnStatus != null){
+                consoleUser.setText(returnStatus);
+            }
+
         } catch (NumberFormatException e) {
-            System.out.println(e.getMessage() + " not number");
+            System.out.println(e.getMessage() + " not valid number");
+            consoleUser.setText(e.getMessage() + " not valid number");
         }
 
         System.out.println();
@@ -84,8 +155,8 @@ public class PatientController implements Initializable, Refresh {
             refreshData();
             refreshView();
         } catch (NumberFormatException e) {
-            System.out.println(e.getMessage() + " not number");
-
+            System.out.println(e.getMessage() + " not valid number");
+            consoleUser.setText(e.getMessage() + " not valid number");
         }
     }
 
@@ -97,6 +168,8 @@ public class PatientController implements Initializable, Refresh {
 
     @Override
     public void refreshView() {
+        consoleUser.setText("");
+
         ObservableList<Room> roomData = FXCollections.observableArrayList();
         roomData.addAll(mainApp.getRoomsData());
         roomStatusBox.setItems(roomData);
@@ -105,16 +178,19 @@ public class PatientController implements Initializable, Refresh {
         patientData.addAll(mainApp.getPatientsData());
         patientTable.setItems(patientData);
 
+        ObservableList<Drug> drugData = FXCollections.observableArrayList();
+        drugData.addAll(mainApp.getDrugsData());
+        drugChoice.setItems(drugData);
+
         nSSColumn.setCellValueFactory(cellData -> cellData.getValue().getIdFx());
         statusColumn.setCellValueFactory(cellData -> cellData.getValue().getStatusFx());
+        weekColumn.setCellValueFactory(cellData -> cellData.getValue().getWeekFx());
+        roomColumn.setCellValueFactory(cellData -> cellData.getValue().getRoomFx());
+        drugColumn.setCellValueFactory(cellData -> cellData.getValue().getDrugFx());
     }
 
     public void setMain(MainApp mainApp) {
         this.mainApp = mainApp;
-
-//        patientTable.setItems(mainApp.getPatientsData());
-//        clientDrugBox.setItems(mainApp.getDrugData());
-//        clientRoomBox.setItems(mainApp.getRoomsData());
 
         refreshData();
         refreshView();

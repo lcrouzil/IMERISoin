@@ -120,27 +120,13 @@ public class MainController implements Initializable, Refresh {
             controller.refreshData();
         }
 
-        System.out.println("\n\n");
-
-        ArrayList<Room> rooms = mainApp.getRoomsData();
-        ArrayList<Drug> drugs = mainApp.getDrugsData();
-        ArrayList<Patient> patients = mainApp.getPatientsData();
-
-        System.out.println(rooms);
-        System.out.println(drugs);
-        System.out.println(patients);
-
-
         System.out.println("\nMain : END Refresh Data\n");
-
-
     }
 
     @Override
     public void refreshView() {
         System.out.println("Main : Refresh View");
         for(Refresh controller : controllerList) {
-            System.out.println(controller.getClass());
             controller.refreshView();
         }
     }

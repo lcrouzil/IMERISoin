@@ -1,5 +1,10 @@
 package IMERISoin.Model;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Order {
@@ -17,6 +22,29 @@ public class Order {
         this.status = status;
         this.date = date;
     }
+
+    public StringProperty getIdFx() {
+        return new SimpleStringProperty(String.valueOf(id));
+    }
+
+    public StringProperty getRoomFx() {
+        return new SimpleStringProperty(room);
+    }
+
+    public StringProperty getDrugFx() {
+        return new SimpleStringProperty(drug);
+    }
+
+    public StringProperty getStatusFx() {
+        return new SimpleStringProperty(status);
+    }
+
+    public StringProperty getDateFx() {
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        return new SimpleStringProperty(dateFormat.format(date));
+    }
+
 
     @Override
     public String toString() {

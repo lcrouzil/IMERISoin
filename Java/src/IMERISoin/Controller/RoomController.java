@@ -6,15 +6,13 @@ import IMERISoin.Model.Order;
 import IMERISoin.Model.Patient;
 import IMERISoin.Model.Room;
 import IMERISoin.services.HttpServices;
+import com.sun.org.apache.xpath.internal.operations.Or;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.util.converter.IntegerStringConverter;
 
 import java.net.URL;
@@ -36,6 +34,9 @@ public class RoomController implements Initializable, Refresh {
 
     @FXML
     private Button buttonRoom4;
+
+    @FXML
+    private TextField weekField;
 
     @FXML
     private ChoiceBox<Room> roomChoice;
@@ -64,6 +65,25 @@ public class RoomController implements Initializable, Refresh {
     @FXML
     private TableColumn<Room, String> nameTableColumn;
 
+    @FXML
+    private TableView<Order> orderTableView;
+
+    @FXML
+    private TableColumn<Order, String> idOrderTableColumn;
+
+    @FXML
+    private TableColumn<Order, String> dateOrderTableColumn;
+
+    @FXML
+    private TableColumn<Order, String> roomOrderTableColumn;
+
+    @FXML
+    private TableColumn<Order, String> statusOrderTableColumn;
+
+    @FXML
+    private TableColumn<Order, String> drugOrderTableColumn;
+
+
     private ArrayList<Order> orderList = new ArrayList<>();
 
     private MainApp mainApp;
@@ -73,6 +93,9 @@ public class RoomController implements Initializable, Refresh {
         event.consume();
         HttpServices.addOrder(1);
         System.out.println("send to room 1");
+        
+        refreshData();
+        refreshView();
     }
 
     @FXML
@@ -81,6 +104,8 @@ public class RoomController implements Initializable, Refresh {
         HttpServices.addOrder(2);
 
         System.out.println("send to room 2");
+        refreshData();
+        refreshView();
     }
 
     @FXML
@@ -89,6 +114,8 @@ public class RoomController implements Initializable, Refresh {
 //        sendRoom(3);
         HttpServices.addOrder(3);
         System.out.println("send to room 3");
+        refreshData();
+        refreshView();
     }
 
     @FXML
@@ -97,6 +124,8 @@ public class RoomController implements Initializable, Refresh {
 //        sendRoom(4);
         HttpServices.addOrder(4);
         System.out.println("send to room 4");
+        refreshData();
+        refreshView();
     }
 
     @FXML
@@ -105,6 +134,7 @@ public class RoomController implements Initializable, Refresh {
 
         System.out.println(roomChoice.getValue().getId());
         System.out.println(patientChoice.getValue().getId());
+//        System.out.println(weekField.getText());
     }
 
     @FXML
@@ -126,6 +156,7 @@ public class RoomController implements Initializable, Refresh {
         mainApp.setRoomsData(new ArrayList<>());
         HttpServices.getRoomList(mainApp.getRoomsData());
 
+        orderList = new ArrayList<>();
         HttpServices.getOrderList(orderList);
     }
 
@@ -134,8 +165,6 @@ public class RoomController implements Initializable, Refresh {
 
         ObservableList<Room> roomData = FXCollections.observableArrayList();
         roomData.addAll(mainApp.getRoomsData());
-
-        roomChoice.setItems(roomData);
         roomTableView.setItems(roomData);
 
         idTableColumn.setCellValueFactory(cellData -> cellData.getValue().getIdFx());
@@ -144,8 +173,18 @@ public class RoomController implements Initializable, Refresh {
         pathTableColumn.setCellValueFactory(cellData -> cellData.getValue().getPathFx());
         nameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
 
-        drugChoice.setItems(FXCollections.observableArrayList(mainApp.getDrugsData()));
-        patientChoice.setItems(FXCollections.observableArrayList(mainApp.getPatientsData()));
+
+        ObservableList<Order> ordersData = FXCollections.observableArrayList();
+        ordersData.addAll(orderList);
+
+        orderTableView.setItems(ordersData);
+
+        idOrderTableColumn.setCellValueFactory(cellData -> cellData.getValue().getIdFx());
+        roomOrderTableColumn.setCellValueFactory(cellData -> cellData.getValue().getRoomFx());
+        drugOrderTableColumn.setCellValueFactory(cellData -> cellData.getValue().getDrugFx());
+        statusOrderTableColumn.setCellValueFactory(cellData -> cellData.getValue().getStatusFx());
+        dateOrderTableColumn.setCellValueFactory(cellData -> cellData.getValue().getDateFx());
+
     }
 
     public void setMain(MainApp mainApp) {

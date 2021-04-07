@@ -60,13 +60,13 @@ public class HttpServices {
 
                 for (JsonElement jsonElement : list) {
 
-                    System.out.println(jsonElement);
+//                    System.out.println(jsonElement);
 
                     Drug drug = null;
                     JsonElement medicineJElement = jsonElement.getAsJsonObject().get("medicine");
 
                     if (!medicineJElement.isJsonNull()) {
-                        System.out.println("not null ");
+//                        System.out.println("not null ");
                         JsonObject medicineJObject = medicineJElement.getAsJsonObject();
                         drug = new Drug(medicineJObject.get("id").getAsInt(), medicineJObject.get("name").getAsString());
                     }
@@ -81,7 +81,6 @@ public class HttpServices {
 
                     Room room = new Gson().fromJson(jsonElement, Room.class);
 
-                    System.out.println(room);
 
 //                    room.setDrug(drug);
                     rooms.add(room);
@@ -121,7 +120,6 @@ public class HttpServices {
     }
 
     public static void getPatientList(ArrayList<Patient> patients) {
-
         try {
             URL url = new URL(ROOT_URL + "Patients/listPatients");
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
@@ -130,7 +128,6 @@ public class HttpServices {
             System.out.println(request.getResponseCode() + " from : " + url);
 
             if (request.getResponseCode() == 200) {
-
                 JsonParser jp = new JsonParser(); //from gson
                 JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
                 JsonObject rootObj = root.getAsJsonObject(); //May be an array, may be an object.
@@ -138,12 +135,21 @@ public class HttpServices {
 
                 for (JsonElement jsonElement : list) {
 
-                    patients.add(new Gson().fromJson(jsonElement, Patient.class));
+                    JsonObject jObject = jsonElement.getAsJsonObject();
+
+                    int id = jObject.get("id").isJsonNull() ? 0 : jObject.get("id").getAsInt();
+                    String status = jObject.get("status").isJsonNull() ? null : jObject.get("status").getAsString();
+                    Integer week = jObject.get("week").isJsonNull() ? null : jObject.get("week").getAsInt();
+                    Integer room_id = jObject.get("room_id").isJsonNull() ? null : jObject.get("room_id").getAsInt();
+                    String drug = jObject.get("drug").isJsonNull() ? null : jObject.get("drug").getAsString();
+
+//                    patients.add(new Gson().fromJson(jsonElement, Patient.class));
+                    patients.add(new Patient(id, room_id, week, drug, status));
                 }
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("null json " + e.getMessage());
         }
     }
 
@@ -192,7 +198,7 @@ public class HttpServices {
 
                 for (JsonElement jsonElement : list) {
 
-                    System.out.println(list);
+//                    System.out.println(list);
                     JsonObject jObject = jsonElement.getAsJsonObject();
 
                     int id = jObject.get("id").getAsInt();
@@ -207,7 +213,7 @@ public class HttpServices {
                     }
 
                     Order order = new Order(id, room, drug, status, date);
-                    System.out.println(order);
+//                    System.out.println(order);
                     orderList.add(order);
                 }
             }
@@ -227,7 +233,14 @@ public class HttpServices {
 
             if (request.getResponseCode() == 200) {
 
-                System.out.println("Order added");
+                JsonParser jp = new JsonParser();
+                JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
+                JsonObject rootObj = root.getAsJsonObject(); //May be an array, may be an object.
+                int code = rootObj.get("code").getAsInt(); //just grab the zipcode
+
+                if (code == 404) {
+                    System.out.println("404");
+                }
             }
 
         } catch (Exception e) {
@@ -235,9 +248,19 @@ public class HttpServices {
         }
     }
 
-    public static void setRoomMedicine(int Room, int medicine) {
+    public static void setRoomMedicine(Integer Room, Integer medicine) {
+        setRoomMedicine(Room, medicine, null);
+    }
+    public static void setRoomMedicine(Integer Room, Integer medicine, Integer week) {
         try {
-            URL url = new URL(ROOT_URL + "Patients/setRoomMedicine/" + Room + "/" + medicine);
+            URL url;
+
+            if (week != null) {
+                url = new URL(ROOT_URL + "Patients/setRoomMedicine/" + Room + "/" + medicine + "/" + week);
+            } else {
+                url = new URL(ROOT_URL + "Patients/setRoomMedicine/" + Room + "/" + medicine);
+            }
+
             HttpURLConnection request = (HttpURLConnection) url.openConnection();
             request.connect();
 
@@ -270,11 +293,11 @@ public class HttpServices {
 
     }
 
-    public static void addPatient(Integer patient_id, Integer room) {
-        addPatient(patient_id, room, null);
+    public static String addPatient(Integer patient_id, Integer room) {
+        return addPatient(patient_id, room, null);
     }
 
-    public static void addPatient(Integer patient_id, Integer room, Integer week) {
+    public static String addPatient(Integer patient_id, Integer room, Integer week) {
         try {
 
             String sURL = ROOT_URL + "Patients/addPatient/" + room + "/" + patient_id;
@@ -292,10 +315,25 @@ public class HttpServices {
 
             if (request.getResponseCode() == 200) {
                 System.out.println("id : " + patient_id + " drugName : " + room + " on week " + week);
+
+                JsonParser jp = new JsonParser();
+                JsonElement root = jp.parse(new InputStreamReader((InputStream) request.getContent())); //Convert the input stream to a json element
+                JsonObject rootObj = root.getAsJsonObject(); //May be an array, may be an object.
+                int code = rootObj.get("code").getAsInt(); //just grab the zipcode
+
+                System.out.println(code);
+
+                if (code == 404) {
+                    return "bad request";
+                }
+
+
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return null;
     }
 
     public static void setPatientCondition(int patientID, String status) {
