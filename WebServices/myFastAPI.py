@@ -115,7 +115,7 @@ def CheckOrder(order: str):
     return runningOrder(order)
 
 
-@app.get("/Robots/setOrder")
+@app.get("/Robots/setOrder/{order}/{status}")
 # Modifie le statut d'une consigne entre 'delivered'(medicament fourni) et 'done' (robot a la base) avec le timestamp
 def SetOrder(order: str, status: str):
     return modifyStateOrder(order, status)

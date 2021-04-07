@@ -176,7 +176,7 @@ def runningOrder(order: str, status=""):
 
 # Modifie le statut d'une consigne entre 'delivered'(medicament fourni) et 'done' (robot a la base) avec le timestamp
 def modifyStateOrder(order: str, status: str):
-    # Ajouter dans la database le nouvel état de la consigne avec le timestamp
+    set_order(order,status)
     if (True):
         code = 200
     else:
