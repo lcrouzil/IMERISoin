@@ -1,15 +1,12 @@
 package IMERISoin.Controller;
 
 import IMERISoin.MainApp;
-import IMERISoin.Model.Drug;
-import IMERISoin.Model.Patient;
-import IMERISoin.Model.Room;
-import IMERISoin.services.HttpServices;
+import com.sun.jmx.snmp.tasks.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Control;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
 
@@ -36,6 +33,7 @@ public class MainController implements Initializable, Refresh {
 
     @FXML
     private void refreshAction() {
+
         refreshData();
         refreshView();
     }
@@ -98,23 +96,22 @@ public class MainController implements Initializable, Refresh {
             iex.printStackTrace();
         }
 
-        refreshData();
-        refreshView();
+
+        refreshAction();
 
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-//        refreshData();
-//        refreshView();
-
         System.out.println("Main controller init!");
     }
 
     @Override
     public void refreshData() {
+
         System.out.println("\nMain : START Refresh Data\n");
+
 
         for (Refresh controller : controllerList) {
             controller.refreshData();
@@ -126,8 +123,9 @@ public class MainController implements Initializable, Refresh {
     @Override
     public void refreshView() {
         System.out.println("Main : Refresh View");
-        for(Refresh controller : controllerList) {
+        for (Refresh controller : controllerList) {
             controller.refreshView();
         }
     }
+
 }
