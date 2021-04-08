@@ -5,6 +5,7 @@ import com.google.gson.*;
 
 import java.lang.reflect.Type;
 
+
 public class DrugDeserializer implements JsonDeserializer<Drug> {
     @Override
     public Drug deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {

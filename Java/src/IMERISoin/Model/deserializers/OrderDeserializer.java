@@ -1,20 +1,31 @@
 package IMERISoin.Model.deserializers;
 
+import IMERISoin.Model.Order;
 import IMERISoin.Model.Room;
 import com.google.gson.*;
+import com.sun.org.apache.xpath.internal.operations.Or;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-public class OrderDeserializer implements JsonDeserializer<Room> {
+public class OrderDeserializer implements JsonDeserializer<Order> {
     @Override
-    public Room deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+    public Order deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject jObject = jsonElement.getAsJsonObject();
 
         int id = jObject.get("id").getAsInt();
-        int drug_id = jObject.get("drug_id").getAsInt();
-        String path = jObject.get("path").toString();
-        String name = jObject.get("name").toString();
+        String room = jObject.get("room").getAsString();
+        String drug = jObject.get("drug").getAsString();
+        String status = jObject.get("status").getAsString();
+        Date date = null;
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(jObject.get("timestamp").getAsString());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-        return new Room(id, path, name);
+        return new Order(id, room, drug, status, date);
     }
 }

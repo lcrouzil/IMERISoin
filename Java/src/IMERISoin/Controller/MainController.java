@@ -1,23 +1,29 @@
 package IMERISoin.Controller;
 
 import IMERISoin.MainApp;
-import IMERISoin.Model.Drug;
-import IMERISoin.Model.Patient;
-import IMERISoin.Model.Room;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Control;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Popup;
+import javafx.stage.PopupWindow;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class MainController implements Initializable, Refresh {
+/**
+ * FXML MainController Class
+ *
+ * @author Alexis DEVLEESCHAUWER
+ */
+public class MainController implements Refresh {
 
     @FXML
     private Tab clientTab;
@@ -33,14 +39,38 @@ public class MainController implements Initializable, Refresh {
 
     private MainApp mainApp;
 
-    @FXML
-    private void refreshAction() {
-        refreshData();
-        refreshView();
-    }
-
     private final ArrayList<Refresh> controllerList = new ArrayList<>();
 
+    /**
+     * create Thread for refresh action
+     */
+    @FXML
+    public void refreshAction() {
+        new Thread(() -> {
+            refreshData();
+            refreshView();
+        }).start();
+    }
+
+    /**
+     * show popup settings
+     * todo Finish is an good idea
+     * @param event javafx event
+     */
+    @FXML
+    public void settingsShowPopup(ActionEvent event) {
+        event.consume();
+
+        System.out.println("POPUP");
+        Popup popup = new Popup();
+
+    }
+
+
+    /**
+     * setter class main and init all other controller
+     * @param mainApp main Instance
+     */
     public void setMain(MainApp mainApp) {
         this.mainApp = mainApp;
 
@@ -69,7 +99,6 @@ public class MainController implements Initializable, Refresh {
             AnchorPane anchorDrug = loader.load();
             drugTab.setContent(anchorDrug);
 
-//            System.out.println(loader.getController().toString());
             DrugController controller = loader.getController();
             controllerList.add(controller);
             controller.setMain(mainApp);
@@ -97,64 +126,66 @@ public class MainController implements Initializable, Refresh {
             iex.printStackTrace();
         }
 
+        refreshAction();
+        startGettingData();
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    /**
+     * launch timer call thread for get data and refresh
+     */
+    private void startGettingData() {
 
-//        refreshData();
-//        refreshView();
+        MainApp.pullDataTimer = new Timer();
+        MainApp.pullDataTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
 
-        System.out.println("Main controller init!");
+                new Thread(() -> {
+                    refreshData();
+                    refreshTable();
+                }).start();
+
+            }
+        }, 500, 500);
+
     }
 
+    /**
+     * refresh Data in all controller
+     */
     @Override
     public void refreshData() {
-        System.out.println("\nMain : START Refresh Data\n");
+
+        System.out.println("Main : START Refresh Data");
+
         for (Refresh controller : controllerList) {
             controller.refreshData();
         }
+    }
 
-        System.out.println("\n\n");
+    /**
+     * refresh Table View in all controller
+     */
+    @Override
+    public void refreshTable() {
+        System.out.println("Main : Refresh Table");
 
-        ArrayList<Room> rooms = mainApp.getRoomsData();
-        ArrayList<Drug> drugs = mainApp.getDrugsData();
-        ArrayList<Patient> patients = mainApp.getPatientsData();
-
-        for (Room room : rooms) {
-//            for (Drug drug : drugs) {
-//                if (room.getDrug_id() == drug.getId()) {
-//                    room.setDrug(drug);
-//                }
-//            }
-
-//            for (Patient patient : patients) {
-//                System.out.println("id : " + room.getPatient_id());
-//                Integer patient_id = room.getPatient_id();
-//                if (patient_id != null && patient_id == patient.getId()) {
-//                    System.out.println(room.getPatient_id() + " == " + patient.getId());
-//                }
-//            }
-
+        for (Refresh controller : controllerList) {
+            controller.refreshTable();
         }
-
-        for (Room room : mainApp.getRoomsData()) {
-            System.out.println("room drugName : " + room.getDrug().getName());
-        }
-
-
-
-        System.out.println("\nMain : END Refresh Data\n");
-
 
     }
 
+    /**
+     * refresh all View in all controller
+     */
     @Override
     public void refreshView() {
         System.out.println("Main : Refresh View");
-        for(Refresh controller : controllerList) {
-            System.out.println(controller.getClass());
+
+        for (Refresh controller : controllerList) {
             controller.refreshView();
         }
     }
+
 }

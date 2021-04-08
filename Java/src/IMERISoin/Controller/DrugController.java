@@ -12,11 +12,17 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+/**
+ * FXML DrugController Class
+ *
+ * @author Alexis DEVLEESCHAUWER
+ */
 public class DrugController extends MainController implements Initializable, Refresh{
 
     @FXML
@@ -40,6 +46,11 @@ public class DrugController extends MainController implements Initializable, Ref
 
     private MainApp mainApp;
 
+    /**
+     * button for add new Drug
+     * @param event javafx event
+     * @throws NumberFormatException throw if convert not int
+     */
     @FXML
     private void pushButtonNewDrug(ActionEvent event) throws NumberFormatException {
         event.consume();
@@ -48,25 +59,14 @@ public class DrugController extends MainController implements Initializable, Ref
             int drugId = Integer.parseInt(idNameField.getText());
             String drugName = drugNameField.getText();
 
-//            int drugId = Integer.parseInt(idNameField.getText());
-
             System.out.println(drugId + " " + drugName);
 
             HttpServices.addDrug(drugId, drugName);
 
-            refreshData();
-            refreshView();
+            refreshAction();
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-
-
-
-//        apiPush("addMedicine/", drugName);
-
-//        if (!drugName.equals("")) {
-//
-//        }
     }
 
     /**
@@ -83,15 +83,20 @@ public class DrugController extends MainController implements Initializable, Ref
         System.out.println("Drug controller init!");
     }
 
+    /**
+     * refresh data Propriety of controller
+     */
     public void refreshData() {
         mainApp.setDrugsData(new ArrayList<>());
         HttpServices.getDrugList(mainApp.getDrugsData());
 
     }
 
-    public void refreshView() {
-//        System.out.println(mainApp.getDrugsData());
-
+    /**
+     * refresh Table View
+     */
+    @Override
+    public void refreshTable() {
         ObservableList<Drug> drugData = FXCollections.observableArrayList();
         drugData.addAll(mainApp.getDrugsData());
 
@@ -101,10 +106,19 @@ public class DrugController extends MainController implements Initializable, Ref
         nameTableColumn.setCellValueFactory(cellData -> cellData.getValue().getNameFx());
     }
 
+    /**
+     * refresh All View
+     */
+    public void refreshView() {
+        refreshTable();
+    }
+
+
+    /**
+     * set Main class
+     * @param mainApp main Class
+     */
     public void setMain(MainApp mainApp) {
         this.mainApp = mainApp;
-
-        refreshData();
-        refreshView();
     }
 }

@@ -23,8 +23,6 @@
 #define ENG_m4 2      // Sens du moteur Gauche
 #define D5  14 // pin capteur droit
 #define D6  12 // pin capteur gauche
-#define D7 13  // trigger
-#define D8 15  // echoe
 
 //######################################
 //##                                  ##
@@ -32,12 +30,10 @@
 //##                                  ##
 //######################################
 
+//char web[30];
 int numChambre;
-const char* cheminChambre;
 int etat=0;
 int pasloop = 0;
-char web[]="5f6r4r3r5l";
-
 
 
 // COMPTEURS
@@ -47,53 +43,8 @@ int pos = 0;
 // VARIABLE POSITION ET DIRECTION
 char noeud;
 char dir;
-
-//capteur de distance 
-long temps_debut;
-long temps_fin;
-long ecart_temps;
-float distance;
-
-//######################################
-//##                                  ##
-//##         ActiverTrigger           ##
-//##                                  ##
-//######################################
-
-ICACHE_RAM_ATTR void ActiverTrigger()
-{
-  // DECLENCHEMENT DU TRIGGER
-  digitalWrite(D7, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(D7, LOW);
-  timer1_write(600000);
-}
-
-
-
-//######################################
-//##                                  ##
-//##           EcouterEcho            ##
-//##                                  ##
-//######################################
-
-ICACHE_RAM_ATTR void EcouterEcho()
-{
-  if (digitalRead(D8) == 1)
-  {
-    temps_debut = micros();
-  }
-  else
-  {
-    temps_fin = micros();
-    
-    // CALCUL DE LA DISTANCE
-    ecart_temps = temps_fin - temps_debut;
-    distance = 0.000340 * (float)ecart_temps / 2.0;
-  }
-  
-}
-
+String direct;
+bool statOrdre= false;
 
 //######################################
 //##                                  ##
@@ -103,10 +54,13 @@ ICACHE_RAM_ATTR void EcouterEcho()
 
 const char *ssid = "IMERIR_IoT";  //ENTER YOUR WIFI SETTINGS
 const char *password = "kohWoong5oox";
+//const char *ssid = "iPhone";  //ENTER YOUR WIFI SETTINGS
+//const char *password = "Charice712";
 
 
 const char *host = "10.3.6.197";//adresse ip de l'hote
-//byte host[4] = {10, 3, 6, 197};
+//const char *host = "172.20.10.3";//adresse ip de l'hote
+
 const int httpsPort = 8000;  //HTTPS= 443 and HTTP = 80
 const int Id_Robot=01;
 
@@ -117,7 +71,7 @@ const int Id_Robot=01;
 //######################################
  /*Fonction Avancer tout droit*/
 void goAhead(){
-      analogWrite(END_m1, 800);  // Mettre la vitesse du Moteur Droit à 700
+      analogWrite(END_m1, 850);  // Mettre la vitesse du Moteur Droit à 700
       analogWrite(ENG_m2, 800);  // Mettre la vitesse du Moteur Gauche à 700
       digitalWrite(END_m3, LOW); // Sens du Moteur Droit
       digitalWrite(ENG_m4, LOW); //Sens du Moteur Gauche
@@ -128,25 +82,24 @@ void goRight(){
       analogWrite(END_m1, 0);    // Eteindre Moteur Droit
       analogWrite(ENG_m2, 800);  //Mettre la vitesse du Moteur Gauche à 700
       digitalWrite(END_m3, HIGH);// Sens du Moteur Droit
-      //digitalWrite(ENG_m4, LOW); //Sens du Moteur Gauche
+      digitalWrite(ENG_m4, LOW); //Sens du Moteur Gauche
   }
   
  /*Fonction tourner à Droite  */
 void goLeft(){
-     analogWrite(END_m1, 800);  //Mettre la vitesse du Moteur Droit à 700
+     analogWrite(END_m1, 850);  //Mettre la vitesse du Moteur Droit à 700
      analogWrite(ENG_m2, 0);    // Eteindre Moteur Gauche
-     //digitalWrite(END_m3, LOW); // Sens du Moteur Droit
+     digitalWrite(END_m3, LOW); // Sens du Moteur Droit
      digitalWrite(ENG_m4, HIGH);//Sens du Moteur Gauche
   }
 
  /*Fonction arreter le Robot */
 void stopRobot(){  
       digitalWrite(END_m1, LOW); // Eteindre Moteur Droit
-      //digitalWrite(END_m3, LOW); // Sens du Moteur Droit
+      digitalWrite(END_m3, LOW); // Sens du Moteur Droit
       digitalWrite(ENG_m2, LOW); // Eteindre Moteur Gauche
-      //digitalWrite(ENG_m4, LOW); // Sens du Moteur Gauche
+      digitalWrite(ENG_m4, LOW); // Sens du Moteur Gauche
   }
-
 //######################################
 //##                                  ##
 //##           réseaux demande ordre  ##
@@ -229,6 +182,8 @@ void getOrder()
     return;
   }
   int ordreChambre = order["room"];
+  int orderId=order["order"];
+  int medoc=order["medicine"];
 
 //verif 
   
@@ -239,6 +194,8 @@ void getOrder()
   // Attente :
   delay(2000);  //GET Data at every 2 seconds
 }
+
+
 //######################################
 //##                                  ##
 //##         réseaux demande chemin   ##
@@ -320,23 +277,25 @@ DeserializationError error = deserializeJson(chemin, line); //(document, input)
     Serial.println(error.f_str());
     return;
   }
-  cheminChambre = chemin["path"];
+  const char* cheminChambre = chemin["path"];
+  direct = String(cheminChambre);
   
 
 //verif 
-Serial.println(cheminChambre);
+Serial.println(direct);
+
 
   // Attente :
   delay(2000);  //GET Data at every 2 seconds
 
 }
-//######################################
-//##                                  ##
-//##         Reseau set node          ##
-//##      "/Robots/setPosition/"      ##
-//######################################
 
-
+/*******************************************************************
+ * 
+ *reseau set 
+ *"/Robots/setPosition/"
+ *
+ *******************************************************************/
  void setNode()
 {
  
@@ -403,44 +362,18 @@ Serial.println(cheminChambre);
   delay(2000);
   }
 
-//######################################
-//##                                  ##
-//##         Setup                    ##
-//##                                  ##
-//######################################
+
+/*****************************************************
+ * 
+ *Setup
+ *
+ ******************************************************/
 void setup()
 {
-  
+  //delay(1000);(enlever a voir pour test)
   Serial.begin(115200);
- 
-  //moteur 
-  pinMode(END_m1,OUTPUT);//Allumer moteur Droit
-  pinMode(ENG_m2,OUTPUT);//Allumer moteur gauche
-  pinMode(END_m3,OUTPUT);//Sens du moteur droit
-  pinMode(ENG_m4,OUTPUT);//Sens du moteur gauche
-  
-  //REGLAGE CAPTEUR LUMINOSITE
-  pinMode(D5, INPUT);
-  pinMode(D6, INPUT);
-  
-  // REGLAGE DE LA PIN TRIGGER :
-  pinMode(D7, OUTPUT);
-  
-
-  // REGLAGE DE LA PIN ECHO :
-  pinMode(D8, INPUT);
-  attachInterrupt( digitalPinToInterrupt(D6), EcouterEcho, CHANGE);
-
-
-  // INITIALISATION DE LA VARIABLE :
-  distance = 0;
-
-
-  // ACTIVATION AUTOMATIQUE DU CAPTEUR ULTRASON :
-  timer1_attachInterrupt( ActiverTrigger );
-  timer1_enable( TIM_DIV16, TIM_EDGE, TIM_SINGLE );
-  timer1_write(600000);
-
+  //WiFi.mode(WIFI_OFF);        //Prevents reconnection issue (taking too long to connect)
+  //delay(1000);( pas forcé a enelver)
   WiFi.mode(WIFI_STA);        //Only Station No AP, This line hides the viewing of ESP as wifi hotspot
   
   WiFi.begin(ssid, password);     //Connect to your WiFi router
@@ -461,41 +394,53 @@ void setup()
   Serial.println(ssid);
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());  //IP address assigned to your ESP
+  
+/********************************************************************/
+
 }
-
-
-//######################################
-//##                                  ##
-//##         Loop                     ##
-//##                                  ##
-//######################################
 
 void loop()
 {
-     //######################################
+  Serial.println(pasloop);
+  if(pasloop == 0)
+  {
+    getOrder();
+    if(numChambre!=0)
+    {
+      getPath();
+      pasloop++;
+    }
+    else
+    {
+      Serial.println("pas d'ordre");
+    }
+    
+  }
+    
+    //######################################
     //##                                  ##
     //##           robot                  ##
     //##                                  ##
     //######################################
   int captD = digitalRead(D5); // Lire la valeur du capteur droit
   int captG = digitalRead(D6); // Lire la valeur du capteur gauche
+  //dir = cheminChambre[iteration];  
+  //noeud = cheminChambre[pos]-'0';
  
-  switch (etat) 
-  {
+  switch (etat) {
     
     //##################################### ETAT INITIAL : AVANCE #####################################
     
     case 0:
     goAhead();
-    Serial.println(distance);
-    while(distance<0.5)
-    {
-      stopRobot();
-    }
+    delay(300);
+    /*
     if (!captD && !captG)
     {
       etat=1;
     }
+    */
+    etat = 1;
     break;
     
     //###################################################################################################
@@ -503,78 +448,81 @@ void loop()
     
 
     
-    //######################################### ETAT 1: suivie de ligne #########################################
+    //######################################### ETAT 1: SUIVI DE LIGNE #########################################
     
-    // CHANGE D'ETAT SI UN DES CAPTEUR DETECTE LA LIGNE
     case 1:
     goAhead(); // avance tant qu'un des 2 capteurs ne detecte rien
-    while(distance<0.5)
-    {
-      stopRobot();
-    }
-    if (captD==1 && !captG) // Si capteur gauche = noir --> etat 3
+    if (captD==1 && captG==0) // Si capteur gauche = noir --> etat 3
     {
       goRight();
     }  
-    if (!captD && captG==1) // // Si capteur droit = noir --> etat 2
+    else if (captD==0 && captG==1) // // Si capteur droit = noir --> etat 2
     {
       goLeft();
-    } 
-    if (captD==1 && captG==1)
+    }  
+    else if (captD == 1 && captG == 1)
     {
-      etat=2;
+      etat =2;
     }
     break;
     
+    //###################################################################################################
 
-    //##################################### ETAT 2: intersection #####################################
+
+    //####################### ETAT INTERSECTION (2): LIT LA CHAINE DE CARACTERE ##########################
     
-    
-    
+    // EN FONCTION DE LA CHAINE, AVANCE OU TOURNE A GAUCHE OU A DROITE
     case 2:
-    
-    
-    //dir = cheminChambre[iteration];  
-    //noeud = cheminChambre[pos];
-    dir = web[iteration];  
-    noeud = web[pos];
-    //ordre();
-    while(distance<0.5)
+    stopRobot();
+    //setNode();
+    delay(2000);
+    dir = direct[iteration];  
+    noeud = direct[pos]-'0';
+    if (noeud==numChambre)
     {
+      Serial.println("chambre");
       stopRobot();
+      delay(3000);
+      Serial.println("départ de la chambre");
+      
     }
-   
-    if ( dir== 'f')
+    
+    if ( dir== 'F')
     {
-      stopRobot();
-      delay(2000);
+      Serial.println("F");
+      iteration = iteration + 2;
+      pos = pos +2;
       etat = 0;
+      
     }
  
-    if( dir == 'l')
+    else if( dir == 'L')
     {
-      stopRobot();
-      delay(2000);
+      Serial.println("L");
       goLeft();
       delay(500);
-      
+      iteration = iteration + 2;
+      pos = pos +2;
       etat = 1;
+      
     }
    
-    if( dir=='r')
+    else if( dir=='R')
     {
-      stopRobot();
-      delay(2000);
+      Serial.println("R");
       goRight();
       delay(500);
-      
+      iteration = iteration + 2;
+      pos = pos +2;
       etat = 1;
     }
     
-    iteration = iteration + 2;// permet d'avancer sur la chaine en prenant en compte que les ordres
-    pos = pos + 2;            // permet d'avancer sur la chaine en prenant en compte que les noeuds 
    
     break;
-   
-    }
+    
+    //####################################################################################################
+       
+    
+  }
+
 }

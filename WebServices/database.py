@@ -35,86 +35,91 @@ def createBase():
     """
 
     # create database
-    try:
-        conn = sqlite3.connect(databaseName)
-    except Error as e:
-        quit()
+    executeSQL("""
+    create table drug
+    (
+        id   INTEGER not null
+            constraint drug_pk
+                primary key,
+        name text
+    );
+    """)
 
-    c = conn.cursor()
+    executeSQL("""
+        create unique index drug_id_uindex
+        on drug (id);
+    """)
 
-    c.execute('''create table drug
-        (
-            id   INTEGER not null
-                constraint drug_pk
-                    primary key,
-            name text
-        );
-    ''')
+    executeSQL("""
+    create table room
+    (
+        id   INTEGER not null
+            constraint room_pk
+                primary key,
+        name text    not null,
+        path text    not null
+    );
+    """)
 
-    c.execute('''
-        create unique index drug_int_uindex
-            on drug (id);
-    ''')
+    executeSQL("""
+    create unique index room_id_uindex
+    on room (id);
+    """)
 
-    c.execute('''
-        create table patient
-        (
-            id     INTEGER not null
-                constraint patient_pk
-                    primary key,
-            status text
-        );
-    ''')
+    executeSQL("""
+    create table drug_room
+    (
+        week    INTEGER default (strftime('%W%Y',datetime())),
+        drug_id int     not null,
+        room_id int     not null
+    );
+    """)
 
-    c.execute('''
+    executeSQL("""
+        create unique index drug_room_week_room_id_uindex
+        on drug_room (week, room_id);
+    """)
+
+    executeSQL("""
+    create table patient
+    (
+        id      INTEGER not null
+            constraint patient_pk
+                primary key,
+        status  text,
+        week    INTEGER default (strftime('%W%Y', datetime())),
+        room_id INTEGER
+            references room
+    );
+    """)
+
+    executeSQL("""
         create unique index patient_id_uindex
             on patient (id);
-    ''')
+    """)
 
-    c.execute('''
-        create table room
-        (
-            id INTEGER not null
-                constraint room_pk
-                    primary key,
-            patient_id INTEGER
-                references patient,
-            drug_id    INTEGER
-                references drug,
-            path       TEXT,
-            name       TEXT
-        );
-    ''')
+    executeSQL("""
+        create unique index patient_room_id_week_uindex
+    on patient (room_id, week);
+    """)
 
-    c.execute('''
-        create unique index room_id_uindex
-            on room (id);
-    ''')
+    executeSQL("""
+    create table orders
+    (
+        id        INTEGER
+            constraint orders_pk
+                primary key autoincrement,
+        timestamp DATE default (datetime('now', 'localtime')),
+        room_id   INTEGER not null
+            references room,
+        status    text    not null
+    );
+    """)
 
-    c.execute('''
-        create unique index room_patient_id_uindex
-            on room (patient_id);
-    ''')
-
-    c.execute('''
-        create table orders
-        (
-            id      INTEGER
-                constraint order_pk
-                    primary key autoincrement,
-            room_id INTEGER not null
-                references room,
-            status  TEXT,
-            date    DATETIME default CURRENT_TIMESTAMP
-        );''')
-
-    c.execute('''
-        create unique index order_id_uindex
-            on orders (id);
-    ''')
-
-    conn.commit()
-    conn.close()
+    executeSQL("""
+        create unique index ordes_id_uindex
+        on orders (id);
+    """)
 
 
 def executeSQL(s_SQL):
@@ -123,20 +128,23 @@ def executeSQL(s_SQL):
 
         c.execute(s_SQL)
 
+        conn.commit()
+
 
 def findSQL(s_SQL):
     with connectBase() as conn:
         c = conn.cursor()
         c.execute(s_SQL)
 
+        conn.commit()
         return c
 
 
 def insert_base():
-    add_room(1, "0F5F6F7L2L1F5R", "B1")
-    add_room(2, "0F5F6L1L5R", "B2")
-    add_room(3, "0F5F6F7R3R4F5L", "B3")
-    add_room(4, "0F5F6R4R5L", "B4")
+    add_room(1, "B1", "0F5F6F7L2L1F5R")
+    add_room(2, "B2", "0F5F6L1L5R")
+    add_room(3, "B3", "0F5F6F7R3R4F5L")
+    add_room(4, "B4", "0F5F6R4R5L")
 
 
 def add_room(id, name="", path=""):
@@ -163,23 +171,50 @@ def add_room(id, name="", path=""):
 # todo add getter room
 def get_room():
     rows = findSQL("SELECT * FROM room;").fetchall()
+    print(rows)
 
-    for id, patient_id, drug_id, path, name in rows:
-        yield id, patient_id, drug_id, path, name
+    for id, name, path in rows:
+        yield id, name, path
 
 
-def set_room_medicine(room: int, medicine: int, week: int):
-    if not isinstance(id, int): return "id not correct"
-    with connectBase() as conn:
-        c = conn.cursor()
-        c.execute(f'''
-            INSERT INTO room (id, drug_id) VALUES ({id}, {medicine});
-        ''')
+def set_room_medicine(room: int, medicine: int, week: int = None):
+    try :
+        if not isinstance(room, int): return "id not correct"
+
+        with connectBase() as conn:
+            c = conn.cursor()
+
+            if week is not None:
+                c.execute(f"""
+                    INSERT INTO drug_room (room_id, drug_id, week) VALUES ({room}, {medicine}, {week})
+                """)
+            else:
+                c.execute(f"""
+                    INSERT INTO drug_room (room_id, drug_id) VALUES ({room}, {medicine})
+                """)
+        return True
+    except Error as err :
+        print(err)
+        return False
 
 
 # Retourne tous les médicaments disponibles
-def get_room_medicine(room: int, week: int):
-    rows = findSQL(f"SELECT * FROM room WHERE id = {room};").fetchall()
+def get_room_medicine(room: int, week: int = None):
+    rows = None
+    if week is not None:
+        rows = findSQL(f"""
+        SELECT room_id, week, drug_id
+        FROM drug_room
+        WHERE room_id = {room}
+        AND week = {week};
+        """).fetchall()
+    else:
+        rows = findSQL(f"""
+        SELECT room_id, week, drug_id
+        FROM drug_room
+        WHERE room_id = {room}
+        AND week = (strftime('%W%Y', datetime()));
+        """).fetchall()
 
     for id, name in rows:
         print(id, name)
@@ -196,66 +231,80 @@ def get_medicine():
 
 
 def set_medicine(id, name):
-    if not isinstance(id, int): return "id not correct"
-    if not isinstance(name, str) or len(name) <= 0: return "name not correct"
+    try:
+        if not isinstance(id, int): return "id not correct"
+        if not isinstance(name, str) or len(name) <= 0: return "name not correct"
 
-    is_exist = findSQL(f'''
-        SELECT CASE WHEN EXISTS (
-            SELECT * 
-            FROM drug
-            WHERE id = {id}
-        )
-        THEN CAST(1 AS BIT)
-        ELSE CAST(0 AS BIT) END;
-    ''').fetchone()[0]
+        is_exist = findSQL(f'''
+            SELECT CASE WHEN EXISTS (
+                SELECT * 
+                FROM drug
+                WHERE id = {id}
+            )
+            THEN CAST(1 AS BIT)
+            ELSE CAST(0 AS BIT) END;
+        ''').fetchone()[0]
 
-    print(is_exist)
+        print(is_exist)
 
-    if is_exist:
-        executeSQL(f"UPDATE drug SET name = '{name}' WHERE id = {id};")
-    else:
-        executeSQL(f"INSERT INTO drug (id, name) VALUES ({id}, '{name}');")
+        if is_exist:
+            executeSQL(f"UPDATE drug SET name = '{name}' WHERE id = {id};")
+        else:
+            executeSQL(f"INSERT INTO drug (id, name) VALUES ({id}, '{name}');")
+        return True 
+    except Error as err :
+        return False
 
 
 def get_patient():
-    rows = findSQL("SELECT * FROM patient;")
+    rows = findSQL(f"""
+        SELECT p.id, p.status, p.week, p.room_id, dr.drug_id || ' ' || d.name
+        FROM patient p
+            LEFT JOIN drug_room dr on dr.room_id = p.room_id and p.week = dr.week
+            LEFT JOIN drug d on d.id = dr.drug_id;
+         """)
 
-    for id, status in rows:
-        yield id, status
+    for id, status, week, room_id, drug in rows:
+        print("patient ", id, status, week, room_id, drug)
+        yield id, status, week, room_id, drug
 
 
 def set_patient_status(patient_id: int, status: str):
+    try:
+        executeSQL(f'''
+            UPDATE patient SET status = '{status}' WHERE id = {patient_id}
+        ''')
+        return True
+    except Error as err :
+        return False
 
-    executeSQL(f'''
-        UPDATE patient SET status = '{status}' WHERE id = {patient_id}
-    ''')
 
 
-def add_patient(id):
-    if not isinstance(id, int): return "id not correct"
-    # if not isinstance(status, str) or len(status) <= 0: return "name not correct"
+def add_patient(id: int, room: int, week: int = None):
+    print(room, id, week)
+    is_exist = findSQL(f'''
+            SELECT CASE WHEN EXISTS (
+                SELECT * 
+                FROM patient
+                WHERE id = {id}
+            )
+            THEN CAST(1 AS BIT)
+            ELSE CAST(0 AS BIT) END;
+        ''').fetchone()[0]
 
-    # is_exist = findSQL(f'''
-    #         SELECT CASE WHEN EXISTS (
-    #             SELECT *
-    #             FROM patient
-    #             WHERE id = {id}
-    #         )
-    #         THEN CAST(1 AS BIT)
-    #         ELSE CAST(0 AS BIT) END;
-    #     ''').fetchone()[0]
-    #
-    # print("rows :", is_exist)
+    if not is_exist:
+        if week is not None:
+            executeSQL(f"""
+                INSERT INTO patient (id, room_id, week) VALUES ({id}, {room}, {week})
+            """)
+        else:
+            executeSQL(f"""
+                INSERT INTO patient (id, room_id) VALUES ({id}, {room})
+            """)
 
-    # if is_exist:
-    #     executeSQL(f'''
-    #         UPDATE patient SET name = '{name}' WHERE id = {id};
-    #     ''')
-    # else:
+        return True
 
-    executeSQL(f'''
-        INSERT INTO patient (id) VALUES ({id});
-    ''')
+    return False
 
 
 def get_robot():
@@ -270,11 +319,31 @@ def set_robot():
     pass
 
 
-def get_order():
-    order = findSQL(f'''SELECT o.id, o.room_id, r.drug_id
+def get_orders():
+    rows = findSQL(f"""
+        SELECT o.id, o.room_id, r.name, dr.drug_id, d.name, o.status, o.timestamp
         FROM orders o
-                 LEFT JOIN room r on r.id = o.room_id
-        ORDER BY date
+                 JOIN room r on r.id = o.room_id
+                 JOIN drug_room dr ON r.id = dr.room_id
+                 JOIN drug d ON dr.drug_id = d.id
+        WHERE dr.week = (strftime('%W%Y', datetime()))
+    """).fetchall()
+
+    print("rows : ", rows)
+
+    for id, room_id, room_name, drug_id, drug_name, status, timestamp in rows:
+        room = str(room_id) + " " + room_name
+        drug = str(drug_id) + " " + drug_name
+        yield id, room, drug, status, timestamp
+
+
+def get_order():
+    order = findSQL(f'''
+        SELECT o.id, o.room_id, dr.drug_id
+        FROM orders o
+                 JOIN drug_room dr on dr.week = (strftime('%W%Y', datetime()))
+        WHERE o.status = 'to do'
+        ORDER BY timestamp
         LIMIT 1
     ''').fetchone()
 
@@ -296,7 +365,7 @@ def add_order(room):
 
 def set_order(order, status):
     executeSQL(f'''
-        UPDATE orders SET status = {status} WHERE order_id = {order},
+        UPDATE orders SET status = '{status}' WHERE id = {order};
     ''')
 
 
@@ -324,19 +393,28 @@ def get_room_join():
 ##conn = connectBase()
 ### et on peut utiliser ici le connecteur de la base
 def __test__():
-    print("..", set_medicine(1, "medicament 1"))
-    print("..", set_medicine(2, "medicament 2"))
-    print("..", set_medicine(1, "medicament 3"))
-    print("..", set_medicine(2, "medicament 4"))
+    print("..", add_patient(1, 2))
+    print("..", add_patient(2, 3))
+    print("..", add_patient(3, 4))
+    print("..", add_patient(4, 1))
 
-    print("..", add_patient(1))
+    print("..", set_medicine(1, "Doliprane"))
+    print("..", set_medicine(2, "Ibuprofene"))
+    print("..", set_medicine(3, "Ritaline"))
+    print("..", set_medicine(4, "Chloroquine"))
+
+    print("..", set_room_medicine(1, 4))
+    print("..", set_room_medicine(2, 1))
+    print("..", set_room_medicine(3, 2))
+    print("..", set_room_medicine(4, 3))
 
     for id, name in get_medicine():
         print(id, name)
 
     add_order(1)
-    print("..get Order", get_order())
-    print("..get Room", get_room())
+    add_order(2)
+    add_order(3)
+    add_order(4)
 
 
 if __name__ == '__main__':

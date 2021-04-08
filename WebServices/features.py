@@ -10,140 +10,219 @@ from database import *
 
 # Patients et essais cliniques
 
-
-# Définit un nouveau médicament avec un nom
-def newMedicine(medicine: int, name: str):
-    set_medicine(medicine, name)
-    if (True):
-        code = 200
+def setMedicine(medicine, name):
+    ''' setMedicine
+    Définit un nouveau médicament avec un nom
+    Parameters : medicine/name
+    JSON : {"code":200} si enregistré
+           {"code":404,"error":error} si non enregistré '''
+    code = 404
+    a = set_medicine(medicine, name)
+    print("boolean",a)
+    if isinstance(medicine, int) and isinstance(name, str) :
+        if(set_medicine(medicine, name)) :
+            code = 200
+            return {"code": code}
+        else :
+            error = "la database fait n'imp"
+            return {"code": code,"error":error}
     else:
+        error = "Les arguments ne sont pas du bon type"
+        return {"code":code,"error":error}
+        
+
+
+def addPatient(room: int, patientID: int, week: int = None):
+    ''' addPatient
+    Nouveau patient dans une room donnée (selon la semaine donnée ou en cours)
+    Parameters : room/patientID/week
+    JSON : {"code":200,"patientID":patientID} si enregistré
+           {"code":404,"error":error} si non enregistré '''
+
+    code = 200
+    if isinstance(room, (int, float)) == False or isinstance(room, (int, float)) == False:
         code = 404
-    return {"code": code}
-
-
-# Nouveau patient dans une room donnée (selon la semaine donnée ou en cours)
-def newPatient(room: int, patientID: int, name: str, week: int = 0):
-    add_patient(patientID, name)
-    # week = str(week)
-    # week = datetime.strptime(week, "%Y%m%d").strftime("%Y/%m/%d")
-    if (True):
-        code = 200
+        error = "Pas bon type dans les arguments"
+        return {"code": code,"error":error}
     else:
+        add_patient(patientID, room, week)
+        return {"code": code, "room": room, "patientID": patientID, "week": week}
+    
+
+
+def setRoom(room: int, name: str, path: str):
+    ''' setRoom
+    Crée ou modifie une chambre
+    Parameters : room/name/(path)
+    JSON : {"code":200} si enregistré
+           {"code":404,"error":error} si non enregistré'''
+    code = 200
+    if isinstance(room, (int, float)) == False:
         code = 404
-    return {"code": code, "room": room, "patientID": patientID, "name": name, "week": week}
-
-
-# Crée ou modifie une chambre
-def newRoom(room: int, name: str, path: str):
-    add_room(room, name, path)
+        error = "Pas bon type dans les arguments"
+        return {"code": code,"error":error}
+    else:
+        add_room(room, name, path)
+        return {"code": code, "room": room, "patientID": patientID, "week": week}
+    
     return 1
 
 
-# Renvoie l'état de santé d'un patient entre "Cured"/"Stable"/"Dead"
-def patientCondition(patientID: int, condition: str):
+def getPatientCondition(patientID: int):
+    ''' getPatientCondition
+    Renvoie l'état de santé d'un patient entre "Cured"/"Stable"/"Dead"
+    Parameters : patientID
+    JSON : {"condition" : condition}
+    '''
     # Questionner la database
     return {"condition": condition}
 
 
-# Définit la condition du patient entre cured/stable/dead
-def newPatientCondition(patient_id: int, condition: str):
-    # Ajouter dans la database entre "cured"/"stable"/"dead"
 
-    set_patient_status(patient_id, condition)
+def setPatientCondition(patient_id: int, condition: str):
+    ''' setPatientCondition
+    Définit la condition du patient entre cured/stable/dead
+    Parameters : patientID,condition
+    JSON : {"code":200} si enregistré
+           {"code":404,"error":error} si non enregistré'''
 
-    if (1):
-        code = 200
-    else:
-        code = 404
-    return {"code": code}
+    code = 404
+    if isinstance(patient_id, int) and isinstance(condition, str):
+        if (set_patient_status(patient_id, condition)):
+            code = 200
+            return {"code":code}
+    else :
+        error = "Pas bon type argument"
 
-
-# Définit le médicament à donner dans la room pour la semaine indiquée (ou semaine en cours si paramètre pas donné)
-def newRoomMedicine(room: int, medicine: int, week: Optional[int] = 0):
-    set_room_medicine(room, medicine, week)
-    if (True):
-        code = 200
-    else:
-        code = 404
-    return {"code": code}
+    return {"code": code,"error":error}
 
 
-# Retourne le médicament à fournir dans la room
-def roomMedicine(room: int, week: Optional[int] = 0):
+def setRoomMedicine(room, medicine, week = None):
+    ''' setRoomMedicine
+    Définit le médicament à donner dans la room pour la semaine indiquée (ou semaine en cours si paramètre pas donné)
+    Parameters : room/medicine/(week)
+    JSON : {"code":200} si enregistré
+           {"code":404,"error":error} si non enregistré'''
+       
+    code = 404
+    if isinstance(room, int) and isinstance(medicine, int):
+        if (set_room_medicine(room, medicine, week)):
+            code = 200
+            return {"code":code}
+    else :
+        error = "Pas bon type argument"
+
+    return {"code": code,"error":error}
+
+
+def getRoomMedicine(room: int, week: Optional[int] = 0):
+    ''' getRoomMedicine
+    Retourne le médicament à fournir dans la room
+    Parameters : room/(week)
+    JSON : {"room": room,"week": week,"medecine": medicine}'''
     tab = []
     tab = get_room_medicine(room, week)
 
     return {"list": tab}
 
 
-# Retourne les éléments en fonction des paramètres optionnels
-def patientStats(week: Optional[int], room: Optional[int], medicine: Optional[int], state: Optional[str]):
+def patientStats(week: Optional[int], room: Optional[int], medicine: Optional[int], condition: Optional[str]):
+    ''' getStats
+    Retourne les éléments en fonction des paramètres optionnels
+    Parameters :(week)/(room)/(medicine)/(condition)
+    JSON : {"list":["week":week,"room":room,"medicine":medicine,"condition":condition]}
+    '''
     # Questionner la database
     return {"week": week}  # retourner une liste de tout
 
 
-# Retourne tous les médicaments disponibles
-def getMedicines():
+def listMedicines():
+    ''' listMedicines
+    Retourne tous les médicaments disponibles
+    Parameters : NULL
+    JSON : {‘list’: [{‘medicine’: medicine, ‘name’: name}, …]}
+    '''
     tab = []
     for id, name in get_medicine():
         tab.append({"id": id, "name": name})
-        # tab[id] = name
 
-    print(tab)
 
     return {"list": tab}
 
 
-# Retourne la liste de tous les patients
-def getPatients():
-    # Database : pareil que getMedicines?
+def listPatients():
+    ''' listPatients
+    Retourne la liste de tous les patients
+    Parameters : NULL
+    JSON : {‘list’: [{‘patientId’: patientId, ‘SS’: ss, ‘week’: week, ‘condition’: condition} , …]}'''
     tab = []
-    for id, status in get_patient():
-        tab.append({"id": id, "status": status})
+    for id, status, week, room_id, drug in get_patient():
+        tab.append({"id": id, "status": status, "week": week, "room_id": room_id, "drug": drug})
 
-    print(tab)
+    #print(tab)
 
     return {"list": tab}
 
 
-# Retourne la liste de toutes les rooms
-def getRooms():
+def listRooms():
+    ''' listRooms
+    Retourne la liste de toutes les rooms
+    Parameters : NULL
+    JSON : {‘list’: [{‘room’: room, ‘node’: node, ‘path’: node}, ... ]}'''
     tab = []
-    for id, patient_id, drug_id, path, name in get_room():
-        tab.append({"id": id, "patient_id": patient_id, "drug_id": drug_id, "path": path, "name": name})
+    for id, name, path in get_room():
+        tab.append({"id": id, "path": path, "name": name})
 
-    print(tab)
+    #print(tab)
 
     return {"list": tab}
 
 
-# Retourne la liste de tous les robots
-def getRobots():
+def listRobots():
+    ''' listRobots
+    Retourne la liste de tous les robots
+    Parameters : NULL
+    JSON : {‘list’: [{‘robot’: robot, ‘name’: name}, ... ]}'''
     tab = {}
     for id, name in get_robot():
         tab[id] = name
 
-    print(tab)
+    #print(tab)
 
     return {"robots": tab}
+
+
+def listOrders():
+    ''' Commentaire'''
+    tab = []
+    for id, room, drug, status, timestamp in get_orders():
+        print("get_orders : ", id, room, drug, status, timestamp)
+        tab.append({"id": id, "room": room, "drug": drug, "status": status, "timestamp": timestamp})
+
+    #print(tab)
+
+    return {"list": tab}
 
 
 # Gestion des robots et des consignes
 
 
 # Ajouter la consigne medicament pour telle room (status "to do")
-def newOrder(room: int):
+def addOrder(room: int):
+    ''' addOrder'''
     code = 200
     if isinstance(room, (int, float)) == False:
         code = 404
         error = "La room doit être un int"
+        return {"code":code,"error":error}
     else:
         add_order(room)
     return {"code": code}
 
 
 # Lit la première consigne disponible
-def firstOrder():
+def getOrder():
+    ''' getOrder'''
     order = {}
     order = get_order()
     return {"order": order[0], "room": order[1], "medicine": order[2]}
@@ -151,6 +230,7 @@ def firstOrder():
 
 # TEST ORDER
 def OrderTest():
+    ''' OrderTest'''
     tab = {}
     for id, name in get_robot():
         tab[id] = name
@@ -161,14 +241,16 @@ def OrderTest():
 
 
 # Retourne le statut d'avancement de la consigne
-def runningOrder(order: str, status=""):
+def checkOrder(order: str, status=""):
+    ''' checkOrder'''
     # Questionner la database
     return {"order": order, "status": status}
 
 
 # Modifie le statut d'une consigne entre 'delivered'(medicament fourni) et 'done' (robot a la base) avec le timestamp
-def modifyStateOrder(order: str, status: str):
-    # Ajouter dans la database le nouvel état de la consigne avec le timestamp
+def setOrder(order: str, status: str):
+    ''' setOrdder'''
+    set_order(order,status)
     if (True):
         code = 200
     else:
@@ -177,13 +259,15 @@ def modifyStateOrder(order: str, status: str):
 
 
 # Renvoie le noeud où le robot est actuellement
-def robotPosition(robot_id: int):
+def getPosition(robot_id: int):
+    ''' getPosition'''
     # Questionner la database
     return {"robot": robot_id, "node": node, "timestamp": timestamp}
 
 
 # Enregistre le noeud où est arrivé le robot + timestamp
-def robotAddNode(robot: int, node: int):
+def setPosition(robot: int, node: int):
+    ''' setPosition'''
     # Ajouter dans la database le nouveau noeud où se situe le robot
     if (True):
         code = 200
@@ -192,14 +276,37 @@ def robotAddNode(robot: int, node: int):
     return {"code": code}
 
 
+def getPath(room:int):
+    ''' getPath
+    Donne le chemin sous forme d'une chaîne de caractère
+    Parameters : room
+    JSON : {"room" : room,"path" : room}
+    '''
+    path = "RIEN"
+    if (room == 1):
+        path = "0F5F6L1L5R"
+    elif (room == 2):
+        path = "0F5F6F7L2L1F5R"
+    elif (room == 3):
+        path = "0F5F6F7R3R4F5L"
+    elif (room == 4):
+        path = "0F5F6R4R5L"
+    else:
+        path = "This room doesn't exist"
+    # Donne le chemin sous forme d'une chaîne de caractère
+    return {"room": room, "path": path}
+
+
 # Historique des mouvements du robot
-def robotHistory(robot: int):
+def getHistory(robot: int):
+    ''' getHistory'''
     # Questionner la base de données
     return {"liste des mouvements node/timestamp": afaire}
 
 
 # Crée une alerte (s'il est perdu)
-def robotLost(robot: int):
+def alertRobot(robot: int):
+    ''' alertRobot'''
     # Ajouter base de données
     if (True):
         code = 200
@@ -208,7 +315,8 @@ def robotLost(robot: int):
     return {"code": code}
 
 
-def getJsonObjectRoom():
+def getObjectRoom():
+    ''' getObjectRoom'''
     tab = []
     for room_id, room_path, room_name, patient_id, patient_status, drug_id, drug_name in get_room_join():
 

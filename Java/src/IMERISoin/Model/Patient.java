@@ -6,23 +6,31 @@ import javafx.beans.property.StringProperty;
 public class Patient {
 
     private final int id;
-
+    private Integer week;
+    private Integer room;
+    private String drug;
     private String status;
 
     /**
      * @param id     id
      */
-    public Patient(int id) {
-        this(id, null);
-    }
+//    public Patient(int id, Integer room, Integer week) {
+//        this(id, room, week, null);
+//    }
 
     /**
-     * @param id     id
-     * @param status Status
+     * @param id id
+     * @param room room id
+     * @param week week format ( weekYear) : 122020
+     * @param drug drug String name
+     * @param status status
      */
-    public Patient(int id, String status) {
+    public Patient(int id, Integer room, Integer week, String drug, String status) {
         super();
         this.id = id;
+        this.room = room;
+        this.week = week;
+        this.drug = drug;
         this.status = status;
     }
 
@@ -45,6 +53,19 @@ public class Patient {
         return new SimpleStringProperty(status);
     }
 
+    public StringProperty getWeekFx() {
+        return new SimpleStringProperty(String.valueOf(week));
+    }
+
+    public StringProperty getRoomFx() {
+        return new SimpleStringProperty(String.valueOf(room));
+    }
+
+    public StringProperty getDrugFx() {
+        return new SimpleStringProperty(drug);
+    }
+
+
     /**
      * @return status of Patient
      */
@@ -64,9 +85,13 @@ public class Patient {
         return String.valueOf(id);
     }
 
+
+
     public String debugString() {
         return "Patient{" +
                 "id=" + id +
+                ", week=" + week +
+                ", room=" + room +
                 ", status='" + status + '\'' +
                 '}';
     }

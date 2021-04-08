@@ -15,7 +15,10 @@ l'interface**, **le superviseur**, **les robots** et **la base de données** ser
 
 ## Rôles
 
-Laurent CROUZIL ~ Scrum master Clovis CORDE ~ Web Service Alexis DEVleeschauwer ~ Java Omaima MADMOURH ~ Robot/arduino
+Laurent CROUZIL ~ Scrum master 
+Clovis CORDE ~ Web Service 
+Alexis DEVleeschauwer ~ Java 
+Omaima MADMOURH ~ Robot/arduino
 Marc RICHARD ~ Robot/arduino
 
 ## Planning
@@ -71,34 +74,30 @@ lui permettront de suivre le chemin, d'un capteur à ultrason afin de détecter 
 
 Une **machine à état** est utilisée pour gérer les différents évènements que le robot pourra rencontrer, cela lui
 permettra d'arriver à suivre une ligne droite, de tourner à gauche ou à droite à une intersection et de suivre un chemin
-prédéterminé. Elle sera composée de 8 différents états et pourra switcher entre eux grâce aux informations obtenues par
+prédéterminé. Elle sera composée de 3 différents états et pourra switcher entre eux grâce aux informations obtenues par
 les différents capteurs.
 
 ////TODO
-
 ```mermaid
+
 graph LR
 
-E(( intersection ))
+I(( Intersection ))
+
 A(( Etat initial ))
-B(( avance))
-C(( droite ))
-D(( gauche ))
-F(( traverse ))
-G(( tourne droite ))
-H(( tourne gauche ))
-A -->|d0 g0| B
-B -->|d0 g1|C
-C -->|d1 g1|E
-B -->|d1 g0|D 
-D -->|d1 g1|E
-C -->|d0 g0|B
-D -->|d0 g0|B
-E -->|'r'|G
-E -->|'f'|F
-E -->|'l'|H
 
+B((Avance))
 
+A -->|d0 g0|B
+
+B -->|d1 g0|B
+
+B-->|d1 g1|I
+
+B -->|d0 g1|B
+I -->|F|B
+I -->|R|B
+I -->|L|B
 
 ```
 
@@ -111,12 +110,14 @@ position à chaque intersection au serveur qui va lui envoyer l'odre soit de pou
 
 # WEB
 
-### TRUC
+### URIs
 
+Des fonctions ont été créées pour chaque URI donné. Le rôle du Service Web est de permettre la communication entre les différents pôles et cela est rendu possible avec les nombreux URIs donnés. Certains URIs permettent la communication avec la base de donné, et d'autres avec le superviseur ou encore le robot. Le Service Web n'envoie pas directement les infos aux différents pôles mais répond à des requêtes et il reçoit toutes les données que les autres pôles lui envoie.
 ### MUCHE
 
 # JAVA
 
-### TRUC
+### Interface
 
+Le rôle du superviseur est de permettre à l'utilisateur de lire les infos et d'envoyer les requêtes aux robots. Pour cela, une interface a été mise en place en Java. Elle permet de dialoguer avec le service Web de façon simple pour envoyer les requêtes soit au robot soit à la base de donnée.
 ### MUCHE
