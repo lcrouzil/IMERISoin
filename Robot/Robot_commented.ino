@@ -75,8 +75,8 @@ const int Id_Robot=01;
 /*Fonction Avancer tout droit*/
 void goAhead()
 {
-    analogWrite(END_m1, 850);  // Mettre la vitesse du Moteur Droit à 700
-    analogWrite(ENG_m2, 800);  // Mettre la vitesse du Moteur Gauche à 700
+    analogWrite(END_m1, 850);  // Mettre la vitesse du Moteur Droit à 850
+    analogWrite(ENG_m2, 800);  // Mettre la vitesse du Moteur Gauche à 800
     digitalWrite(END_m3, LOW); // Sens du Moteur Droit
     digitalWrite(ENG_m4, LOW); //Sens du Moteur Gauche
 }
@@ -85,7 +85,7 @@ void goAhead()
 void goRight()
 {
     analogWrite(END_m1, 0);     // Eteindre Moteur Droit
-    analogWrite(ENG_m2, 800);   //Mettre la vitesse du Moteur Gauche à 700
+    analogWrite(ENG_m2, 800);   //Mettre la vitesse du Moteur Gauche à 800
     digitalWrite(END_m3, HIGH); // Sens du Moteur Droit
     digitalWrite(ENG_m4, LOW);  //Sens du Moteur Gauche
 }
@@ -93,7 +93,7 @@ void goRight()
 /*Fonction tourner à Gauche  */
 void goLeft()
 {
-    analogWrite(END_m1, 850);   //Mettre la vitesse du Moteur Droit à 700
+    analogWrite(END_m1, 850);   //Mettre la vitesse du Moteur Droit à 850
     analogWrite(ENG_m2, 0);     // Eteindre Moteur Gauche
     digitalWrite(END_m3, LOW);  // Sens du Moteur Droit
     digitalWrite(ENG_m4, HIGH); //Sens du Moteur Gauche
