@@ -300,7 +300,6 @@ void loop()
     {
       Serial.println("pas d'ordre");
     }
-    
   }
   /*
   Serial.println("reading");
@@ -356,13 +355,10 @@ void loop()
     
     // EN FONCTION DE LA CHAINE, AVANCE OU TOURNE A GAUCHE OU A DROITE
     case 2:
-    dir = direct[iteration];  
-    noeud = direct[pos]-'0';
+    dir = cheminChambre[iteration];  
+    node = cheminChambre[pos]-'0';
     stopRobot();
     delay(1000);
-
-    Serial.println("noeud");
-    Serial.println(noeud);
 
     if (node==room)
     {
@@ -373,7 +369,6 @@ void loop()
       Serial.println("départ de la chambre");
     }
 
-    
     if ( dir== 'F')
     {
       etat = 0;
@@ -401,8 +396,7 @@ void loop()
     else if(dir =='\0')
     {
       Serial.println("on est done");
-      statusOrder="Done";
-      setOrder();
+      setOrder(orderId,"Done");
       pasloop = 0;
       iteration=1;
       pos =0;
