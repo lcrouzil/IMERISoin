@@ -73,6 +73,9 @@ Le robot sera contrôlé à **distance** et travaillera en **autonomie**. En eff
 chambre à aller alimenter en médicaments et il effectuera le trajet seul. Il est composé de 2 capteurs de lumière qui
 lui permettront de suivre le chemin, d'un capteur à ultrason afin de détecter les obstacles, de 3 roues et de 2 moteurs.
 
+
+
+
 ### Machine à état
 
 Une **machine à état** est utilisée pour gérer les différents évènements que le robot pourra rencontrer, cela lui
@@ -140,3 +143,7 @@ envoyer les requêtes soit au robot soit à la base de donnée.
 
 La base de données ne contient pas toute les table final
 ![Alt text](assets/SQL_diagram.png?raw=true "SQL")
+
+# DEMO
+
+[![Robot demo](https://img.youtube.com/vi/PpHd-0h2poc/0.jpg)](https://youtu.be/PpHd-0h2poc)
