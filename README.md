@@ -15,7 +15,10 @@ l'interface**, **le superviseur**, **les robots** et **la base de données** ser
 
 ## Rôles
 
-Laurent CROUZIL ~ Scrum master Clovis CORDE ~ Web Service Alexis DEVleeschauwer ~ Java Omaima MADMOURH ~ Robot/arduino
+Laurent CROUZIL ~ Scrum master 
+Clovis CORDE ~ Web Service 
+Alexis DEVleeschauwer ~ Java 
+Omaima MADMOURH ~ Robot/arduino
 Marc RICHARD ~ Robot/arduino
 
 ## Planning
