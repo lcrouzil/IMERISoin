@@ -10,33 +10,44 @@ from database import *
 
 # Patients et essais cliniques
 
-def setMedicine(medicine: int, name: str):
+def setMedicine(medicine, name):
     ''' setMedicine
     Définit un nouveau médicament avec un nom
     Parameters : medicine/name
     JSON : {"code":200} si enregistré
            {"code":404,"error":error} si non enregistré '''
-    set_medicine(medicine, name)
-    if (True):
-        code = 200
+    code = 404
+    a = set_medicine(medicine, name)
+    print("boolean",a)
+    if isinstance(medicine, int) and isinstance(name, str) :
+        if(set_medicine(medicine, name)) :
+            code = 200
+            return {"code": code}
+        else :
+            error = "la database fait n'imp"
+            return {"code": code,"error":error}
     else:
-        code = 404
-    return {"code": code}
+        error = "Les arguments ne sont pas du bon type"
+        return {"code":code,"error":error}
+        
 
 
-# Nouveau patient dans une room donnée (selon la semaine donnée ou en cours)
-def newPatient(room: int, patientID: int, week: int = None):
+def addPatient(room: int, patientID: int, week: int = None):
     ''' addPatient
     Nouveau patient dans une room donnée (selon la semaine donnée ou en cours)
     Parameters : room/patientID/week
     JSON : {"code":200,"patientID":patientID} si enregistré
            {"code":404,"error":error} si non enregistré '''
-    print(room, patientID, week)
-    if add_patient(patientID, room, week):
-        code = 200
-    else:
+
+    code = 200
+    if isinstance(room, (int, float)) == False or isinstance(room, (int, float)) == False:
         code = 404
-    return {"code": code, "room": room, "patientID": patientID, "week": week}
+        error = "Pas bon type dans les arguments"
+        return {"code": code,"error":error}
+    else:
+        add_patient(patientID, room, week)
+        return {"code": code, "room": room, "patientID": patientID, "week": week}
+    
 
 
 def setRoom(room: int, name: str, path: str):
@@ -45,7 +56,15 @@ def setRoom(room: int, name: str, path: str):
     Parameters : room/name/(path)
     JSON : {"code":200} si enregistré
            {"code":404,"error":error} si non enregistré'''
-    add_room(room, name, path)
+    code = 200
+    if isinstance(room, (int, float)) == False:
+        code = 404
+        error = "Pas bon type dans les arguments"
+        return {"code": code,"error":error}
+    else:
+        add_room(room, name, path)
+        return {"code": code, "room": room, "patientID": patientID, "week": week}
+    
     return 1
 
 
@@ -66,29 +85,34 @@ def setPatientCondition(patient_id: int, condition: str):
     Parameters : patientID,condition
     JSON : {"code":200} si enregistré
            {"code":404,"error":error} si non enregistré'''
-    # Ajouter dans la database entre "cured"/"stable"/"dead"
 
-    set_patient_status(patient_id, condition)
+    code = 404
+    if isinstance(patient_id, int) and isinstance(condition, str):
+        if (set_patient_status(patient_id, condition)):
+            code = 200
+            return {"code":code}
+    else :
+        error = "Pas bon type argument"
 
-    if (1):
-        code = 200
-    else:
-        code = 404
-    return {"code": code}
+    return {"code": code,"error":error}
 
 
-def setRoomMedicine(room: int, medicine: int, week: Optional[int] = 0):
+def setRoomMedicine(room, medicine, week = None):
     ''' setRoomMedicine
     Définit le médicament à donner dans la room pour la semaine indiquée (ou semaine en cours si paramètre pas donné)
     Parameters : room/medicine/(week)
     JSON : {"code":200} si enregistré
            {"code":404,"error":error} si non enregistré'''
-    set_room_medicine(room, medicine, week)
-    if (True):
-        code = 200
-    else:
-        code = 404
-    return {"code": code}
+       
+    code = 404
+    if isinstance(room, int) and isinstance(medicine, int):
+        if (set_room_medicine(room, medicine, week)):
+            code = 200
+            return {"code":code}
+    else :
+        error = "Pas bon type argument"
+
+    return {"code": code,"error":error}
 
 
 def getRoomMedicine(room: int, week: Optional[int] = 0):
@@ -117,13 +141,11 @@ def listMedicines():
     Retourne tous les médicaments disponibles
     Parameters : NULL
     JSON : {‘list’: [{‘medicine’: medicine, ‘name’: name}, …]}
-'''
+    '''
     tab = []
     for id, name in get_medicine():
         tab.append({"id": id, "name": name})
-        # tab[id] = name
 
-    print(tab)
 
     return {"list": tab}
 
@@ -133,12 +155,11 @@ def listPatients():
     Retourne la liste de tous les patients
     Parameters : NULL
     JSON : {‘list’: [{‘patientId’: patientId, ‘SS’: ss, ‘week’: week, ‘condition’: condition} , …]}'''
-    # Database : pareil que getMedicines?
     tab = []
     for id, status, week, room_id, drug in get_patient():
         tab.append({"id": id, "status": status, "week": week, "room_id": room_id, "drug": drug})
 
-    print(tab)
+    #print(tab)
 
     return {"list": tab}
 
@@ -152,7 +173,7 @@ def listRooms():
     for id, name, path in get_room():
         tab.append({"id": id, "path": path, "name": name})
 
-    print(tab)
+    #print(tab)
 
     return {"list": tab}
 
@@ -166,7 +187,7 @@ def listRobots():
     for id, name in get_robot():
         tab[id] = name
 
-    print(tab)
+    #print(tab)
 
     return {"robots": tab}
 
@@ -178,7 +199,7 @@ def listOrders():
         print("get_orders : ", id, room, drug, status, timestamp)
         tab.append({"id": id, "room": room, "drug": drug, "status": status, "timestamp": timestamp})
 
-    print(tab)
+    #print(tab)
 
     return {"list": tab}
 
@@ -193,6 +214,7 @@ def addOrder(room: int):
     if isinstance(room, (int, float)) == False:
         code = 404
         error = "La room doit être un int"
+        return {"code":code,"error":error}
     else:
         add_order(room)
     return {"code": code}
