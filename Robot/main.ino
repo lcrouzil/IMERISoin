@@ -55,9 +55,10 @@ int orderId;
 
 const char *ssid = "AlexisWifi"; //ENTER YOUR WIFI SETTINGS
 const char *password = "alexis666";
-//const char *ssid = "iPhone";  //ENTER YOUR WIFI SETTINGS
-//const char *password = "Charice712";
+// const char *ssid = "iPhone"; //ENTER YOUR WIFI SETTINGS
+// const char *password = "Charice712";
 
+// const char *host = "172.20.10.3"; //adresse ip de l'hote
 const char *host = "192.168.43.231"; //adresse ip de l'hote
 //const char *host = "172.20.10.3";//adresse ip de l'hote
 
@@ -72,28 +73,28 @@ const int Id_Robot = 01;
 /*Fonction Avancer tout droit*/
 void goAhead()
 {
-    analogWrite(END_m1, 850);  // Mettre la vitesse du Moteur Droit à 700
-    analogWrite(ENG_m2, 800);  // Mettre la vitesse du Moteur Gauche à 700
-    digitalWrite(END_m3, LOW); // Sens du Moteur Droit
-    digitalWrite(ENG_m4, LOW); //Sens du Moteur Gauche
+    analogWrite(END_m1, 750);   // Mettre la vitesse du Moteur Droit à 700
+    analogWrite(ENG_m2, 750);   // Mettre la vitesse du Moteur Gauche à 700
+    digitalWrite(END_m3, HIGH); // Sens du Moteur Droit
+    digitalWrite(ENG_m4, HIGH); //Sens du Moteur Gauche
 }
 
 /*Fonction tourner à Gauche  */
 void goRight()
 {
     analogWrite(END_m1, 0);     // Eteindre Moteur Droit
-    analogWrite(ENG_m2, 800);   //Mettre la vitesse du Moteur Gauche à 700
-    digitalWrite(END_m3, HIGH); // Sens du Moteur Droit
-    digitalWrite(ENG_m4, LOW);  //Sens du Moteur Gauche
+    analogWrite(ENG_m2, 750);   //Mettre la vitesse du Moteur Gauche à 700
+    digitalWrite(END_m3, LOW);  // Sens du Moteur Droit
+    digitalWrite(ENG_m4, HIGH); //Sens du Moteur Gauche
 }
 
 /*Fonction tourner à Droite  */
 void goLeft()
 {
-    analogWrite(END_m1, 850);   //Mettre la vitesse du Moteur Droit à 700
+    analogWrite(END_m1, 750);   //Mettre la vitesse du Moteur Droit à 700
     analogWrite(ENG_m2, 0);     // Eteindre Moteur Gauche
-    digitalWrite(END_m3, LOW);  // Sens du Moteur Droit
-    digitalWrite(ENG_m4, HIGH); //Sens du Moteur Gauche
+    digitalWrite(END_m3, HIGH); // Sens du Moteur Droit
+    digitalWrite(ENG_m4, LOW);  //Sens du Moteur Gauche
 }
 
 /*Fonction arreter le Robot */
@@ -138,9 +139,6 @@ void getOrder()
     }
 
     // Envoie d'une intersection :
-    int intersection = 5;
-    String STR_intersection;
-    STR_intersection = String(intersection); //String to interger conversion
 
     // Construction de la requete :
     String Link;
@@ -183,16 +181,16 @@ void getOrder()
         Serial.println(error.f_str());
         return;
     }
-    int ordreChambre = order["room"];
-    int orderId = order["order"];
+    numChambre = order["room"];
+    orderId = order["order"];
     int medoc = order["medicine"];
 
+    Serial.println(numChambre);
+    Serial.println(orderId);
+    Serial.println(medoc);
     //verif
 
-    Serial.println(ordreChambre);
-
     Serial.println(line);
-    numChambre = ordreChambre;
     // Attente :
     //delay(2000);  //GET Data at every 2 seconds
 }
@@ -231,9 +229,9 @@ void getPath()
     }
 
     // Envoie d'une intersection :
-    int intersection = 5;
-    String STR_intersection;
-    STR_intersection = String(intersection); //String to interger conversion
+    // int intersection = 5;
+    // String STR_intersection;
+    // STR_intersection = String(intersection); //String to interger conversion
 
     // Construction de la requete :
     String Link;
@@ -321,9 +319,9 @@ void setPosition()
         Serial.println("Connected to web");
     }
     // Envoie d'une intersection :
-    int intersection = 5;
-    String STR_intersection;
-    STR_intersection = String(intersection); //String to interger conversion
+    // int intersection = 5;
+    // String STR_intersection;
+    // STR_intersection = String(intersection); //String to interger conversion
 
     // Construction de la requete :
     String Link;
@@ -405,7 +403,7 @@ void setOrder()
     Serial.println(host + Link);
 
     // Envoie de la requete :
-    httpsClient.print(String("GET ") + "/setOrder/" + orderId + "/" + statusOrder + "/" + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
+    httpsClient.print(String("GET ") + "/setOrder/" + orderId + "/" + statusOrder + " HTTP/1.1\r\n" + "Host: " + host + "\r\n" + "Connection: close\r\n\r\n");
     Serial.println("Envoie position robot");
 
     // Reception du message :
@@ -433,6 +431,14 @@ void setOrder()
     //delay(2000);
 }
 
+/* Fonction demi-tour*/
+void demi_tour()
+{
+    digitalWrite(END_m1, HIGH); // Moteur Droit au max
+    digitalWrite(END_m3, HIGH); // Sens du Moteur Droit
+    digitalWrite(ENG_m2, HIGH); // Moteur Gauche au max
+    digitalWrite(ENG_m4, LOW);  // Sens du Moteur Gauche
+}
 /*****************************************************
  * 
  *Setup
@@ -464,6 +470,13 @@ void setup()
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP()); //IP address assigned to your ESP
 
+    pinMode(END_m1, OUTPUT);
+    pinMode(ENG_m2, OUTPUT);
+    pinMode(END_m3, OUTPUT);
+    pinMode(ENG_m4, OUTPUT);
+    
+    pinMode(D5, INPUT);
+    pinMode(D7, INPUT);
     /********************************************************************/
 }
 
@@ -476,7 +489,7 @@ void loop()
         if (numChambre != 0)
         {
             getPath();
-            pasloop++;
+            pasloop = 1;
         }
         else
         {
@@ -516,7 +529,7 @@ void loop()
         //######################################### ETAT 1: SUIVI DE LIGNE #########################################
 
     case 1:
-        goAhead();                    // avance tant qu'un des 2 capteurs ne detecte rien
+
         if (captD == 1 && captG == 0) // Si capteur gauche = noir --> etat 3
         {
             goRight();
@@ -528,6 +541,10 @@ void loop()
         else if (captD == 1 && captG == 1)
         {
             etat = 2;
+        }
+        else if (captD == 0 && captG == 0)
+        {
+            // goAhead();                    // avance tant qu'un des 2 capteurs ne detecte rien
         }
         break;
 
@@ -572,9 +589,11 @@ void loop()
         if (dir == 'F')
         {
             Serial.println("F");
+            goAhead();
+            delay(350);
             iteration = iteration + 2;
             pos = pos + 2;
-            etat = 0;
+            etat = 1;
         }
 
         else if (dir == 'L')
@@ -600,11 +619,19 @@ void loop()
         else if (dir == '\0')
         {
             Serial.println("on est done");
+
+            goAhead();
+            delay(900);
+            demi_tour(); // Fais un demi-tour et se remet en position de départ
+            delay(550);
+            stopRobot();
+            delay(1000);
             statusOrder = "Done";
             setOrder();
             pasloop = 0;
             iteration = 1;
             pos = 0;
+            etat = 0;
         }
 
         break;
