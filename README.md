@@ -71,7 +71,7 @@ lui permettront de suivre le chemin, d'un capteur à ultrason afin de détecter 
 
 Une **machine à état** est utilisée pour gérer les différents évènements que le robot pourra rencontrer, cela lui
 permettra d'arriver à suivre une ligne droite, de tourner à gauche ou à droite à une intersection et de suivre un chemin
-prédéterminé. Elle sera composée de 8 différents états et pourra switcher entre eux grâce aux informations obtenues par
+prédéterminé. Elle sera composée de 3 différents états et pourra switcher entre eux grâce aux informations obtenues par
 les différents capteurs.
 
 ////TODO
