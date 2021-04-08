@@ -178,19 +178,24 @@ def get_room():
 
 
 def set_room_medicine(room: int, medicine: int, week: int = None):
-    if not isinstance(room, int): return "id not correct"
+    try :
+        if not isinstance(room, int): return "id not correct"
 
-    with connectBase() as conn:
-        c = conn.cursor()
+        with connectBase() as conn:
+            c = conn.cursor()
 
-        if week is not None:
-            c.execute(f"""
-                INSERT INTO drug_room (room_id, drug_id, week) VALUES ({room}, {medicine}, {week})
-            """)
-        else:
-            c.execute(f"""
-                INSERT INTO drug_room (room_id, drug_id) VALUES ({room}, {medicine})
-            """)
+            if week is not None:
+                c.execute(f"""
+                    INSERT INTO drug_room (room_id, drug_id, week) VALUES ({room}, {medicine}, {week})
+                """)
+            else:
+                c.execute(f"""
+                    INSERT INTO drug_room (room_id, drug_id) VALUES ({room}, {medicine})
+                """)
+        return True
+    except Error as err :
+        print(err)
+        return False
 
 
 # Retourne tous les médicaments disponibles
@@ -226,25 +231,29 @@ def get_medicine():
 
 
 def set_medicine(id, name):
-    if not isinstance(id, int): return "id not correct"
-    if not isinstance(name, str) or len(name) <= 0: return "name not correct"
+    try:
+        if not isinstance(id, int): return "id not correct"
+        if not isinstance(name, str) or len(name) <= 0: return "name not correct"
 
-    is_exist = findSQL(f'''
-        SELECT CASE WHEN EXISTS (
-            SELECT * 
-            FROM drug
-            WHERE id = {id}
-        )
-        THEN CAST(1 AS BIT)
-        ELSE CAST(0 AS BIT) END;
-    ''').fetchone()[0]
+        is_exist = findSQL(f'''
+            SELECT CASE WHEN EXISTS (
+                SELECT * 
+                FROM drug
+                WHERE id = {id}
+            )
+            THEN CAST(1 AS BIT)
+            ELSE CAST(0 AS BIT) END;
+        ''').fetchone()[0]
 
-    print(is_exist)
+        print(is_exist)
 
-    if is_exist:
-        executeSQL(f"UPDATE drug SET name = '{name}' WHERE id = {id};")
-    else:
-        executeSQL(f"INSERT INTO drug (id, name) VALUES ({id}, '{name}');")
+        if is_exist:
+            executeSQL(f"UPDATE drug SET name = '{name}' WHERE id = {id};")
+        else:
+            executeSQL(f"INSERT INTO drug (id, name) VALUES ({id}, '{name}');")
+        return True 
+    except Error as err :
+        return False
 
 
 def get_patient():
@@ -261,9 +270,14 @@ def get_patient():
 
 
 def set_patient_status(patient_id: int, status: str):
-    executeSQL(f'''
-        UPDATE patient SET status = '{status}' WHERE id = {patient_id}
-    ''')
+    try:
+        executeSQL(f'''
+            UPDATE patient SET status = '{status}' WHERE id = {patient_id}
+        ''')
+        return True
+    except Error as err :
+        return False
+
 
 
 def add_patient(id: int, room: int, week: int = None):
@@ -328,7 +342,7 @@ def get_order():
         SELECT o.id, o.room_id, dr.drug_id
         FROM orders o
                  JOIN drug_room dr on dr.week = (strftime('%W%Y', datetime()))
-        WHERE o.room_id = 1
+        WHERE o.status = 'to do'
         ORDER BY timestamp
         LIMIT 1
     ''').fetchone()
@@ -379,19 +393,28 @@ def get_room_join():
 ##conn = connectBase()
 ### et on peut utiliser ici le connecteur de la base
 def __test__():
-    print("..", add_patient(1, 1))
+    print("..", add_patient(1, 2))
+    print("..", add_patient(2, 3))
+    print("..", add_patient(3, 4))
+    print("..", add_patient(4, 1))
 
-    print("..", set_medicine(1, "medicament 1"))
-    print("..", set_medicine(2, "medicament 2"))
+    print("..", set_medicine(1, "Doliprane"))
+    print("..", set_medicine(2, "Ibuprofene"))
+    print("..", set_medicine(3, "Ritaline"))
+    print("..", set_medicine(4, "Chloroquine"))
 
-    print("..", set_room_medicine(1, 1))
+    print("..", set_room_medicine(1, 4))
+    print("..", set_room_medicine(2, 1))
+    print("..", set_room_medicine(3, 2))
+    print("..", set_room_medicine(4, 3))
 
     for id, name in get_medicine():
         print(id, name)
 
     add_order(1)
-    print("..get Order", get_order())
-    print("..get Room", get_room())
+    add_order(2)
+    add_order(3)
+    add_order(4)
 
 
 if __name__ == '__main__':
