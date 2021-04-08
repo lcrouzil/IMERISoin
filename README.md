@@ -99,9 +99,6 @@ I -->|F|B
 I -->|R|B
 I -->|L|B
 
-
-
-
 ```
 
 ### Fonctions
@@ -113,12 +110,14 @@ position à chaque intersection au serveur qui va lui envoyer l'odre soit de pou
 
 # WEB
 
-### TRUC
+### URIs
 
+Des fonctions ont été créées pour chaque URI donné. Le rôle du Service Web est de permettre la communication entre les différents pôles et cela est rendu possible avec les nombreux URIs donnés. Certains URIs permettent la communication avec la base de donné, et d'autres avec le superviseur ou encore le robot. Le Service Web n'envoie pas directement les infos aux différents pôles mais répond à des requêtes et il reçoit toutes les données que les autres pôles lui envoie.
 ### MUCHE
 
 # JAVA
 
-### TRUC
+### Interface
 
+Le rôle du superviseur est de permettre à l'utilisateur de lire les infos et d'envoyer les requêtes aux robots. Pour cela, une interface a été mise en place en Java. Elle permet de dialoguer avec le service Web de façon simple pour envoyer les requêtes soit au robot soit à la base de donnée.
 ### MUCHE
