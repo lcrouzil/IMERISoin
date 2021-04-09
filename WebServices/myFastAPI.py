@@ -15,7 +15,7 @@
     127.0.0.1:8000/items/81?q=myQuery
 '''
 from fastapi import FastAPI
-#from pydantic import BaseModel
+from fastapi.responses import HTMLResponse
 import features
 
 
@@ -33,7 +33,7 @@ except:
 try:
     description = features.CONST_description
 except:
-    description = 'Description du projet'
+    description = 'Projet mené par Clovis CORDE/Laurent Crouzil/Alexis Devleeschauwer/Omaima MADMOURH/Marc RICHARD'
     
 try:
     version = features.CONST_version
@@ -82,6 +82,10 @@ for f in vars(features).values():
 # eventually add the index feature
 #
 def guide():
-    return {"cod": 200, "guide": features.__doc__.replace("\n"," ") }    
-app.get("/")(guide)
-app.get("/index")(guide)
+    page = '''<html><head><title>{}</title></head><body>{}</body></html>'''
+    page = page.format(title, features.__doc__.replace("\n","<br>"))
+    page = page.replace("/docs", '<a href="/docs">/docs</a>')
+    page = page.replace("clovis.corde@imerir.com",'<a href="mailto:clovis.corde@imerir.com">clovis.corde@imerir.com</a>')
+    return page
+app.get("/", response_class=HTMLResponse)(guide)
+app.get("/index", response_class=HTMLResponse)(guide)

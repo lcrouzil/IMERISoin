@@ -124,7 +124,8 @@ différents pôles et cela est rendu possible avec les nombreux URIs donnés. Ce
 avec la base de donné, et d'autres avec le superviseur ou encore le robot. Le Service Web n'envoie pas directement les
 infos aux différents pôles mais répond à des requêtes et il reçoit toutes les données que les autres pôles lui envoie.
 
-### MUCHE
+### Communication
+Le serveur est hébérgé en utilisant uvicorn, le superviseur ainsi que le robot n'a plus qu'à faire des requêtes en utilisant l'adresse ip du serveur suivi de l'URI souhaitée et le service Web renvoie l'information ou un code d'erreur si la requête n'a pas abouti.
 
 # JAVA
 

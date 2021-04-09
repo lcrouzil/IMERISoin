@@ -73,7 +73,7 @@ def getPatientCondition(patientID: int):
     Renvoie l'état de santé d'un patient entre "Cured"/"Stable"/"Dead"
     Parameters : patientID
     JSON : {"condition" : condition}
-    '''
+    non implémenté'''
     # Questionner la database
     return {"condition": condition}
 
@@ -131,7 +131,7 @@ def patientStats(week: Optional[int], room: Optional[int], medicine: Optional[in
     Retourne les éléments en fonction des paramètres optionnels
     Parameters :(week)/(room)/(medicine)/(condition)
     JSON : {"list":["week":week,"room":room,"medicine":medicine,"condition":condition]}
-    '''
+    non implémenté'''
     # Questionner la database
     return {"week": week}  # retourner une liste de tout
 
@@ -193,7 +193,10 @@ def listRobots():
 
 
 def listOrders():
-    ''' Commentaire'''
+    ''' listOrders
+    Retourne la liste de tous les ordres
+    Parameters : NULL
+    Json : {'list': [{'robot': robot, 'name': name},...]}'''
     tab = []
     for id, room, drug, status, timestamp in get_orders():
         print("get_orders : ", id, room, drug, status, timestamp)
@@ -207,9 +210,12 @@ def listOrders():
 # Gestion des robots et des consignes
 
 
-# Ajouter la consigne medicament pour telle room (status "to do")
 def addOrder(room: int):
-    ''' addOrder'''
+    ''' addOrder
+    Ajouter la consigne medicament pour telle room (status "to do")
+    Parameters : room
+    JSON : {"code":200} si enregistré
+           {"code":404,"error":error} si non enregistré'''
     code = 200
     if isinstance(room, (int, float)) == False:
         code = 404
@@ -220,37 +226,36 @@ def addOrder(room: int):
     return {"code": code}
 
 
-# Lit la première consigne disponible
 def getOrder():
-    ''' getOrder'''
+    ''' getOrder
+    Lit la première consigne disponible avec le statut "to do"
+    Parameters: NULL
+    JSON : {"order": order, "room": room, "medicine" : medicine}
+    (Si pas d'ordre l'erreur n'est pas géré) '''
     order = {}
     order = get_order()
     return {"order": order[0], "room": order[1], "medicine": order[2]}
 
 
-# TEST ORDER
-def OrderTest():
-    ''' OrderTest'''
-    tab = {}
-    for id, name in get_robot():
-        tab[id] = name
 
-    print(tab)
-
-    return {"robots": tab}
-
-
-# Retourne le statut d'avancement de la consigne
 def checkOrder(order: str, status=""):
-    ''' checkOrder'''
+    ''' checkOrder
+    Retourne le statut d'avancement de la consigne
+    Parameters : order/status
+    JSON : {"order: order,"status: status}
+    non implémenté'''
     # Questionner la database
     return {"order": order, "status": status}
 
 
-# Modifie le statut d'une consigne entre 'delivered'(medicament fourni) et 'done' (robot a la base) avec le timestamp
 def setOrder(order: str, status: str):
-    ''' setOrdder'''
+    ''' setOrder
+    Modifie le statut d'une consigne entre 'delivered'(medicament fourni) et 'done' (robot a la base) avec le timestamp
+    Parameters: order/status
+    JSON : {"code":200} si enregistré
+           {"code":404,"error":error} si non enregistré'''
     set_order(order,status)
+    #Le renvoi du code de cet erreur n'est pas géré dans cette version car nous gardons une version stable pour la démonstration
     if (True):
         code = 200
     else:
@@ -258,16 +263,23 @@ def setOrder(order: str, status: str):
     return {"code": code}
 
 
-# Renvoie le noeud où le robot est actuellement
 def getPosition(robot_id: int):
-    ''' getPosition'''
+    ''' getPosition
+    Renvoie le noeud où le robot est actuellement
+    Parameters: numéro du robot
+    JSON : {"robot" : robot_id, "node": node, "timestamp": timestamp}
+    non implémenté'''
     # Questionner la database
     return {"robot": robot_id, "node": node, "timestamp": timestamp}
 
 
-# Enregistre le noeud où est arrivé le robot + timestamp
 def setPosition(robot: int, node: int):
-    ''' setPosition'''
+    ''' setPosition
+    Enregistre le noeud où est arrivé le robot + timestamp
+    Parameters : robot/node
+    JSON : JSON : {"code":200} si enregistré
+           {"code":404,"error":error} si non enregistré
+    non implémenté'''
     # Ajouter dans la database le nouveau noeud où se situe le robot
     if (True):
         code = 200
@@ -282,6 +294,8 @@ def getPath(room:int):
     Parameters : room
     JSON : {"room" : room,"path" : room}
     '''
+    #Il est possible d'accéder au path grâce à la database mais pour cette version de démo
+    #nous gardons l'envoi du chemin de cette manière
     path = "RIEN"
     if (room == 1):
         path = "0F5F6L1L5R"
@@ -297,16 +311,22 @@ def getPath(room:int):
     return {"room": room, "path": path}
 
 
-# Historique des mouvements du robot
 def getHistory(robot: int):
-    ''' getHistory'''
-    # Questionner la base de données
-    return {"liste des mouvements node/timestamp": afaire}
+    ''' getHistory
+    Historique des mouvements du robot
+    Parameters : Robot
+    JSON : {‘robot’: robot, ‘history’: [{’node’: node, ‘timestamp’: timestamp},...]},..}
+    non implémenté'''
+    # Questionner la database
+    return {"liste des mouvements node/timestamp": todo}
 
 
-# Crée une alerte (s'il est perdu)
 def alertRobot(robot: int):
-    ''' alertRobot'''
+    ''' alertRobot
+    Crée une alerte (s'il est perdu)
+    Parameters : Robot
+    JSON : JSON : JSON : {"code":200,"alert":alert} si enregistré
+           {"code":404,"error":error} si non enregistré'''
     # Ajouter base de données
     if (True):
         code = 200
