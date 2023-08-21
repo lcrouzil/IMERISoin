@@ -83,8 +83,6 @@ permettra d'arriver à suivre une ligne droite, de tourner à gauche ou à droit
 prédéterminé. Elle sera composée de 3 différents états et pourra switcher entre eux grâce aux informations obtenues par
 les différents capteurs.
 
-////TODO
-
 ```mermaid
 
 graph LR
@@ -136,7 +134,7 @@ cela, une interface a été mise en place en Java. Elle permet de dialoguer avec
 envoyer les requêtes soit au robot soit à la base de donnée.
 
 ### UML
-![Alt text](assets/Java_diagram.png?raw=true "SQL")
+![Alt text](assets/Java_Diagram.png?raw=true "SQL")
 
 ### MUCHE
 
